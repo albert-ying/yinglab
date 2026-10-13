@@ -1,0 +1,264 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ying Lab | AI for aging</title>
+<meta name="description" content="The Ying Lab, opening January 2027, will build AI models of aging and use them to find, design and test interventions.">
+<meta property="og:title" content="Ying Lab | AI for aging">
+<meta property="og:description" content="Can we extend human lifespan by an order of magnitude? An AI-native lab opening January 2027.">
+<meta property="og:image" content="https://lab.kejunying.com/assets/img/og.jpg">
+<meta property="og:url" content="https://lab.kejunying.com/">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://lab.kejunying.com/">
+<meta name="theme-color" content="#0a53a3">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="styles.css">
+<script>document.documentElement.classList.add('js');</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="nav" id="nav">
+  <div class="wrap nav-row">
+    <a class="mark" href="#top" aria-label="Ying Lab, home">
+      <svg viewBox="0 0 28 28" width="26" height="26" aria-hidden="true"><line x1="3" y1="20" x2="16" y2="20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="16" y1="20" x2="25" y2="20" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-dasharray="1 4"/><circle cx="16" cy="20" r="3" fill="currentColor"/><circle cx="25" cy="20" r="2.4" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>
+      <span>Ying Lab</span>
+    </a>
+    <nav aria-label="Sections">
+      <a href="#research">Research</a>
+      <a href="#work">Work</a>
+      <a href="#publications">Publications</a>
+      <a href="#people">People</a>
+      <a class="nav-join btn" href="#join">Join <span aria-hidden="true">&rarr;</span></a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+
+<section class="hero blue" id="top">
+  <div class="stage">
+  <canvas class="film" id="film" aria-hidden="true"></canvas>
+  <div class="wrap hero-copy">
+    <p class="label">Ying Lab &nbsp;/&nbsp; Opening January 2027</p>
+    <h1>Can we extend human lifespan by an order of magnitude?</h1>
+    <p class="hero-sub">An AI-native lab working on aging.</p>
+    <a class="btn" href="#join">Join the lab <span aria-hidden="true">&rarr;</span></a>
+  </div>
+  <div class="hero-art">
+    <img src="assets/img/evolution-lineup-inv.webp" width="1536" height="391" alt="Engraving of a mouse, a naked mole-rat, a bat, a person seen from behind and a bowhead whale, standing on a line from smallest to largest.">
+    <i class="star star-l" aria-hidden="true"></i><i class="star star-r" aria-hidden="true"></i>
+  </div>
+  <div class="wrap hero-foot">
+    <p class="label chip">The lab</p>
+    <p class="hero-lede">We build models of how organisms age, use them to find and design interventions, and test what the models propose.</p>
+  </div>
+  <p class="label scroll-cue" aria-hidden="true">Scroll</p>
+  </div>
+</section>
+
+<section class="band" id="mission">
+  <div class="wrap">
+    <p class="label">Maximum lifespan, years</p>
+    <figure class="axis" id="axis" aria-labelledby="axis-cap">
+      <div class="axis-plot" id="axis-plot" role="img" aria-label="Maximum recorded lifespan on a logarithmic scale: house mouse 4 years, naked mole-rat 31 years, human 122 years, bowhead whale 211 years. A dashed line continues from the human record to ten times that value."><noscript><p>House mouse 4 years, naked mole-rat 31 years, human 122 years, bowhead whale 211 years.</p></noscript></div>
+      <figcaption id="axis-cap">Maximum recorded lifespan, on a logarithmic scale. Values from the <a href="https://genomics.senescence.info/species/" rel="noopener">AnAge database</a>, rounded to whole years; the bowhead whale value is an estimate. Species are not drawn to scale.</figcaption>
+    </figure>
+  </div>
+  <div class="wrap two">
+    <h2>Evolution has already changed lifespan by more than an order of magnitude</h2>
+    <div class="prose">
+      <p>Across mammals, lifespan ranges from a few years to more than two centuries. Differences this large may depend on mechanisms that current interventions, which change lifespan by a small fraction, do not act on.</p>
+      <p>Our long-term mission is to extend human lifespan by an order of magnitude and to identify the biology required. We learn from lifespan variation across species, model it, and turn what the models find into drug targets and designed proteins that can be tested in human cells.</p>
+      <p>The lab is experimental as well as computational. A model can propose an intervention, but only measurements and experiments show whether it works. However capable AI systems become, they will still need those data, so we generate them ourselves.</p>
+    </div>
+  </div>
+  <div class="wrap">
+    <p class="statement">If we study only how to add a little time, we may miss the mechanisms that could add much more.</p>
+  </div>
+</section>
+
+<section class="scales" id="scales">
+  <div class="wrap two">
+    <h2>AI for biology, across scales</h2>
+    <div class="prose">
+      <p>Biology can be modeled at every scale, from a single molecule to a whole species. Most of the attention in AI for biology goes to the smallest scales: protein structure and virtual cells.</p>
+      <p>Aging shows itself at the level of the whole organism: in disease, in death and in the lifespan of a species. Few AI models are built at the scale of the person or the species. We think this is the open opportunity for AI in aging research, and much of our modeling starts there.</p>
+    </div>
+  </div>
+  <div class="wrap">
+    <figure class="scales-fig">
+      <img src="assets/img/across-scales.webp" width="2172" height="941" loading="lazy" alt="Engraving-style drawing linking five scales of biology: a group of species, a person, a tissue, a cell and a protein.">
+      <ol class="scales-labels">
+        <li style="--x:11.5%"><b>Species</b><span>Pan-species models</span></li>
+        <li style="--x:30.7%"><b>Person</b><span>Human health models</span></li>
+        <li style="--x:45.8%"><b>Tissue</b><span>Virtual tissues</span></li>
+        <li style="--x:65.8%"><b>Cell</b><span>Virtual cells</span></li>
+        <li style="--x:88%"><b>Molecule</b><span>Protein models and design</span></li>
+      </ol>
+    </figure>
+  </div>
+</section>
+
+<section class="research dark" id="research">
+  <div class="wrap">
+    <p class="label">How the lab works</p>
+    <h2>Research</h2>
+    <p class="section-lede">Each project follows the same loop: measure a biological state, model it, let the model nominate an intervention, design the molecule, test it, and return the result to the model. The five areas below are where the first projects will start.</p>
+  </div>
+  <div class="wrap research-grid">
+    <div class="loop" id="loop" aria-hidden="true"></div>
+    <div class="directions" id="directions">
+      <article data-steps="model">
+        <span class="roundel"><img src="assets/img/dir-models.webp" width="440" height="440" loading="lazy" alt="Engraving of a person beside a digital model of the same person."></span>
+        <div class="dir-body">
+        <h3>Foundation and world models of biology</h3>
+        <p>A world model predicts how a biological state changes over time and in response to an intervention.</p>
+        <ul>
+          <li>Foundation models of molecular state across omics</li>
+          <li>World models of the aging cell</li>
+          <li>Pan-species and evolutionary models of longevity</li>
+        </ul>
+        </div>
+      </article>
+      <article data-steps="measure">
+        <span class="roundel"><img src="assets/img/dir-measure.webp" width="440" height="440" loading="lazy" alt="Engraving of a group of people seen from behind."></span>
+        <div class="dir-body">
+        <h3>Measuring and modeling aging</h3>
+        <ul>
+          <li>Biological age and module-specific aging signatures</li>
+          <li>Aging and resilience trajectories</li>
+          <li>Causal aging biomarkers</li>
+        </ul>
+        </div>
+      </article>
+      <article data-steps="nominate">
+        <span class="roundel"><img src="assets/img/dir-agents.webp" width="440" height="440" loading="lazy" alt="Engraving of a robotic arm and a microscope at a laboratory bench."></span>
+        <div class="dir-body">
+        <h3>AI agents for scientific discovery</h3>
+        <ul>
+          <li>Autonomous discovery of interventions from public data</li>
+          <li>Agent workflows in which every step can be inspected</li>
+          <li>Synthesis of public datasets and the literature</li>
+        </ul>
+        </div>
+      </article>
+      <article data-steps="design test">
+        <span class="roundel"><img src="assets/img/dir-design.webp" width="440" height="440" loading="lazy" alt="Engraving of a protein structure with a bound molecule."></span>
+        <div class="dir-body">
+        <h3>Generative therapeutic design</h3>
+        <ul>
+          <li>De novo protein design for protein aggregation and neurodegeneration</li>
+          <li>Evolution-informed protein engineering</li>
+          <li>Experimental validation of targets proposed by the models</li>
+        </ul>
+        </div>
+      </article>
+      <article data-steps="measure model nominate design test">
+        <span class="roundel"><img src="assets/img/dir-disease.webp" width="440" height="440" loading="lazy" alt="Engravings of plants, pills, grain and a vial beside a cell."></span>
+        <div class="dir-body">
+        <h3>Disease areas</h3>
+        <ul>
+          <li>Brain aging, neurodegeneration and brain resilience</li>
+          <li>Cancer and other age-related diseases, studied together</li>
+        </ul>
+        </div>
+      </article>
+    </div>
+  </div>
+  <div class="wrap">
+    <dl class="tenets">
+      <div><dt>The model is the instrument</dt><dd>We test a hypothesis first in a pretrained model of biological state and take to the bench the predictions that hold up there.</dd></div>
+      <div><dt>Agents do the reading and the reanalysis</dt><dd>Public repositories hold millions of molecular profiles, most of them analyzed only for the question of the original study. Agents can reanalyze them with one measure, such as biological age, so results are comparable across studies.</dd></div>
+      <div><dt>Results trace to their source</dt><dd>For each candidate we keep the source data, the code, the model output and the literature search that support it.</dd></div>
+      <div><dt>The loop closes on experiments</dt><dd>A prediction about aging can be checked against physiological function and lifespan, and we hold every project to that test.</dd></div>
+    </dl>
+  </div>
+</section>
+
+<section class="work" id="work">
+  <div class="wrap">
+    <p class="label">Models, agents, software</p>
+    <h2>Work so far</h2>
+    <p class="section-lede">Models, agents and software from Albert&rsquo;s doctoral and postdoctoral work. Each has a public preprint, paper or code.</p>
+    <div class="work-list" id="work-list"></div>
+  </div>
+</section>
+
+<section class="pubs" id="publications">
+  <div class="wrap">
+    <div class="pubs-head">
+      <h2>Selected publications</h2>
+      <div class="filter" role="group" aria-label="Filter publications">
+        <button type="button" data-filter="all" aria-pressed="true">All</button>
+        <button type="button" data-filter="ai" aria-pressed="false">Models and agents</button>
+        <button type="button" data-filter="aging" aria-pressed="false">Aging biology and biomarkers</button>
+      </div>
+    </div>
+    <ol class="pub-list" id="pub-list"></ol>
+    <noscript><p>The publication list needs JavaScript. The full list is on Google Scholar.</p></noscript>
+    <p class="pubs-more">The full list is on <a href="https://scholar.google.com/citations?user=JS7AdkcAAAAJ&hl=en" rel="noopener">Google Scholar</a>.</p>
+  </div>
+</section>
+
+<section class="people" id="people">
+  <div class="wrap people-grid">
+    <figure class="portrait">
+      <img src="assets/img/kejun-albert-ying.webp" width="800" height="1000" loading="lazy" alt="Portrait of Kejun Albert Ying.">
+    </figure>
+    <div>
+      <p class="label">People</p>
+      <h2 class="pi-name">Kejun Albert Ying, PhD</h2>
+      <p class="pi-role">Principal investigator. Incoming Assistant Professor.</p>
+      <div class="prose">
+        <p>Albert works on AI for science, with an emphasis on AI for biology and aging. He develops foundation models and world models for biological data and builds agentic systems for discovery. His earlier work includes causality-enriched aging clocks, ClockBase and MethylGPT.</p>
+        <p>He is a postdoctoral researcher at Stanford University and the University of Washington, co-advised by Tony Wyss-Coray and David Baker, and an NIH/NIA F99/K00 fellow. He received his PhD from Harvard University in 2025, advised by Vadim Gladyshev, with the dissertation <i>On the Quantification of Aging</i>, and a master's degree in computational science and engineering from Harvard.</p>
+        <p>He is a core member of the Biomarkers of Aging Consortium, an organizer of the Biomarkers of Aging Challenge, and a recipient of the 2026 WAIC Yunfan Award.</p>
+      </div>
+      <p class="links">
+        <a href="https://kejunying.com/" rel="noopener">kejunying.com</a>
+        <a href="https://scholar.google.com/citations?user=JS7AdkcAAAAJ&hl=en" rel="noopener">Google Scholar</a>
+        <a href="https://github.com/albert-ying/" rel="noopener">GitHub</a>
+        <a href="https://twitter.com/kejunying/" rel="noopener">X</a>
+        <a href="https://www.linkedin.com/in/kejun-albert-ying/" rel="noopener">LinkedIn</a>
+      </p>
+      <p class="founding">The lab opens in January 2027, and the first members will shape how it works. <a href="#join">See who we are looking for.</a></p>
+    </div>
+  </div>
+</section>
+
+<section class="join blue" id="join">
+  <img class="join-art" src="assets/img/species-inv.webp" width="900" height="900" loading="lazy" alt="" aria-hidden="true">
+  <div class="wrap join-grid">
+    <div>
+      <h2>Join the lab</h2>
+      <p class="join-lede">We are recruiting students, postdocs and visiting scholars.</p>
+      <a class="btn" href="mailto:keying@stanford.edu?subject=Joining%20the%20Ying%20Lab">Email keying@stanford.edu <span aria-hidden="true">&rarr;</span></a>
+      <p class="join-note">Send a CV and a few lines on what you would want to work on.</p>
+    </div>
+    <ul class="values">
+      <li><b>Across disciplines</b><span>People trained in AI, biology or physics who want to learn the fields they were not trained in.</span></li>
+      <li><b>Self-driven</b><span>People who come for the question and choose their own problems within it.</span></li>
+      <li><b>AI-native</b><span>People who run every project with models and agents, from analysis to the bench.</span></li>
+      <li><b>How you work</b><span>People judged on how they approach a problem more than on what they already know.</span></li>
+    </ul>
+  </div>
+</section>
+
+</main>
+
+<footer class="foot dark">
+  <div class="wrap foot-row">
+    <p class="label">Ying Lab</p>
+    <p class="label"><a href="mailto:keying@stanford.edu">keying@stanford.edu</a></p>
+  </div>
+</footer>
+
+<script src="assets/species.js"></script>
+<script src="data.js"></script>
+<script src="main.js"></script>
+<script src="film.js"></script>
+</body>
+</html>
