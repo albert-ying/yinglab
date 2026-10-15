@@ -107,12 +107,12 @@
 
   // Six drawings, each given to the same points. The first is the lifespan line; the rest are the scales.
   var SOURCES = [
-    { src: 'assets/img/p-lineup.webp', boostTo: 0.345, boost: 3.4 },   // the small animals get more points than their area would earn
-    { src: 'assets/img/p-species.webp' },
-    { src: 'assets/img/p-person.webp', xmax: 0.80 },
-    { src: 'assets/img/p-tissue.webp' },
-    { src: 'assets/img/p-cell.webp' },
-    { src: 'assets/img/p-molecule.webp' }
+    { src: 'assets/img/p-lineup.webp?v=oil1', boostTo: 0.40, boost: 3.0 },   // the small animals get more points than their area would earn
+    { src: 'assets/img/p-species.webp?v=oil1' },
+    { src: 'assets/img/p-person.webp?v=oil1' },
+    { src: 'assets/img/p-tissue.webp?v=oil1' },
+    { src: 'assets/img/p-cell.webp?v=oil1' },
+    { src: 'assets/img/p-molecule.webp?v=oil1' }
   ];
 
   /* The road. p is scroll progress through the hero, 0..1.
@@ -120,10 +120,10 @@
   var STOPS = [
     { p: 0.000, x: 0.50, z: 1.00 },
     { p: 0.030, x: 0.50, z: 1.00 },
-    { p: 0.095, x: 0.075, z: 2.6 },
-    { p: 0.165, x: 0.195, z: 2.6 },
-    { p: 0.235, x: 0.430, z: 1.75 },
-    { p: 0.305, x: 0.780, z: 1.18 },
+    { p: 0.095, x: 0.071, z: 2.6 },
+    { p: 0.165, x: 0.199, z: 2.6 },
+    { p: 0.235, x: 0.472, z: 1.75 },
+    { p: 0.305, x: 0.783, z: 1.18 },
     { p: 0.375, x: 1.300, z: 1.18 },
     { p: 1.000, x: 1.300, z: 1.18 }
   ];
@@ -194,7 +194,7 @@
       'void main(){',
       '  vec2 px = vec2(vUv.x, 1.0-vUv.y)*uRes;',
       '  float asp = uRes.x/uRes.y;',
-      '  vec3 blue = vec3(0.039, 0.310, 0.651);',
+      '  vec3 blue = vec3(0.0, 0.31, 0.75);',
       '  float drift = fbm(vec2(vUv.x*asp, vUv.y)*1.6 + vec2(uTime*0.012, -uTime*0.008));',
       '  float brush = fbm(vec2(vUv.x*asp*9.0, vUv.y*3.0) + 7.0);',
       '  vec3 col = blue*(0.84 + 0.25*drift + 0.07*(brush-0.5));',
@@ -219,10 +219,10 @@
   // The points. Each carries its place in all six drawings and moves between them.
   var points = program(
     ['precision highp float;',
-      'attribute vec4 aA, aB, aC, aR;',
+      'attribute vec4 aA, aB, aC, aR, aK0, aK1, aK2, aK3, aK4, aK5;',
       'uniform vec2 uRes, uOff0, uOffC, uMouse;',
       'uniform float uSc0, uScC, uS, uTime, uIntro, uPix, uFade, uSize, uBurst;',
-      'varying float vAlpha;',
+      'varying float vAlpha; varying vec3 vCol;',
       'void main(){',
       '  vec2 p0 = aA.xy*uSc0 + uOff0;',
       '  vec2 p1 = aA.zw*uScC + uOffC, p2 = aB.xy*uScC + uOffC, p3 = aB.zw*uScC + uOffC, p4 = aC.xy*uScC + uOffC, p5 = aC.zw*uScC + uOffC;',
@@ -234,6 +234,10 @@
       '  vec2 pos = p0*max(0.0, 1.0-abs(s)) + p1*max(0.0, 1.0-abs(s-1.0)) + p2*max(0.0, 1.0-abs(s-2.0))',
       '           + p3*max(0.0, 1.0-abs(s-3.0)) + p4*max(0.0, 1.0-abs(s-4.0)) + p5*max(0.0, 1.0-abs(s-5.0));',
       '  float mid = sin(3.14159*tt);',
+      '  vCol = aK0.rgb*max(0.0, 1.0-abs(s)) + aK1.rgb*max(0.0, 1.0-abs(s-1.0)) + aK2.rgb*max(0.0, 1.0-abs(s-2.0))',
+      '       + aK3.rgb*max(0.0, 1.0-abs(s-3.0)) + aK4.rgb*max(0.0, 1.0-abs(s-4.0)) + aK5.rgb*max(0.0, 1.0-abs(s-5.0));',
+      // in flight a point lightens toward the colour of paper, so a dissolve reads as light, then settles into paint
+      '  vCol = mix(vCol, vec3(0.95, 0.94, 0.90), mid*0.55);',
       // in flight the points ride a slow turning current
       '  float ang = aR.y*6.2832 + uTime*0.35 + pos.y*0.0021 + pos.x*0.0013;',
       '  vec2 flow = vec2(cos(ang), sin(ang)) * (0.35 + aR.w) + vec2(sin(pos.y*0.006 + uTime*0.5), cos(pos.x*0.006 - uTime*0.4))*0.6;',
@@ -257,10 +261,10 @@
       '  pos += normalize(away + 0.001) * uBurst * uRes.y * (0.2 + aR.w*0.9);',
       '  gl_Position = vec4(pos.x/uRes.x*2.0-1.0, 1.0-pos.y/uRes.y*2.0, 0.0, 1.0);',
       '  gl_PointSize = uPix * uSize * (0.75 + aR.w*0.9) * (1.0 + mid*0.9 + f*1.4);',
-      '  vAlpha = uFade * (0.42 + 0.58*aR.z) * (1.0 - mid*0.35) * (0.25 + 0.75*it);',
+      '  vAlpha = uFade * (0.62 + 0.38*aR.z) * (1.0 - mid*0.35) * (0.25 + 0.75*it);',
       '}'].join('\n'),
-    ['precision mediump float;', 'varying float vAlpha;',
-      'void main(){ float d = length(gl_PointCoord - 0.5); float a = smoothstep(0.5, 0.18, d) * vAlpha; gl_FragColor = vec4(vec3(1.0), a); }'].join('\n'));
+    ['precision mediump float;', 'varying float vAlpha; varying vec3 vCol;',
+      'void main(){ float d = length(gl_PointCoord - 0.5); float a = smoothstep(0.5, 0.18, d) * vAlpha; gl_FragColor = vec4(vCol, a); }'].join('\n'));
   if (!ground || !points) return;
 
   var GU = uniforms(ground, ['uRes', 'uMouse', 'uTime', 'uSoak', 'uLineY', 'uLineX', 'uBeyond', 'uGrain']);
@@ -268,9 +272,10 @@
 
   var quad = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, quad);
   gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
-  var pbuf = gl.createBuffer();
+  var pbuf = gl.createBuffer(), cbuf = gl.createBuffer();
   var gA = gl.getAttribLocation(ground, 'a');
   var pA = ['aA', 'aB', 'aC', 'aR'].map(function (n) { return gl.getAttribLocation(points, n); });
+  var cA = ['aK0', 'aK1', 'aK2', 'aK3', 'aK4', 'aK5'].map(function (n) { return gl.getAttribLocation(points, n); });
 
   /* ---- sample the drawings into point positions ---- */
 
@@ -286,19 +291,20 @@
     var px = cx.getImageData(0, 0, w, h).data, cdf = new Float32Array(w * h), acc = 0;
     var xmax = (opts.xmax || 1) * w;
     for (var y = 0, k = 0; y < h; y++) for (var x = 0; x < w; x++, k++) {
-      var v = px[k * 4] / 255;
-      v = (v < 0.1 || x > xmax) ? 0 : Math.pow(v, 1.35);
+      var v = px[k * 4 + 3] / 255;
+      v = (v < 0.25 || x > xmax) ? 0 : v;
       if (opts.boost && x < opts.boostTo * w) v *= opts.boost;
       acc += v; cdf[k] = acc;
     }
-    var out = new Float32Array(N * 2), asp = w / h;
+    var out = new Float32Array(N * 2), col = new Uint8Array(N * 4), asp = w / h;
     for (var n = 0; n < N; n++) {
       var r = rnd() * acc, lo = 0, hi = w * h - 1;
       while (lo < hi) { var mid = (lo + hi) >> 1; if (cdf[mid] < r) lo = mid + 1; else hi = mid; }
       out[n * 2] = ((lo % w + rnd()) / w - 0.5) * asp;
       out[n * 2 + 1] = (Math.floor(lo / w) + rnd()) / h - 0.5;
+      col[n * 4] = px[lo * 4]; col[n * 4 + 1] = px[lo * 4 + 1]; col[n * 4 + 2] = px[lo * 4 + 2]; col[n * 4 + 3] = 255;
     }
-    return { pos: out, aspect: asp };
+    return { pos: out, col: col, aspect: asp };
   }
 
   var ready = false, introStart = 0;
@@ -315,6 +321,10 @@
       data[o + 12] = rnd(); data[o + 13] = rnd(); data[o + 14] = rnd(); data[o + 15] = rnd();
     }
     gl.bindBuffer(gl.ARRAY_BUFFER, pbuf); gl.bufferData(gl.ARRAY_BUFFER, data, gl.STATIC_DRAW);
+    // Each point also carries its colour in all six paintings.
+    var cols = new Uint8Array(N * 24);
+    for (var n2 = 0; n2 < N; n2++) for (var k2 = 0; k2 < 6; k2++) cols.set(sets[k2].col.subarray(n2 * 4, n2 * 4 + 4), n2 * 24 + k2 * 4);
+    gl.bindBuffer(gl.ARRAY_BUFFER, cbuf); gl.bufferData(gl.ARRAY_BUFFER, cols, gl.STATIC_DRAW);
     ready = true; introStart = performance.now() + 200;
     hero.classList.add('is-film');
     if (!reduced) splitAll();
@@ -368,7 +378,7 @@
     var sc0 = cam.z * W * 0.92 / aspect0;
     var off0x = W * 0.5 - (cam.x - 0.5) * aspect0 * sc0;
     var baseY = H * 0.80;
-    var off0y = baseY - 0.425 * sc0;
+    var off0y = baseY - 0.454 * sc0;
     // scale drawings: a disc on the right, beside the caption
     var wide = W / dpr > 1100;
     var scC = H * (wide ? 0.70 : 0.52);
@@ -380,7 +390,7 @@
     gl.enableVertexAttribArray(gA); gl.vertexAttribPointer(gA, 2, gl.FLOAT, false, 0, 0);
     gl.uniform2f(GU.uRes, W, H); gl.uniform2f(GU.uMouse, mouse.x, mouse.y);
     gl.uniform1f(GU.uTime, now / 1000); gl.uniform1f(GU.uSoak, soak);
-    gl.uniform1f(GU.uLineY, baseY); gl.uniform1f(GU.uLineX, off0x + aspect0 * sc0 * 0.485);
+    gl.uniform1f(GU.uLineY, baseY); gl.uniform1f(GU.uLineX, off0x + aspect0 * sc0 * 0.487);
     gl.uniform1f(GU.uBeyond, smooth(0.30, 0.36, p) * (1 - smooth(0.41, 0.45, p)));
     gl.uniform1f(GU.uGrain, 0.035);
     gl.drawArrays(gl.TRIANGLES, 0, 3);
@@ -389,13 +399,15 @@
     gl.useProgram(points);
     gl.bindBuffer(gl.ARRAY_BUFFER, pbuf);
     for (var a = 0; a < 4; a++) { gl.enableVertexAttribArray(pA[a]); gl.vertexAttribPointer(pA[a], 4, gl.FLOAT, false, 64, a * 16); }
+    gl.bindBuffer(gl.ARRAY_BUFFER, cbuf);
+    for (var c6 = 0; c6 < 6; c6++) { if (cA[c6] < 0) continue; gl.enableVertexAttribArray(cA[c6]); gl.vertexAttribPointer(cA[c6], 4, gl.UNSIGNED_BYTE, true, 24, c6 * 4); }
     gl.uniform2f(PU.uRes, W, H); gl.uniform2f(PU.uOff0, off0x, off0y); gl.uniform2f(PU.uOffC, offCx, offCy);
     gl.uniform2f(PU.uMouse, mouse.x, mouse.y);
     gl.uniform1f(PU.uSc0, sc0); gl.uniform1f(PU.uScC, scC); gl.uniform1f(PU.uS, s);
     gl.uniform1f(PU.uTime, now / 1000); gl.uniform1f(PU.uIntro, intro); gl.uniform1f(PU.uPix, dpr);
     var disc = clamp(s, 0, 1);                       // 0 on the lifespan strip, 1 on the discs
-    gl.uniform1f(PU.uSize, (1.15 + 0.5 * (cam.z - 1)) * (1 - disc) + 1.0 * disc);
-    gl.uniform1f(PU.uFade, (0.78 * (1 - disc) + 0.5 * disc) * (1 - smooth(SOAK_FROM, SOAK_FROM + 0.05, p)));
+    gl.uniform1f(PU.uSize, (1.7 + 0.6 * (cam.z - 1)) * (1 - disc) + 2.7 * disc);
+    gl.uniform1f(PU.uFade, (0.9 * (1 - disc) + 0.85 * disc) * (1 - smooth(SOAK_FROM, SOAK_FROM + 0.05, p)));
     gl.uniform1f(PU.uBurst, smooth(SOAK_FROM - 0.012, SOAK_FROM + 0.05, p));
     gl.drawArrays(gl.POINTS, 0, N);
 

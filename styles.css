@@ -11,7 +11,7 @@
 /* Ying Lab. A press sheet: painted blue, warm paper, ink. Serif titles, hairline rules, small mono labels. */
 
 :root {
-  --blue: #0a4fa6;
+  --blue: #004ebc;
   --paper: #f2f1ed;
   --paper-2: #e9e7e1;
   --press: #0b0a09;
@@ -103,7 +103,7 @@ h3 { font-family: var(--title); font-weight: 400; font-size: 1.5rem; line-height
 .hero-sub { margin-top: 14px; font-family: var(--title); font-size: clamp(1.25rem, 1.9vw, 1.75rem); line-height: 1.2; letter-spacing: -0.012em; color: rgba(255, 255, 255, 0.92); }
 .hero .btn { margin-top: clamp(24px, 4vh, 40px); }
 .hero-art { position: relative; margin-top: auto; padding-top: clamp(24px, 5vh, 64px); margin-inline: var(--edge); border-bottom: 1px solid var(--rule); color: #fff; }
-.hero-art img { width: 100%; mix-blend-mode: screen; margin-bottom: -2.2%; }
+.hero-art img { width: 100%; margin-bottom: -1.6%; }
 .star-l { left: -7px; bottom: -8px; }
 .star-r { right: -7px; bottom: -8px; }
 .hero-foot { display: grid; grid-template-columns: minmax(120px, 1fr) minmax(0, 5fr); gap: 24px; align-items: start; margin-top: clamp(24px, 4vh, 44px); }
@@ -168,9 +168,10 @@ h3 { font-family: var(--title); font-weight: 400; font-size: 1.5rem; line-height
 .scales { padding-top: 0; }
 .scales .two { padding-top: clamp(40px, 5vw, 72px); border-top: 1px solid var(--rule); }
 .scales-fig { margin-top: clamp(32px, 5vw, 64px); position: relative; }
-.scales-fig img { mix-blend-mode: multiply; width: 100%; }
-.js .scales-fig img { clip-path: inset(0 100% 0 0); transition: clip-path 2.2s cubic-bezier(0.6, 0, 0.2, 1) 0.15s; }
-.js .scales-fig.in img { clip-path: inset(0 0 0 0); }
+.scales-row { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: clamp(12px, 2vw, 32px); }
+.scales-row li { position: static !important; transform: none !important; width: auto !important; min-width: 0 !important; text-align: center; }
+.scales-row img { width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 50%; margin-bottom: 18px; transition: transform 0.9s var(--ease); }
+.scales-row li:hover img { transform: scale(1.04); }
 .scales-labels { position: relative; min-height: 72px; margin-top: -4%; }
 .scales-labels li { position: absolute; left: var(--x); transform: translateX(-50%); text-align: center; width: 14%; min-width: 110px; }
 .js .scales-labels li { opacity: 0; transition: opacity 0.7s ease-out; }
@@ -202,7 +203,7 @@ h3 { font-family: var(--title); font-weight: 400; font-size: 1.5rem; line-height
 .directions article:last-child { border-bottom: 1px solid var(--rule); }
 @media (hover: hover) { .directions:hover article:not(.on) { opacity: 0.5; } }
 .roundel { width: 92px; height: 92px; border-radius: 50%; background: var(--paper); overflow: hidden; transition: transform 0.7s var(--ease); }
-.roundel img { width: 100%; height: 100%; object-fit: cover; transform: scale(1.04); mix-blend-mode: multiply; }
+.roundel img { width: 100%; height: 100%; object-fit: cover; transform: scale(1.04); }
 .directions article.on .roundel { transform: scale(1.08); }
 .directions h3 { font-size: clamp(1.5rem, 2.3vw, 2rem); line-height: 1.1; }
 .dir-body > p { margin-top: 8px; color: var(--muted); font-size: 0.9375rem; max-width: 52ch; }
@@ -263,7 +264,7 @@ h3 { font-family: var(--title); font-weight: 400; font-size: 1.5rem; line-height
 
 /* Join */
 .join { overflow: hidden; padding-bottom: clamp(260px, 30vw, 440px); }
-.join-art { position: absolute; right: calc(var(--edge) + 2%); bottom: -7%; width: min(36vw, 480px); mix-blend-mode: screen; opacity: 0.85; pointer-events: none; }
+.join-art { position: absolute; right: calc(var(--edge) + 2%); bottom: -4%; width: min(36vw, 480px); pointer-events: none; }
 .join-grid { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); gap: clamp(32px, 6vw, 104px); align-items: start; }
 .join h2 { font-size: clamp(3rem, 7.4vw, 6.75rem); line-height: 0.96; }
 .join-lede { margin-top: 20px; font-family: var(--title); font-size: clamp(1.25rem, 1.9vw, 1.75rem); line-height: 1.2; max-width: 26ch; }
@@ -292,6 +293,8 @@ h3 { font-family: var(--title); font-weight: 400; font-size: 1.5rem; line-height
   .tenets { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .portrait { max-width: 340px; }
   .scales-labels { min-height: 0; margin-top: 20px; display: grid; gap: 12px; }
+  .scales-row { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 28px 20px; }
+  .scales-row li { display: block !important; text-align: center !important; }
   .scales-labels li { position: static; transform: none; width: auto; text-align: left; display: grid; grid-template-columns: 110px 1fr; align-items: baseline; }
   .scales-labels span { margin: 0; }
   .join { padding-bottom: 300px; }
@@ -324,7 +327,7 @@ h3 { font-family: var(--title); font-weight: 400; font-size: 1.5rem; line-height
   *, *::before, *::after { animation: none !important; transition: none !important; }
   .js [data-reveal], .js .hero-copy > *, .js .hero-foot > *, .js .scales-labels li, .js .axis .ax-in, .js .hero-art .star { opacity: 1; transform: none; }
   .js .axis .ax-line { stroke-dashoffset: 0; }
-  .js .axis .ax-ext, .js .scales-fig img, .js .hero-art img { clip-path: none; }
+  .js .axis .ax-ext, .js .hero-art img { clip-path: none; }
   .js .hero-art { border-bottom-color: var(--rule); }
   .js .tenets > div::before { transform: none; }
 }
@@ -377,3 +380,6 @@ h2.in .ln > i, .statement.in .ln > i { transform: none; }
 .film-meter i { position: absolute; left: -1px; top: 0; width: 3px; height: 100%; background: #fff; transform-origin: 50% 0; transform: scaleY(0); }
 .hero.is-film .film-cap b { font-size: clamp(3rem, 7.4vw, 7.5rem); max-width: 9ch; }
 .hero.is-film .stage { cursor: crosshair; }
+
+/* Once the film takes over, the opening copy keeps its settled state instead of replaying its entrance. */
+.hero.is-film .hero-copy > *, .hero.is-film .hero-foot > * { animation: none; opacity: 1; transform: none; }
