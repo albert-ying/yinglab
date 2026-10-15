@@ -3,7 +3,7 @@
   // An alternate art series can be shown with ?art=tang; image names differ only by prefix.
   if (document.documentElement.getAttribute('data-art') === 'tang') {
     Array.prototype.forEach.call(document.querySelectorAll('img[src*="assets/img/uk-"], img[src*="assets/img/p-"]'), function (im) {
-      im.src = im.getAttribute('src').replace('assets/img/uk-', 'assets/img/tang-').replace('assets/img/p-', 'assets/img/p-tang-').replace(/\.webp(\?.*)?$/, '.webp?v=t3');
+      im.src = im.getAttribute('src').replace('assets/img/uk-', 'assets/img/tang-').replace('assets/img/p-', 'assets/img/p-tang-').replace(/\.webp(\?.*)?$/, '.webp?v=t5');
     });
   }
   var NS = 'http://www.w3.org/2000/svg';
@@ -295,12 +295,13 @@
         if (!e.isIntersecting) return;
         // Sections without a nav link (hero, mission, scales) clear the marker.
         navLinks.forEach(function (a) {
-          if (a.getAttribute('href') === '#' + e.target.id) a.setAttribute('aria-current', 'true');
+          var id = { brain: 'research', agents: 'research', 'directions-sec': 'research' }[e.target.id] || e.target.id;
+          if (a.getAttribute('href') === '#' + id) a.setAttribute('aria-current', 'true');
           else a.removeAttribute('aria-current');
         });
       });
     }, { rootMargin: '-45% 0px -50% 0px' });
-    ['top', 'mission', 'scales', 'brain', 'agents', 'research', 'publications', 'people', 'join'].forEach(function (id) {
+    ['top', 'mission', 'research', 'brain', 'agents', 'directions-sec', 'publications', 'people', 'join'].forEach(function (id) {
       var s = document.getElementById(id);
       if (s) io.observe(s);
     });

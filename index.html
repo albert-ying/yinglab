@@ -14,7 +14,7 @@
 <link rel="canonical" href="https://lab.kejunying.com/">
 <meta name="theme-color" content="#0a53a3">
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="styles.css?v=20261014u">
+<link rel="stylesheet" href="styles.css?v=20261014w">
 <script>document.documentElement.classList.add('js');(function(){var a=new URLSearchParams(location.search).get('art');if(a!=='uk')document.documentElement.setAttribute('data-art','tang');})();</script>
 </head>
 <body>
@@ -27,9 +27,8 @@
       <span>Ying Lab</span>
     </a>
     <nav aria-label="Sections">
+      <a href="#mission">Vision</a>
       <a href="#research">Research</a>
-      <a href="#brain">Brain</a>
-      <a href="#agents">Agents</a>
       <a href="#publications">Publications</a>
       <a href="#people">People</a>
       <a class="nav-join btn" href="#join">Join <span aria-hidden="true">&rarr;</span></a>
@@ -49,7 +48,7 @@
     <a class="btn" href="#join">Join the lab <span aria-hidden="true">&rarr;</span></a>
   </div>
   <div class="hero-art">
-    <img src="assets/img/p-lineup.webp" width="1225" height="333" alt="Woodblock-style painting of a mouse, a naked mole-rat, a bat, a human seen from behind and a bowhead whale breaching, with a Greenland shark swimming below the waves.">
+    <img src="assets/img/p-lineup.webp" width="1225" height="333" alt="Painting of a mouse, a naked mole-rat, a bat, a human seen from behind and a bowhead whale breaching, with a Greenland shark swimming below the waves.">
     <i class="star star-l" aria-hidden="true"></i><i class="star star-r" aria-hidden="true"></i>
   </div>
   <div class="wrap hero-foot">
@@ -72,31 +71,34 @@
   </div>
 </section>
 
-<section class="scales" id="scales">
+<section class="scales" id="research">
   <div class="wrap two">
-    <h2>AI for biology, across scales</h2>
+    <h2>Research</h2>
     <div class="prose">
-      <p>Most AI for biology works at the smallest scales, on protein structure and virtual cells. Aging shows itself in the whole organism: in disease, in death and in the lifespan of a species. We model every scale, and much of our work starts at the human and the species, where few models exist.</p>
+      <p>Most AI for biology works on protein structure and virtual cells. Aging shows itself in the whole organism: in disease, in death and in the lifespan of a species. We model all six scales, and much of our work starts at the species, the population and the individual, where few models exist.</p>
+      <p>Every project runs one loop. We measure a biological state, model it, let the model nominate an intervention, design the molecule, test it and feed the result back.</p>
     </div>
   </div>
   <div class="wrap">
     <figure class="scales-fig">
       <ol class="scales-labels scales-row">
-        <li><img src="assets/img/uk-species.webp" width="520" height="520" loading="lazy" alt="Woodblock-style painting of a bowhead whale, a Greenland shark, an elephant, a human, a bat and a mouse."><b>Species</b><span>Pan-species models</span></li>
-        <li><img src="assets/img/uk-human.webp" width="520" height="520" loading="lazy" alt="Woodblock-style painting of a human seen from behind."><b>Human</b><span>Human health models</span></li>
-        <li><img src="assets/img/uk-tissue.webp" width="520" height="520" loading="lazy" alt="Woodblock-style painting of a section of tissue."><b>Tissue</b><span>Virtual tissues</span></li>
-        <li><img src="assets/img/uk-cell.webp" width="520" height="520" loading="lazy" alt="Woodblock-style painting of a cell with its nucleus and organelles."><b>Cell</b><span>Virtual cells</span></li>
-        <li><img src="assets/img/uk-molecule.webp" width="520" height="520" loading="lazy" alt="Woodblock-style painting of a protein structure."><b>Molecule</b><span>Protein models and design</span></li>
+        <li><img src="assets/img/uk-species.webp" width="520" height="520" loading="lazy" alt="Painting of a bowhead whale, a Greenland shark, an elephant, a human, a bat and a mouse."><b>Species</b><span>Pan-species models</span></li>
+        <li><img src="assets/img/uk-population.webp" width="520" height="520" loading="lazy" alt="Painting of people of all ages walking together."><b>Population</b><span>Cohorts and biobanks</span></li>
+        <li><img src="assets/img/uk-human.webp" width="520" height="520" loading="lazy" alt="Painting of a human seen from behind."><b>Individual</b><span>Human health models</span></li>
+        <li><img src="assets/img/uk-tissue.webp" width="520" height="520" loading="lazy" alt="Painting of a section of tissue."><b>Tissue</b><span>Virtual tissues</span></li>
+        <li><img src="assets/img/uk-cell.webp" width="520" height="520" loading="lazy" alt="Painting of a cell with its nucleus and organelles."><b>Cell</b><span>Virtual cells</span></li>
+        <li><img src="assets/img/uk-molecule.webp" width="520" height="520" loading="lazy" alt="Painting of a protein structure."><b>Molecule</b><span>Protein models and design</span></li>
       </ol>
     </figure>
   </div>
 </section>
 
-<section class="brain blue" id="brain">
+<section class="brain blue" id="brain" aria-label="Brain resilience">
   <div class="wrap brain-grid">
-    <figure class="brain-art"><img src="assets/img/uk-brain.webp" width="900" height="900" loading="lazy" alt="Woodblock-style painting of a human brain with a lattice of gold lines running through its folds."></figure>
+    <figure class="brain-art"><img src="assets/img/uk-brain.webp" width="900" height="900" loading="lazy" alt="Painting of a human brain with a lattice of gold lines running through its folds."></figure>
     <div>
-      <h2>Brain resilience</h2>
+      <p class="label">Our first system</p>
+      <h3 class="sub-h">Brain resilience</h3>
       <div class="prose">
         <p>Aging is the largest risk factor for Alzheimer's and Parkinson's disease, yet some people keep their memory into old age even when their brains carry the pathology. We want to know what protects them.</p>
         <p>We expect the longest-lived species to have the most resilient brains. A bowhead whale can live more than two centuries, a Greenland shark an estimated four, and a naked mole-rat decades longer than a rodent of its size. We compare their brains with human brains to find protective molecules and cell states.</p>
@@ -106,24 +108,25 @@
   </div>
 </section>
 
-<section class="agents" id="agents">
+<section class="agents" id="agents" aria-label="AI agents">
   <div class="wrap agents-grid">
     <div>
-      <h2>AI agents that read data and papers</h2>
+      <p class="label">How we work</p>
+      <h3 class="sub-h">AI agents that read data and papers</h3>
       <div class="prose">
         <p>Public repositories hold millions of molecular profiles and the literature millions of papers, most analyzed only for the question of the study that produced them. Our agents read both, run the analyses and propose what to test, and every claim keeps a record of the data, code and paper behind it.</p>
         <p>In ClockBase Agent, agents reanalyzed public profiles with aging clocks and nominated interventions predicted to lower biological age. One of them, ouabain, reduced frailty in aged mice.</p>
       </div>
       <p class="links"><a href="https://www.biorxiv.org/content/10.1101/2023.02.28.530532v4" rel="noopener">ClockBase Agent preprint</a><a href="https://www.clockbase.org/" rel="noopener">ClockBase</a><a href="https://github.com/albert-ying/autonomous-lab" rel="noopener">Autonomous Lab</a></p>
     </div>
-    <figure class="agents-art"><img src="assets/img/uk-agents.webp" width="520" height="520" loading="lazy" alt="Woodblock-style painting of a robotic arm, a microscope and an open notebook at a laboratory bench."></figure>
+    <figure class="agents-art"><img src="assets/img/uk-agents.webp" width="520" height="520" loading="lazy" alt="Painting of a robotic arm, a microscope and an open notebook at a laboratory bench."></figure>
   </div>
 </section>
 
-<section class="research blue" id="research">
+<section class="research blue" id="directions-sec" aria-label="Research directions">
   <div class="wrap">
-    <h2>Research</h2>
-    <p class="section-lede">Every project runs one loop: measure a biological state, model it, let the model nominate an intervention, design the molecule, test it and feed the result back. The first projects start in six areas.</p>
+    <p class="label">Directions</p>
+    <h3 class="sub-h">Six areas where the first projects start</h3>
   </div>
   <div class="wrap research-grid">
     <div class="loop" id="loop" aria-hidden="true"></div>
@@ -141,7 +144,7 @@
         </div>
       </article>
       <article data-steps="model">
-        <span class="roundel"><img src="assets/img/uk-cell.webp" width="520" height="520" loading="lazy" alt="Woodblock-style painting of a cell."></span>
+        <span class="roundel"><img src="assets/img/uk-cell.webp" width="520" height="520" loading="lazy" alt="Painting of a cell."></span>
         <div class="dir-body">
         <h3>Foundation and world models of biology</h3>
         <p>A world model predicts how a biological state changes over time and in response to an intervention.</p>
@@ -153,7 +156,7 @@
         </div>
       </article>
       <article data-steps="measure">
-        <span class="roundel"><img src="assets/img/uk-human.webp" width="520" height="520" loading="lazy" alt="Woodblock-style painting of a human seen from behind."></span>
+        <span class="roundel"><img src="assets/img/uk-human.webp" width="520" height="520" loading="lazy" alt="Painting of a human seen from behind."></span>
         <div class="dir-body">
         <h3>Measuring and modeling aging</h3>
         <ul>
@@ -164,7 +167,7 @@
         </div>
       </article>
       <article data-steps="nominate">
-        <span class="roundel"><img src="assets/img/uk-agents.webp" width="520" height="520" loading="lazy" alt="Woodblock-style painting of a robotic arm and a microscope at a laboratory bench."></span>
+        <span class="roundel"><img src="assets/img/uk-agents.webp" width="520" height="520" loading="lazy" alt="Painting of a robotic arm and a microscope at a laboratory bench."></span>
         <div class="dir-body">
         <h3>AI agents for scientific discovery</h3>
         <ul>
@@ -175,7 +178,7 @@
         </div>
       </article>
       <article data-steps="design test">
-        <span class="roundel"><img src="assets/img/uk-molecule.webp" width="520" height="520" loading="lazy" alt="Woodblock-style painting of a protein structure."></span>
+        <span class="roundel"><img src="assets/img/uk-molecule.webp" width="520" height="520" loading="lazy" alt="Painting of a protein structure."></span>
         <div class="dir-body">
         <h3>Generative therapeutic design</h3>
         <ul>
@@ -186,7 +189,7 @@
         </div>
       </article>
       <article data-steps="measure model nominate design test">
-        <span class="roundel"><img src="assets/img/uk-tissue.webp" width="520" height="520" loading="lazy" alt="Woodblock-style painting of a section of tissue."></span>
+        <span class="roundel"><img src="assets/img/uk-tissue.webp" width="520" height="520" loading="lazy" alt="Painting of a section of tissue."></span>
         <div class="dir-body">
         <h3>Disease areas</h3>
         <ul>
@@ -226,7 +229,7 @@
 <section class="people" id="people">
   <div class="wrap people-grid">
     <figure class="portrait">
-      <img src="assets/img/uk-portrait.webp" width="800" height="1000" loading="lazy" alt="Woodblock-style portrait of Kejun Albert Ying.">
+      <img src="assets/img/uk-portrait.webp" width="800" height="1000" loading="lazy" alt="Painted portrait of Kejun Albert Ying.">
     </figure>
     <div>
       <p class="label">People</p>
@@ -246,6 +249,29 @@
       </p>
       <p class="founding">The lab opens at Stanford University in January 2027, and the first members will shape how it works. <a href="#join">See who we are looking for.</a></p>
     </div>
+  </div>
+  <div class="wrap members">
+    <h3 class="sub-h">Lab members</h3>
+    <ul class="member-list">
+      <li>
+        <img src="assets/img/tang-portrait-zirui.webp?v=t7" width="800" height="1000" loading="lazy" alt="Painted portrait of Wang Zirui.">
+        <b>Wang Zirui</b>
+        <span class="member-role">Visiting student</span>
+        <p>Co-first author of HealthFlux, the lab's world model of human health.</p>
+      </li>
+      <li>
+        <img src="assets/img/tang-member-claude.webp?v=t5" width="800" height="1000" loading="lazy" alt="Painting of a gold starburst above an open notebook.">
+        <b>Claude</b>
+        <span class="member-role">AI lab member</span>
+        <p>A model made by Anthropic. Reads papers and data, runs analyses and drafts with the lab.</p>
+      </li>
+      <li>
+        <img src="assets/img/tang-member-codex.webp?v=t5" width="800" height="1000" loading="lazy" alt="Painting of a brush writing rows of strokes down a scroll beside an ink stone.">
+        <b>Codex</b>
+        <span class="member-role">AI lab member</span>
+        <p>A coding agent made by OpenAI. Writes, tests and maintains the lab's code.</p>
+      </li>
+    </ul>
   </div>
 </section>
 
@@ -290,9 +316,9 @@
   </div>
   <button class="pd-close" type="button" aria-label="Close">&times;</button>
 </dialog>
-<script src="assets/species.js?v=20261014u"></script>
-<script src="data.js?v=20261014u"></script>
-<script src="main.js?v=20261014u"></script>
-<script src="film.js?v=20261014u"></script>
+<script src="assets/species.js?v=20261014w"></script>
+<script src="data.js?v=20261014w"></script>
+<script src="main.js?v=20261014w"></script>
+<script src="film.js?v=20261014w"></script>
 </body>
 </html>
