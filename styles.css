@@ -1030,6 +1030,49 @@ html[data-art="tang"] .pub-under { border-radius: 0; transition: border-color 0.
   .hero-art img, .js .hero-art img { width: 100%; height: auto; }
 }
 
-/* The film hands over to Vision as the paper turn completes: the Vision sheet rises over the
-   last of the pinned frame, which by then is the same silk. */
-.hero.is-film + .band { margin-top: -13vh; }
+
+/* ==========================================================================
+   Round 3. One tone for the margin rules across the film's hand-over, Vision
+   arriving as the paper turn completes, the Join painting on its heading line,
+   one-line captions and venues at laptop widths, footer hover, and the
+   publication painting set as a plate in the detail view.
+   ========================================================================== */
+
+/* Vision rises over the last stretch of the pinned frame, which by then is paper, and its rule stops one
+   section space under the nav. The film's margin rules take the page's rule tone and end where Vision
+   begins, so each rule runs as one line of one tone through the hand-over. */
+.hero.is-film { height: calc(800vh - var(--navh) - var(--section)); }
+.hero.is-film + .band { margin-top: calc(var(--navh) + var(--section) - 100vh); }
+.hero.is-film::before, .hero.is-film::after { bottom: calc(100vh - var(--navh) - var(--section)); background: rgba(29, 28, 25, 0.22); }
+
+/* Join: the heading row holds only the heading, so the painting starts on the heading's top line. */
+@media (min-width: 761px) {
+  .join-grid { grid-template-rows: auto 1fr auto; }
+  .join-grid h2, html[data-art] .join h2 { align-self: start; }
+}
+
+/* Six scales: from 901px each caption keeps one line, with tighter tracking below 1181px. */
+@media (min-width: 901px) and (max-width: 1180px) {
+  html[data-art] .scales-labels span { white-space: nowrap; width: auto; letter-spacing: 0.04em; }
+  .scales-fig { padding-bottom: calc(14px + clamp(1.375rem, 1.9vw, 1.75rem) + var(--cap-gap) + 1.5 * var(--cap-size)); }
+}
+
+/* Publications: the venue name holds one line in its column, so every year label sits on one baseline. */
+@media (min-width: 761px) {
+  html[data-art="tang"] .pub-under .pub-journal { white-space: nowrap; font-size: clamp(0.9375rem, 1vw, 1.0625rem); }
+}
+
+/* Footer links underline the way the nav links do, on hover and on keyboard focus. */
+.foot-row a { text-decoration: none; background: linear-gradient(currentColor, currentColor) 0 100% / 0 1px no-repeat; padding-bottom: 2px; transition: background-size 0.4s var(--ease); }
+.foot-row a:hover, .foot-row a:focus-visible { background-size: 100% 1px; }
+
+/* Publication detail: the painting is a plate inset by one step on its outer sides, its top on the
+   text's first line, never cropped. Below 1280px text and painting take six columns each. */
+@media (min-width: 900px) {
+  html[data-art="tang"] .pd-img { align-self: start; width: calc(100% - var(--rh)); height: auto; aspect-ratio: 3 / 2; margin: var(--rh) 0 var(--rh) var(--rh); object-fit: cover; position: sticky; top: var(--rh); }
+}
+@media (min-width: 900px) and (max-width: 1279px) {
+  html[data-art="tang"] .pd-img { grid-column: 1 / span 6; }
+  html[data-art="tang"] .pd-text { grid-column: 7 / -1; }
+}
+html[data-art="tang"] .pd-text .pd-meta { margin-top: 0; }

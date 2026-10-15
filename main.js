@@ -3,7 +3,7 @@
   // An alternate art series can be shown with ?art=tang; image names differ only by prefix.
   if (document.documentElement.getAttribute('data-art') === 'tang') {
     Array.prototype.forEach.call(document.querySelectorAll('img[src*="assets/img/uk-"], img[src*="assets/img/p-"]'), function (im) {
-      im.src = im.getAttribute('src').replace('assets/img/uk-', 'assets/img/tang-').replace('assets/img/p-', 'assets/img/p-tang-').replace(/\.webp(\?.*)?$/, '.webp?v=t13');
+      im.src = im.getAttribute('src').replace('assets/img/uk-', 'assets/img/tang-').replace('assets/img/p-', 'assets/img/p-tang-').replace(/\.webp(\?.*)?$/, '.webp?v=t13').replace(/(tang-portrait\.webp)\?v=t13$/, '$1?v=t14');
     });
   }
   var NS = 'http://www.w3.org/2000/svg';
@@ -132,7 +132,25 @@
     dlg.querySelector('.pd-link').href = p.url;
     if (dlg.showModal) dlg.showModal(); else dlg.setAttribute('open', '');
     ragOne(dlg.querySelector('.pd-finding'));
+    fitDialog();
     dlg.scrollTop = 0; dlg.querySelector('.pd-close').focus();
+  }
+  // When the detail view misses fitting by a few pixels, it would scroll only through its bottom padding.
+  // It then grows into the space around it by up to half of that space, and a painting set above the
+  // text gives up at most 16px of its silk edge, so the view fits with its full padding.
+  function fitDialog() {
+    var img = dlg.querySelector('.pd-img');
+    dlg.style.maxHeight = ''; img.style.height = ''; img.style.objectFit = '';
+    var over = dlg.scrollHeight - dlg.clientHeight;
+    if (over <= 0) return;
+    var nav = document.getElementById('nav');
+    var free = window.innerHeight - (nav ? nav.getBoundingClientRect().bottom : 0) - dlg.offsetHeight;
+    var grow = Math.min(over, Math.max(0, free / 2));
+    var stacked = img.getBoundingClientRect().width > dlg.clientWidth * 0.9;
+    var trim = stacked ? over - grow : 0;
+    if (over - grow - trim > 0.5 || trim > 16) return;
+    if (grow > 0) dlg.style.maxHeight = Math.ceil(dlg.offsetHeight + grow) + 'px';
+    if (trim > 0) { img.style.height = Math.floor(img.getBoundingClientRect().height - trim) + 'px'; img.style.objectFit = 'cover'; }
   }
   if (dlg) {
     dlg.querySelector('.pd-close').addEventListener('click', function () { dlg.close(); });
@@ -225,9 +243,18 @@
   }
   function good(s) { return s.n < 2 || (s.words >= 3 && s.share >= 0.3); }
   function fair(s) { return s.n < 2 || (s.words >= 2 && s.share >= 0.3); }
+  // A balanced blurb that leaves a single word on a middle line wraps as prose instead.
+  var BLURB = '.member-list p, .values span';
+  function oneWordMiddle(el) {
+    var rows = lineBoxes(el);
+    if (rows.length < 3) return false;
+    for (var i = 0; i < rows.length - 1; i++) if (wordsOnLast(el, rows[i].top) === 1) return true;
+    return false;
+  }
   function ragOne(el) {
     el.style.maxWidth = '';
     if (!el.offsetParent) return;
+    if (el.matches(BLURB)) { el.style.textWrap = ''; if (oneWordMiddle(el)) el.style.textWrap = 'pretty'; }
     var first = lastLine(el);
     if (good(first)) return;
     var w = el.getBoundingClientRect().width, em = parseFloat(getComputedStyle(el).fontSize) || 16;

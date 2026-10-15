@@ -43,9 +43,10 @@
       sw = window.innerWidth; clearTimeout(st); st = setTimeout(splitAll, 200);
     });
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(splitAll);
-    requestAnimationFrame(function () { requestAnimationFrame(function () {
-      var h1 = document.querySelector('.hero h1'); if (h1) h1.classList.add('lines-in');
-    }); });
+    // reveal the headline on the second frame; the timer covers tabs that hold back animation frames
+    var showH1 = function () { var h1 = document.querySelector('.hero h1'); if (h1) h1.classList.add('lines-in'); };
+    requestAnimationFrame(function () { requestAnimationFrame(showH1); });
+    setTimeout(showH1, 600);
   }
 
   /* ---------- Rules draw in as each sheet arrives ---------- */
@@ -118,7 +119,7 @@
   // baseline offset from the painting's centre (fraction of its height) and where the drawn line ends
   var LAY = TANG ? { base: 0.1586, right: 0.49 } : { base: 0.4576, right: 0.487 };
   var SOURCES = [
-    { src: 'assets/img/' + ART + 'lineup.webp?v=t13', boostTo: 0.22, boost: 2.6 },   // the small animals get more points than their area would earn
+    { src: 'assets/img/' + ART + 'lineup.webp?v=t13', boostTo: 0.22, boost: 2.6, figures: true },   // the small animals get more points than their area would earn
     { src: 'assets/img/' + ART + (TANG ? 'population' : 'species') + '.webp?v=t13' },
     { src: 'assets/img/' + ART + 'human.webp?v=t13' },
     { src: 'assets/img/' + ART + 'tissue.webp?v=t13' },
@@ -127,6 +128,7 @@
     { src: 'assets/img/' + ART + (TANG ? 'brain' : 'species') + '.webp?v=t13' }   // the brain among the longest-lived species
   ];
   var NP = SOURCES.length;   // paintings; the network is stage NP
+  var FIGS = 12;             // most figures the procession may hold
 
   /* The road. p is scroll progress through the hero, 0..1. Three perspectives, each passed through quickly:
      species (one sweep along the procession), scales (the points re-form from species to molecule) and the model
@@ -134,8 +136,8 @@
   var STOPS = [
     { p: 0.00, x: 0.50, z: 1.00 },
     { p: 0.04, x: 0.50, z: 1.00 },
-    { p: 0.09, x: 0.10, z: 1.45 },
-    { p: 0.24, x: 0.92, z: 1.45 },
+    { p: 0.09, side: -1, z: 1.45 },   // the first figure just inside the left fade band
+    { p: 0.24, side: 1, z: 1.45 },    // the last figure just inside the right fade band
     { p: 0.29, x: 0.50, z: 1.00 },
     { p: 1.00, x: 0.50, z: 1.00 }
   ];
@@ -149,7 +151,8 @@
     { into: [0.705, 0.73], name: 'AI for discovery', sub: 'Models and agents that learn across species and scales and propose what to test', last: true }
   ];
   var PEND = 0.30;
-  // The paper turn covers the frame at about p = 0.975 and is complete at p = 1, as the Vision rule comes up.
+  // The paper turn covers the frame at about p = 0.975 and is complete at p = 1, as the Vision rule enters
+  // at the foot of the frame; the rest of the hero's scroll carries that rule up under the nav.
   var SOAK_FROM = 0.93, SOAK_TO = 1.0;
 
   function ease(t) { return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2; }
@@ -157,10 +160,18 @@
     for (var i = 1; i < STOPS.length; i++) {
       if (p <= STOPS[i].p) {
         var a = STOPS[i - 1], b = STOPS[i], t = ease(clamp((p - a.p) / (b.p - a.p), 0, 1));
-        return { x: a.x + (b.x - a.x) * t, z: a.z + (b.z - a.z) * t };
+        var ax = a.side ? stopX(a.side, a.z) : a.x, bx = b.side ? stopX(b.side, b.z) : b.x;
+        return { x: ax + (bx - ax) * t, z: a.z + (b.z - a.z) * t };
       }
     }
     var l = STOPS[STOPS.length - 1]; return { x: l.x, z: l.z };
+  }
+  // Where along the procession the camera stops at each end of the sweep: the end figure stands just
+  // inside the band where figures fade, so the frame is full and nothing is cut.
+  var BAND = 0.08;
+  function stopX(side, z) {
+    var half = (W / 2 - padL - BAND * W - 8 * dpr) / (z * Math.max(1, W - 2 * padL)) * (figR - figL);
+    return side < 0 ? figL + half : figR - half;
   }
   function stageAt(p) {
     for (var i = 1; i < STAGE.length; i++) {
@@ -202,7 +213,7 @@
   var ground = program(
     'attribute vec2 a; varying vec2 vUv; void main(){ vUv = a*0.5+0.5; gl_Position = vec4(a,0.,1.); }',
     ['precision highp float;', 'varying vec2 vUv;',
-      'uniform vec2 uRes, uMouse; uniform float uTime, uSoak, uLineY, uLineX, uBeyond, uGrain, uTex;', NOISE,
+      'uniform vec2 uRes, uMouse, uFrame; uniform float uTime, uSoak, uLineY, uLineX, uBeyond, uGrain, uTex;', NOISE,
       'void main(){',
       '  vec2 px = vec2(vUv.x, 1.0-vUv.y)*uRes;',
       '  float asp = uRes.x/uRes.y;',
@@ -220,8 +231,11 @@
       '    col = mix(col, vec3(0.11), onLine*(1.0-dash)*uBeyond*0.9);',
       '  }',
       '  vec3 paper = ' + PAPER + ';',
-      '  vec2 rr = (vUv - vec2(0.5, 0.5))*vec2(asp, 1.0);',
-      '  float front = uSoak*(0.62*asp + 0.75) - length(rr) + (fbm(vUv*vec2(asp,1.0)*3.5 + 3.0)-0.5)*0.55 + (fbm(vUv*vec2(asp,1.0)*15.0)-0.5)*0.12;',
+      // outside the margin rules the paper keeps pace with the frame edge beside it and runs slightly ahead toward the page edge
+      '  float ux = clamp(vUv.x, uFrame.x/uRes.x, uFrame.y/uRes.x);',
+      '  vec2 rr = (vec2(ux, vUv.y) - vec2(0.5, 0.5))*vec2(asp, 1.0);',
+      '  float gutter = clamp(max(uFrame.x - px.x, px.x - uFrame.y) / max(uFrame.x, 1.0), 0.0, 1.0);',
+      '  float front = uSoak*(0.62*asp + 0.75) - length(rr) + (fbm(vUv*vec2(asp,1.0)*3.5 + 3.0)-0.5)*0.55 + (fbm(vUv*vec2(asp,1.0)*15.0)-0.5)*0.12 + gutter*0.07*step(0.0001, uSoak);',
       '  float k = smoothstep(0.0, 0.035, front) * step(0.0001, uSoak);',
       '  float rim = (1.0 - smoothstep(0.0, 0.11, front)) * k;',
       '  float bleed = fbm(vUv*vec2(asp,1.0)*24.0 + 11.0);',
@@ -236,7 +250,7 @@
       'attribute vec4 aA, aB, aC, aR, aK0, aK1, aK2, aK3, aK4, aK5, aK6; attribute vec2 aD, aN;',
       'uniform vec2 uRes, uOff0, uOffC, uMouse;',
       'uniform float uSc0, uScC, uS, uTime, uIntro, uPix, uFade, uSize, uBurst; uniform vec3 uFlight, uNetCol; uniform vec2 uOffN; uniform float uScN;',
-      'uniform vec4 uCap; uniform float uCapO, uTop; uniform vec2 uEdge;',
+      'uniform vec4 uCap; uniform float uCapO, uTop; uniform vec2 uEdge; uniform vec4 uFig; uniform float uAsp0; uniform vec2 uSpan[' + FIGS + '];',
       'varying float vAlpha; varying vec3 vCol;',
       'void main(){',
       '  vec2 p0 = aA.xy*uSc0 + uOff0;',
@@ -287,13 +301,19 @@
       // and they fade out before the margin rules, so nothing is cut by the edge of the frame
       '  float fw = 40.0*uPix;',
       '  vAlpha *= smoothstep(uEdge.x, uEdge.x + fw, pos.x) * (1.0 - smoothstep(uEdge.y - fw, uEdge.y, pos.x));',
+      // in the procession a figure that nears either side of the frame fades out whole, never cut through
+      '  int fi = int(aK0.a*255.0 + 0.5); vec2 sp = vec2(0.0, 1.0);',
+      '  for (int j = 0; j < ' + FIGS + '; j++) { if (j == fi) sp = uSpan[j]; }',
+      '  float fl = (sp.x - 0.5)*uAsp0*uSc0 + uOff0.x, fr = (sp.y - 0.5)*uAsp0*uSc0 + uOff0.x;',
+      '  float whole = smoothstep(uFig.x, uFig.y, fl) * (1.0 - smoothstep(uFig.z, uFig.w, fr));',
+      '  vAlpha *= mix(1.0, whole, max(0.0, 1.0 - abs(s)));',
       '}'].join('\n'),
     ['precision mediump float;', 'varying float vAlpha; varying vec3 vCol;',
       'void main(){ float d = length(gl_PointCoord - 0.5); float a = smoothstep(0.5, 0.18, d) * vAlpha; gl_FragColor = vec4(vCol, a); }'].join('\n'));
   if (!ground || !points) return;
 
-  var GU = uniforms(ground, ['uTex', 'uRes', 'uMouse', 'uTime', 'uSoak', 'uLineY', 'uLineX', 'uBeyond', 'uGrain']);
-  var PU = uniforms(points, ['uCap', 'uCapO', 'uTop', 'uEdge', 'uNetCol', 'uOffN', 'uScN', 'uFlight', 'uRes', 'uOff0', 'uOffC', 'uMouse', 'uSc0', 'uScC', 'uS', 'uTime', 'uIntro', 'uPix', 'uFade', 'uSize', 'uBurst']);
+  var GU = uniforms(ground, ['uFrame', 'uTex', 'uRes', 'uMouse', 'uTime', 'uSoak', 'uLineY', 'uLineX', 'uBeyond', 'uGrain']);
+  var PU = uniforms(points, ['uSpan[0]', 'uFig', 'uAsp0', 'uCap', 'uCapO', 'uTop', 'uEdge', 'uNetCol', 'uOffN', 'uScN', 'uFlight', 'uRes', 'uOff0', 'uOffC', 'uMouse', 'uSc0', 'uScC', 'uS', 'uTime', 'uIntro', 'uPix', 'uFade', 'uSize', 'uBurst']);
 
   var quad = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, quad);
   gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
@@ -324,16 +344,56 @@
       if (opts.boost && x < opts.boostTo * w) v *= opts.boost;
       acc += v; cdf[k] = acc;
     }
-    var out = new Float32Array(N * 2), col = new Uint8Array(N * 4), asp = w / h;
+    var figs = opts.figures ? figures(px, w, h) : null;
+    var out = new Float32Array(N * 2), col = new Uint8Array(N * 4), span = figs ? new Uint8Array(N) : null, asp = w / h;
     for (var n = 0; n < N; n++) {
       var r = rnd() * acc, lo = 0, hi = w * h - 1;
       while (lo < hi) { var mid = (lo + hi) >> 1; if (cdf[mid] < r) lo = mid + 1; else hi = mid; }
       out[n * 2] = ((lo % w + rnd()) / w - 0.5) * asp;
       out[n * 2 + 1] = (Math.floor(lo / w) + rnd()) / h - 0.5;
       col[n * 4] = px[lo * 4]; col[n * 4 + 1] = px[lo * 4 + 1]; col[n * 4 + 2] = px[lo * 4 + 2]; col[n * 4 + 3] = 255;
+      if (figs) span[n] = figs.at(lo % w, Math.floor(lo / w));
     }
-    return { pos: out, col: col, aspect: asp, top: Math.max(0, top) / h };
+    return { pos: out, col: col, span: span, figs: figs, aspect: asp, top: Math.max(0, top) / h };
   }
+
+  // The figures of the procession, found as connected painted areas on a quarter-scale mask. Each point
+  // learns the left and right edge of its figure, so a figure leaving the frame fades out whole.
+  function figures(px, w, h) {
+    var q = 4, mw = Math.ceil(w / q), mh = Math.ceil(h / q), mask = new Uint8Array(mw * mh), lab = new Int32Array(mw * mh);
+    for (var y = 0; y < h; y++) for (var x = 0; x < w; x++) if (px[(y * w + x) * 4 + 3] >= 180) mask[((y / q) | 0) * mw + ((x / q) | 0)] = 1;
+    var boxes = [], stack = [];
+    for (var i0 = 0; i0 < mw * mh; i0++) {
+      if (!mask[i0] || lab[i0]) continue;
+      var b = { id: boxes.length + 1, x0: mw, x1: -1, n: 0 }; boxes.push(b);
+      lab[i0] = b.id; stack.push(i0);
+      while (stack.length) {
+        var c = stack.pop(), cx = c % mw, cy = (c / mw) | 0; b.n++;
+        if (cx < b.x0) b.x0 = cx; if (cx > b.x1) b.x1 = cx;
+        for (var dy = -1; dy <= 1; dy++) for (var dx = -1; dx <= 1; dx++) {
+          var nx = cx + dx, ny = cy + dy; if (nx < 0 || ny < 0 || nx >= mw || ny >= mh) continue;
+          var ni = ny * mw + nx; if (mask[ni] && !lab[ni]) { lab[ni] = b.id; stack.push(ni); }
+        }
+      }
+    }
+    // the largest areas, at most FIGS of them, are the figures; specks and ground strokes join the nearest
+    var big = boxes.filter(function (b) { return b.n > 30; }).sort(function (a, b) { return b.n - a.n; }).slice(0, FIGS)
+      .map(function (b) { return { id: b.id, x0: b.x0 * q / w, x1: Math.min(1, (b.x1 + 1) * q / w) }; });
+    if (!big.length) big = [{ id: 0, x0: 0, x1: 1 }];
+    var byId = {}; big.forEach(function (b, i) { byId[b.id] = i; });
+    return {
+      list: big,
+      at: function (x, y) {
+        var own = byId[lab[((y / q) | 0) * mw + ((x / q) | 0)]];
+        if (own !== undefined) return own;
+        var fx = x / w, best = 0, bd = Infinity;
+        big.forEach(function (b, i) { var d = fx < b.x0 ? b.x0 - fx : fx > b.x1 ? fx - b.x1 : 0; if (d < bd) { bd = d; best = i; } });
+        return best;
+      }
+    };
+  }
+  var figL = 0, figR = 1, spans = new Float32Array(FIGS * 2);   // figure spans and the painted extent, as fractions of the procession's width
+  for (var f0 = 0; f0 < FIGS; f0++) spans[f0 * 2 + 1] = 1;
 
   var ready = false, introStart = 0;
   Promise.all(SOURCES.map(function (s) {
@@ -348,6 +408,12 @@
     for (var q0 = 1; q0 < imgs.length; q0++) if (!imgs[q0]) imgs[q0] = imgs[q0 - 1];
     var sets = imgs.map(function (im, i) { return sample(im, SOURCES[i]); });
     aspect0 = sets[0].aspect; top0 = sets[0].top;
+    if (sets[0].figs) {
+      var fl0 = sets[0].figs.list;
+      figL = Math.min.apply(null, fl0.map(function (b) { return b.x0; }));
+      figR = Math.max.apply(null, fl0.map(function (b) { return b.x1; }));
+      fl0.forEach(function (b, i) { spans[i * 2] = b.x0; spans[i * 2 + 1] = b.x1; });
+    }
     // Points are paired at random between drawings, so each change is a dissolve and not a slide.
     var data = new Float32Array(N * 18);
     for (var n = 0; n < N; n++) {
@@ -359,6 +425,9 @@
     // Each point also carries its colour in all seven paintings.
     var cols = new Uint8Array(N * 28);
     for (var n2 = 0; n2 < N; n2++) for (var k2 = 0; k2 < NP; k2++) cols.set(sets[k2].col.subarray(n2 * 4, n2 * 4 + 4), n2 * 28 + k2 * 4);
+    // the spare alpha byte of the first colour carries the point's figure in the procession
+    var sp = sets[0].span;
+    for (var n4 = 0; n4 < N; n4++) cols[n4 * 28 + 3] = sp ? sp[n4] : 0;
     gl.bindBuffer(gl.ARRAY_BUFFER, cbuf); gl.bufferData(gl.ARRAY_BUFFER, cols, gl.STATIC_DRAW);
     // The last drawing is the model itself: a layered network. Points sit on its nodes and along its edges.
     var LAYERS = [6, 9, 9, 6, 1], nodes = [];
@@ -395,7 +464,7 @@
 
   /* ---- frame ---- */
 
-  var W = 0, H = 0, dpr = 1, running = false, raf = 0, pShown = -1, footTop = 0, navBottom = 0, capFloor = 0, edgeL = 0, edgeR = 0;
+  var W = 0, H = 0, dpr = 1, running = false, raf = 0, pShown = -1, footTop = 0, navBottom = 0, capFloor = 0, edgeL = 0, edgeR = 0, padL = 0, gut = 0, tail = 0;
   var mouse = { x: -9999, y: -9999, tx: -9999, ty: -9999 };
   function resize() {
     dpr = Math.min(window.devicePixelRatio || 1, 2);
@@ -407,6 +476,12 @@
     var sr = stage.getBoundingClientRect();
     var mr = meter.getBoundingClientRect();
     edgeR = mr.right > sr.left ? (mr.right - sr.left) * dpr : W; edgeL = W - edgeR;
+    // the text field: the procession rests on its outer lines, and a figure fades out a gutter before a rule
+    var cs = getComputedStyle(copy);
+    padL = (parseFloat(cs.paddingLeft) || 0) * dpr; gut = (parseFloat(cs.columnGap) || 16) * dpr;
+    // Vision rises over the last stretch of the hero; the film runs over the scroll before it
+    var next = hero.nextElementSibling;
+    tail = next ? Math.max(0, -parseFloat(getComputedStyle(next).marginTop) || 0) : 0;
     measureCaps();
   }
   // Each caption's column, before its scroll offset, in device pixels with a small margin.
@@ -429,7 +504,7 @@
   stage.addEventListener('pointerleave', function () { mouse.tx = mouse.ty = -9999; mouse.x = mouse.y = -9999; });
 
   function progress() {
-    var span = hero.offsetHeight - window.innerHeight;
+    var span = hero.offsetHeight - window.innerHeight - tail;
     return span > 0 ? clamp((window.scrollY - hero.offsetTop) / span, 0, 1) : 0;
   }
 
@@ -442,12 +517,12 @@
 
     // lifespan drawing: a wide strip standing on a baseline
     // the procession stands clear of the chip and the lede, including the part of the strip below the waterline
-    var sc1 = W * 0.84 / aspect0;
+    var sc1 = (W - 2 * padL) / ((figR - figL) * aspect0);
     var baseY = Math.min(H * 0.84, footTop - 24 * dpr - 0.26 * sc1);
     // the push-in stops where the tallest figure (the whale's spray) would come within 40px of the caption
     var sc0 = Math.max(sc1, Math.min(cam.z * sc1, (baseY - capFloor) / (LAY.base + 0.5 - top0)));
     var zEff = sc0 / sc1;
-    var off0x = W * 0.5 - (cam.x - 0.5) * aspect0 * sc0;
+    var off0x = W * 0.5 - (cam.x - 0.5 + (figL + figR) / 2 - 0.5) * aspect0 * sc0;
     var off0y = baseY - LAY.base * sc0;
     // scale drawings: a disc on the right, beside the caption column, at every width
     var colL = W * 0.44, room = W - colL - W * 0.05;
@@ -464,6 +539,7 @@
     gl.uniform1f(GU.uBeyond, 0.0);
     gl.uniform1f(GU.uGrain, TANG ? 0.035 : 0.006);
     gl.uniform1f(GU.uTex, TANG ? 1.0 : 0.12);
+    gl.uniform2f(GU.uFrame, edgeL, edgeR);
     gl.drawArrays(gl.TRIANGLES, 0, 3);
 
     gl.enable(gl.BLEND); gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
@@ -483,13 +559,23 @@
     var capO = 0, capBox = [0, 0, 0, 0];
     caps.forEach(function (c) {
       var b = c.beat;
-      c.o = smooth(b.into[0], b.into[1], p) * (1 - (b.last ? smooth(SOAK_FROM, SOAK_FROM + 0.03, p) : smooth(b.out[0], b.out[1], p)));
+      // the last caption is gone before the paper turn begins, so the soak front never crosses it
+      c.o = smooth(b.into[0], b.into[1], p) * (1 - (b.last ? smooth(SOAK_FROM - 0.03, SOAK_FROM, p) : smooth(b.out[0], b.out[1], p)));
       c.ty = (p - (b.last ? b.into[1] : (b.into[1] + b.out[0]) / 2)) * -160;
       if (c.o > capO && c.box) { capO = c.o; capBox = [c.box[0], c.box[1] + c.ty * dpr, c.box[2], c.box[3] + c.ty * dpr]; }
     });
     gl.uniform4f(PU.uCap, capBox[0], capBox[1], capBox[2], capBox[3]); gl.uniform1f(PU.uCapO, capO);
     gl.uniform1f(PU.uTop, navBottom);
     gl.uniform2f(PU.uEdge, edgeL + 4 * dpr, edgeR - 4 * dpr);
+    // Figure fades. At rest the procession fills the text field and nothing fades. While the camera sweeps,
+    // a figure fades whole as it crosses a band inside the field and is gone a gutter before the rule. The
+    // right side engages as the sweep starts (the strip moves right), the left side as the strip turns left.
+    var band = BAND * W, gone = Math.min(padL, edgeL + gut);
+    var kR = smooth(0.04, 0.046, p) * (1 - smooth(0.235, 0.25, p));
+    var kL = smooth(0.088, 0.096, p) * (1 - smooth(0.27, 0.29, p));
+    gl.uniform4f(PU.uFig, gone - 0.5, padL + band * kL, W - padL - band * kR, W - gone + 0.5);
+    gl.uniform1f(PU.uAsp0, aspect0);
+    gl.uniform2fv(PU['uSpan[0]'], spans);
     var disc = clamp(s, 0, 1);                       // 0 on the lifespan strip, 1 on the discs and the network
     gl.uniform1f(PU.uSize, (1.7 + 0.6 * (zEff - 1)) * (1 - disc) + 2.7 * disc);
     gl.uniform1f(PU.uFade, (0.9 * (1 - disc) + 0.85 * disc) * (1 - smooth(SOAK_FROM, SOAK_FROM + 0.03, p)));
@@ -501,7 +587,7 @@
       var out = 1 - smooth(0.008, 0.035, p);
       copy.style.opacity = out; copy.style.transform = 'translateY(' + (-(1 - out) * 50) + 'px)';
       foot.style.opacity = out; cue.style.opacity = out;
-      copy.style.pointerEvents = out < 0.5 ? 'none' : '';
+      copy.style.pointerEvents = foot.style.pointerEvents = cue.style.pointerEvents = out < 0.5 ? 'none' : '';
       caps.forEach(function (c) {
         var b = c.beat;
         c.el.style.opacity = c.o;
