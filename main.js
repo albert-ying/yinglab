@@ -269,7 +269,7 @@
         });
       });
     }, { rootMargin: '-45% 0px -50% 0px' });
-    ['top', 'mission', 'scales', 'research', 'work', 'publications', 'people', 'join'].forEach(function (id) {
+    ['top', 'mission', 'scales', 'brain', 'research', 'work', 'publications', 'people', 'join'].forEach(function (id) {
       var s = document.getElementById(id);
       if (s) io.observe(s);
     });

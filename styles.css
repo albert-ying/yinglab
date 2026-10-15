@@ -91,7 +91,7 @@ h3 { font-family: var(--title); font-weight: 400; font-size: 1.5rem; line-height
 .nav.scrolled { background: #f2f1ed; color: var(--ink); border-bottom-color: rgba(29, 28, 25, 0.16); }
 .nav-row { display: flex; align-items: center; justify-content: space-between; height: 60px; padding-inline: calc(var(--edge) + clamp(16px, 2.2vw, 36px)); max-width: none; }
 .mark { display: inline-flex; align-items: center; gap: 10px; font-family: var(--title); font-size: 1.375rem; letter-spacing: -0.01em; text-decoration: none; }
-.mark svg { width: 22px; height: 22px; }
+.mark svg { width: 22px; height: 29px; }
 .nav nav { display: flex; align-items: center; gap: clamp(14px, 2.2vw, 34px); }
 .nav nav a:not(.btn) { font-family: var(--code); font-size: 0.6875rem; letter-spacing: 0.2em; text-transform: uppercase; text-decoration: none; opacity: 0.78; padding: 6px 0; background: linear-gradient(currentColor, currentColor) 0 100% / 0 1px no-repeat; transition: opacity 0.2s, background-size 0.4s var(--ease); }
 .nav nav a:not(.btn):hover, .nav nav a:not(.btn)[aria-current="true"] { opacity: 1; background-size: 100% 1px; }
@@ -383,3 +383,11 @@ h2.in .ln > i, .statement.in .ln > i { transform: none; }
 
 /* Once the film takes over, the opening copy keeps its settled state instead of replaying its entrance. */
 .hero.is-film .hero-copy > *, .hero.is-film .hero-foot > * { animation: none; opacity: 1; transform: none; }
+
+/* Brain resilience */
+.brain { padding-block: var(--section); }
+.brain-grid { display: grid; grid-template-columns: minmax(0, 6fr) minmax(0, 5fr); gap: clamp(28px, 6vw, 104px); align-items: center; }
+.brain-art img { width: 100%; border-radius: 50%; }
+.brain h2 { font-size: clamp(2.4rem, 5vw, 4.5rem); line-height: 1; }
+.brain .prose { margin-top: 26px; color: rgba(255, 255, 255, 0.9); }
+@media (max-width: 900px) { .brain-grid { grid-template-columns: 1fr; } .brain-art { max-width: 420px; } }
