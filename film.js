@@ -113,13 +113,15 @@
   // baseline offset from the painting's centre (fraction of its height) and where the drawn line ends
   var LAY = TANG ? { base: 0.2382, right: 0.49 } : { base: 0.4576, right: 0.487 };
   var SOURCES = [
-    { src: 'assets/img/' + ART + 'lineup.webp?v=t3', boostTo: 0.22, boost: 2.6 },   // the small animals get more points than their area would earn
-    { src: 'assets/img/' + ART + (TANG ? 'brain' : 'species') + '.webp?v=t3' },   // Tang: the brain among the longest-lived species
-    { src: 'assets/img/' + ART + 'human.webp?v=t3' },
-    { src: 'assets/img/' + ART + 'tissue.webp?v=t3' },
-    { src: 'assets/img/' + ART + 'cell.webp?v=t3' },
-    { src: 'assets/img/' + ART + 'molecule.webp?v=t3' }
+    { src: 'assets/img/' + ART + 'lineup.webp?v=t5', boostTo: 0.22, boost: 2.6 },   // the small animals get more points than their area would earn
+    { src: 'assets/img/' + ART + (TANG ? 'population' : 'species') + '.webp?v=t5' },
+    { src: 'assets/img/' + ART + 'human.webp?v=t5' },
+    { src: 'assets/img/' + ART + 'tissue.webp?v=t5' },
+    { src: 'assets/img/' + ART + 'cell.webp?v=t5' },
+    { src: 'assets/img/' + ART + 'molecule.webp?v=t5' },
+    { src: 'assets/img/' + ART + (TANG ? 'brain' : 'species') + '.webp?v=t5' }   // the brain among the longest-lived species
   ];
+  var NP = SOURCES.length;   // paintings; the network is stage NP
 
   /* The road. p is scroll progress through the hero, 0..1. Three perspectives, each passed through quickly:
      species (one sweep along the procession), scales (the points re-form from species to molecule) and the model
@@ -127,21 +129,21 @@
   var STOPS = [
     { p: 0.00, x: 0.50, z: 1.00 },
     { p: 0.04, x: 0.50, z: 1.00 },
-    { p: 0.10, x: 0.10, z: 1.75 },
-    { p: 0.27, x: 0.92, z: 1.75 },
-    { p: 0.32, x: 0.50, z: 1.00 },
+    { p: 0.09, x: 0.10, z: 1.75 },
+    { p: 0.24, x: 0.92, z: 1.75 },
+    { p: 0.29, x: 0.50, z: 1.00 },
     { p: 1.00, x: 0.50, z: 1.00 }
   ];
   // Which drawing the points hold: [p, stage]. 0 procession, 1-5 species to molecule, 6 the network.
-  var STAGE = [[0, 0], [0.33, 0], [0.37, 1], [0.44, 1], [0.48, 2], [0.50, 2], [0.54, 3], [0.56, 3], [0.60, 4], [0.62, 4], [0.66, 5], [0.68, 5], [0.73, 6], [1, 6]];
+  var STAGE = [[0, 0], [0.29, 0], [0.33, 1], [0.37, 1], [0.41, 2], [0.43, 2], [0.47, 3], [0.49, 3], [0.53, 4], [0.55, 4], [0.59, 5], [0.61, 5], [0.65, 6], [0.71, 6], [0.75, 7], [1, 7]];
   var BEATS = [
-    { p: 0.185, name: 'Across species', sub: 'Maximum lifespan spans more than a hundredfold, from a 4-year mouse to a 507-year ocean quahog', w: 0.09 },
-    { p: 0.405, name: 'Brain resilience', sub: 'The longest-lived species may have the most resilient brains', w: 0.045 },
-    { p: 0.58, name: 'Across scales', sub: 'Human &nbsp;/&nbsp; tissue &nbsp;/&nbsp; cell &nbsp;/&nbsp; molecule', w: 0.11 },
-    { p: 0.785, name: 'AI that does research', sub: 'Models and agents that learn from every species and scale, and propose what to test', w: 0.05, last: true }
+    { p: 0.165, name: 'Across species', sub: 'Maximum lifespan spans more than a hundredfold, from a 4-year mouse to a 507-year ocean quahog', w: 0.085 },
+    { p: 0.45, name: 'Across scales', sub: 'Species &nbsp;/&nbsp; population &nbsp;/&nbsp; individual &nbsp;/&nbsp; tissue &nbsp;/&nbsp; cell &nbsp;/&nbsp; molecule', w: 0.15 },
+    { p: 0.68, name: 'Brain resilience', sub: 'The longest-lived species may have the most resilient brains', w: 0.035 },
+    { p: 0.80, name: 'AI that does research', sub: 'Models and agents that learn from every species and scale, and propose what to test', w: 0.04, last: true }
   ];
   var PEND = 0.30;
-  var SOAK_FROM = 0.84, SOAK_TO = 0.95;
+  var SOAK_FROM = 0.86, SOAK_TO = 0.96;
 
   function ease(t) { return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2; }
   function camera(p) {
@@ -160,7 +162,7 @@
         return a[1] + (b[1] - a[1]) * clamp((p - a[0]) / (b[0] - a[0] || 1), 0, 1);
       }
     }
-    return 6;
+    return NP;
   }
 
   /* ---- programs ---- */
@@ -222,23 +224,23 @@
   // The points. Each carries its place in all six drawings and moves between them.
   var points = program(
     ['precision highp float;',
-      'attribute vec4 aA, aB, aC, aR, aK0, aK1, aK2, aK3, aK4, aK5; attribute vec2 aN;',
+      'attribute vec4 aA, aB, aC, aR, aK0, aK1, aK2, aK3, aK4, aK5, aK6; attribute vec2 aD, aN;',
       'uniform vec2 uRes, uOff0, uOffC, uMouse;',
       'uniform float uSc0, uScC, uS, uTime, uIntro, uPix, uFade, uSize, uBurst; uniform vec3 uFlight, uNetCol; uniform vec2 uOffN; uniform float uScN;',
       'varying float vAlpha; varying vec3 vCol;',
       'void main(){',
       '  vec2 p0 = aA.xy*uSc0 + uOff0;',
-      '  vec2 p1 = aA.zw*uScC + uOffC, p2 = aB.xy*uScC + uOffC, p3 = aB.zw*uScC + uOffC, p4 = aC.xy*uScC + uOffC, p5 = aC.zw*uScC + uOffC, p6 = aN*uScN + uOffN;',
+      '  vec2 p1 = aA.zw*uScC + uOffC, p2 = aB.xy*uScC + uOffC, p3 = aB.zw*uScC + uOffC, p4 = aC.xy*uScC + uOffC, p5 = aC.zw*uScC + uOffC, p6 = aD*uScC + uOffC, p7 = aN*uScN + uOffN;',
       // each point leaves and arrives on its own clock, so a drawing dissolves and gathers rather than slides
       '  float i = floor(uS); float t = uS - i;',
       '  float tt = smoothstep(aR.x*0.5, 0.5 + aR.x*0.5, t);',
       '  tt = tt*tt*(3.0-2.0*tt);',
       '  float s = i + tt;',
       '  vec2 pos = p0*max(0.0, 1.0-abs(s)) + p1*max(0.0, 1.0-abs(s-1.0)) + p2*max(0.0, 1.0-abs(s-2.0))',
-      '           + p3*max(0.0, 1.0-abs(s-3.0)) + p4*max(0.0, 1.0-abs(s-4.0)) + p5*max(0.0, 1.0-abs(s-5.0)) + p6*max(0.0, 1.0-abs(s-6.0));',
+      '           + p3*max(0.0, 1.0-abs(s-3.0)) + p4*max(0.0, 1.0-abs(s-4.0)) + p5*max(0.0, 1.0-abs(s-5.0)) + p6*max(0.0, 1.0-abs(s-6.0)) + p7*max(0.0, 1.0-abs(s-7.0));',
       '  float mid = sin(3.14159*tt);',
       '  vCol = aK0.rgb*max(0.0, 1.0-abs(s)) + aK1.rgb*max(0.0, 1.0-abs(s-1.0)) + aK2.rgb*max(0.0, 1.0-abs(s-2.0))',
-      '       + aK3.rgb*max(0.0, 1.0-abs(s-3.0)) + aK4.rgb*max(0.0, 1.0-abs(s-4.0)) + aK5.rgb*max(0.0, 1.0-abs(s-5.0)) + uNetCol*max(0.0, 1.0-abs(s-6.0));',
+      '       + aK3.rgb*max(0.0, 1.0-abs(s-3.0)) + aK4.rgb*max(0.0, 1.0-abs(s-4.0)) + aK5.rgb*max(0.0, 1.0-abs(s-5.0)) + aK6.rgb*max(0.0, 1.0-abs(s-6.0)) + uNetCol*max(0.0, 1.0-abs(s-7.0));',
       // in flight a point lightens toward the colour of paper, so a dissolve reads as light, then settles into paint
       '  vCol = mix(vCol, uFlight, mid*0.55);',
       // in flight the points ride a slow turning current
@@ -278,9 +280,10 @@
   gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
   var pbuf = gl.createBuffer(), cbuf = gl.createBuffer(), nbuf = gl.createBuffer();
   var gA = gl.getAttribLocation(ground, 'a');
-  var pA = ['aA', 'aB', 'aC', 'aR'].map(function (n) { return gl.getAttribLocation(points, n); });
+  // per point: seven painting positions (14 floats) and four random numbers, 18 floats in all
+  var pA = [['aA', 4, 0], ['aB', 4, 16], ['aC', 4, 32], ['aD', 2, 48], ['aR', 4, 56]].map(function (d) { return { loc: gl.getAttribLocation(points, d[0]), size: d[1], off: d[2] }; });
   var nA = gl.getAttribLocation(points, 'aN');
-  var cA = ['aK0', 'aK1', 'aK2', 'aK3', 'aK4', 'aK5'].map(function (n) { return gl.getAttribLocation(points, n); });
+  var cA = ['aK0', 'aK1', 'aK2', 'aK3', 'aK4', 'aK5', 'aK6'].map(function (n) { return gl.getAttribLocation(points, n); });
 
   /* ---- sample the drawings into point positions ---- */
 
@@ -314,21 +317,26 @@
 
   var ready = false, introStart = 0;
   Promise.all(SOURCES.map(function (s) {
-    return new Promise(function (res, rej) { var im = new Image(); im.onload = function () { res(im); }; im.onerror = rej; im.src = s.src; });
+    // a missing painting falls back to the species painting, so the film never drops to the static hero
+    return new Promise(function (res, rej) {
+      var im = new Image(); im.onload = function () { res(im); };
+      im.onerror = function () { if (s.fallback || !/population|brain/.test(s.src)) { rej(); return; } s.fallback = true; im.src = 'assets/img/' + ART + 'species.webp?v=t5'; };
+      im.src = s.src;
+    });
   })).then(function (imgs) {
     var sets = imgs.map(function (im, i) { return sample(im, SOURCES[i]); });
     aspect0 = sets[0].aspect;
     // Points are paired at random between drawings, so each change is a dissolve and not a slide.
-    var data = new Float32Array(N * 16);
+    var data = new Float32Array(N * 18);
     for (var n = 0; n < N; n++) {
-      var o = n * 16;
-      for (var k = 0; k < 6; k++) { data[o + k * 2] = sets[k].pos[n * 2]; data[o + k * 2 + 1] = sets[k].pos[n * 2 + 1]; }
-      data[o + 12] = rnd(); data[o + 13] = rnd(); data[o + 14] = rnd(); data[o + 15] = rnd();
+      var o = n * 18;
+      for (var k = 0; k < NP; k++) { data[o + k * 2] = sets[k].pos[n * 2]; data[o + k * 2 + 1] = sets[k].pos[n * 2 + 1]; }
+      data[o + 14] = rnd(); data[o + 15] = rnd(); data[o + 16] = rnd(); data[o + 17] = rnd();
     }
     gl.bindBuffer(gl.ARRAY_BUFFER, pbuf); gl.bufferData(gl.ARRAY_BUFFER, data, gl.STATIC_DRAW);
-    // Each point also carries its colour in all six paintings.
-    var cols = new Uint8Array(N * 24);
-    for (var n2 = 0; n2 < N; n2++) for (var k2 = 0; k2 < 6; k2++) cols.set(sets[k2].col.subarray(n2 * 4, n2 * 4 + 4), n2 * 24 + k2 * 4);
+    // Each point also carries its colour in all seven paintings.
+    var cols = new Uint8Array(N * 28);
+    for (var n2 = 0; n2 < N; n2++) for (var k2 = 0; k2 < NP; k2++) cols.set(sets[k2].col.subarray(n2 * 4, n2 * 4 + 4), n2 * 28 + k2 * 4);
     gl.bindBuffer(gl.ARRAY_BUFFER, cbuf); gl.bufferData(gl.ARRAY_BUFFER, cols, gl.STATIC_DRAW);
     // The last drawing is the model itself: a layered network. Points sit on its nodes and along its edges.
     var LAYERS = [6, 9, 9, 6, 1], nodes = [];
@@ -417,9 +425,9 @@
     gl.enable(gl.BLEND); gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
     gl.useProgram(points);
     gl.bindBuffer(gl.ARRAY_BUFFER, pbuf);
-    for (var a = 0; a < 4; a++) { gl.enableVertexAttribArray(pA[a]); gl.vertexAttribPointer(pA[a], 4, gl.FLOAT, false, 64, a * 16); }
+    pA.forEach(function (d) { if (d.loc < 0) return; gl.enableVertexAttribArray(d.loc); gl.vertexAttribPointer(d.loc, d.size, gl.FLOAT, false, 72, d.off); });
     gl.bindBuffer(gl.ARRAY_BUFFER, cbuf);
-    for (var c6 = 0; c6 < 6; c6++) { if (cA[c6] < 0) continue; gl.enableVertexAttribArray(cA[c6]); gl.vertexAttribPointer(cA[c6], 4, gl.UNSIGNED_BYTE, true, 24, c6 * 4); }
+    for (var c6 = 0; c6 < NP; c6++) { if (cA[c6] < 0) continue; gl.enableVertexAttribArray(cA[c6]); gl.vertexAttribPointer(cA[c6], 4, gl.UNSIGNED_BYTE, true, 28, c6 * 4); }
     gl.bindBuffer(gl.ARRAY_BUFFER, nbuf); if (nA >= 0) { gl.enableVertexAttribArray(nA); gl.vertexAttribPointer(nA, 2, gl.FLOAT, false, 8, 0); }
     gl.uniform3f(PU.uNetCol, TANG ? 0.18 : 0.11, TANG ? 0.12 : 0.11, TANG ? 0.06 : 0.10);
     gl.uniform2f(PU.uOffN, W * (wide ? 0.66 : 0.5), H * (wide ? 0.52 : 0.66)); gl.uniform1f(PU.uScN, wide ? H * 0.5 : Math.min(H * 0.34, W * 0.5));

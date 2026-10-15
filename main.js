@@ -236,7 +236,7 @@
     var band = h('button', 'pub-band'); band.type = 'button';
     var art = TANGART && p.img ? p.img.replace('assets/img/paper-', 'assets/img/tang-paper-') : p.img;
     p.art = art;
-    if (art) band.style.backgroundImage = 'url(' + art.replace('.webp', '-wide.webp') + '?v=t3), url(' + art + '?v=t3)';
+    if (art) band.style.backgroundImage = 'url(' + art.replace('.webp', '-wide.webp') + '?v=t4), url(' + art + '?v=t4)';
     var plate = h('span', 'pub-plate');
     plate.appendChild(h('span', 'pub-meta', p.venue + ' · ' + p.year + (p.preprint ? ' · Preprint' : '')));
     plate.appendChild(h('span', 'pub-title', p.title));
@@ -252,7 +252,7 @@
   });
   function openPub(p) {
     if (!dlg) { window.open(p.url, '_blank', 'noopener'); return; }
-    dlg.querySelector('.pd-img').src = p.art ? p.art + '?v=t3' : '';
+    dlg.querySelector('.pd-img').src = p.art ? p.art + '?v=t4' : '';
     dlg.querySelector('.pd-meta').textContent = p.venue + ' · ' + p.year + (p.preprint ? ' · Preprint' : '');
     dlg.querySelector('.pd-title').textContent = p.title;
     var au = dlg.querySelector('.pd-authors'); au.textContent = '';
