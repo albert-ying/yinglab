@@ -11,7 +11,7 @@
 /* Ying Lab. A press sheet: painted blue, warm paper, ink. Serif titles, hairline rules, small mono labels. */
 
 :root {
-  --blue: #003a88;
+  --blue: #014c8c;
   --paper: #f2f1ed;
   --paper-2: #e9e7e1;
   --press: #0b0a09;
@@ -335,7 +335,7 @@ h3 { font-family: var(--title); font-weight: 400; font-size: 1.5rem; line-height
 /* ---------- Hero film: a pinned WebGL scene driven by scroll ---------- */
 .film, .scroll-cue, .film-cap { display: none; }
 .hero .stage { display: contents; }
-.hero.is-film { height: 1100vh; min-height: 0; padding: 0; display: block; overflow: visible; background: var(--blue); }
+.hero.is-film { height: 1500vh; min-height: 0; padding: 0; display: block; overflow: visible; background: var(--blue); }
 .hero.is-film .stage { position: sticky; top: 0; height: 100vh; height: 100svh; overflow: hidden; display: flex; flex-direction: column; padding-top: clamp(112px, 17vh, 176px); padding-bottom: clamp(28px, 5vh, 56px); }
 .hero.is-film .film { display: block; position: absolute; inset: 0; width: 100%; height: 100%; z-index: 0; }
 .hero.is-film .hero-copy, .hero.is-film .hero-foot { z-index: 2; will-change: opacity, transform; }
@@ -415,3 +415,11 @@ h2.in .ln > i, .statement.in .ln > i { transform: none; }
   .pub-art { width: 72px; height: 72px; grid-row: 1 / span 4; }
   .pub-year, .pub-title, .pub-authors, .pub-venue { grid-column: 2; }
 }
+
+/* Tang series: aged-silk ground. */
+html[data-art="tang"] { --blue: #a8784a; }
+html[data-art="tang"] .blue { --ink: #1d1c19; --ink-2: rgba(29, 28, 25, 0.82); --muted: rgba(29, 28, 25, 0.66); --rule: rgba(29, 28, 25, 0.28); --accent: #1d1c19; }
+html[data-art="tang"] .hero .label, html[data-art="tang"] .hero-sub, html[data-art="tang"] .hero-lede, html[data-art="tang"] .hero.is-film .film-cap, html[data-art="tang"] .hero.is-film .film-cap span, html[data-art="tang"] .brain .prose, html[data-art="tang"] .hero.is-film .scroll-cue { color: #1d1c19; }
+html[data-art="tang"] .hero.is-film .scroll-cue::after, html[data-art="tang"] .film-meter i { background: #1d1c19; }
+html[data-art="tang"] .nav:not(.scrolled) { color: #1d1c19; border-bottom-color: rgba(29, 28, 25, 0.25); }
+html[data-art="tang"] .hero-foot .chip { background: rgba(29, 28, 25, 0.12); color: #1d1c19; }

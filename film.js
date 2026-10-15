@@ -109,46 +109,54 @@
   var ART = document.documentElement.getAttribute('data-art') === 'tang' ? 'p-tang-' : 'p-';
   // Where each figure sits in the procession image (fraction of its width), where the baseline is
   // (offset from the image centre as a fraction of its height) and where the drawn line ends.
-  var LAY = ART === 'p-tang-'
-    ? { mouse: TANG_MOUSE, mole: TANG_MOLE, human: TANG_HUMAN, whale: TANG_WHALE, shark: TANG_SHARK, base: TANG_BASE, right: TANG_RIGHT }
-    : { mouse: 0.078, mole: 0.220, human: 0.509, whale: 0.745, shark: 0.819, base: 0.0075, right: 0.481 };
+  // The procession, in lifespan order (AnAge maximum lifespan). x is each figure's centre as a fraction of the
+  // painting's width for each art series; z is how far the camera pushes in on it.
+  var SPECIES = [
+    { name: 'House mouse', years: '4 years', uk: 0.043, tang: 0.040, z: 2.7 },
+    { name: 'Naked mole-rat', years: '31 years', uk: 0.114, tang: 0.114, z: 2.7 },
+    { name: 'Brandt’s bat', years: '41 years', uk: 0.190, tang: 0.183, z: 2.7 },
+    { name: 'Horse', years: '57 years', uk: 0.257, tang: 0.270, z: 2.0 },
+    { name: 'Asian elephant', years: '80 years', uk: 0.371, tang: 0.430, z: 1.7 },
+    { name: 'Human', years: '122 years', uk: 0.483, tang: 0.536, z: 2.0 },
+    { name: 'Galápagos tortoise', years: '177 years', uk: 0.567, tang: 0.614, z: 2.2 },
+    { name: 'Bowhead whale', years: '211 years, estimated', uk: 0.721, tang: 0.750, z: 1.45 },
+    { name: 'Greenland shark', years: '392 years, estimated', uk: 0.843, tang: 0.857, z: 1.9 },
+    { name: 'Ocean quahog', years: '507 years', uk: 0.954, tang: 0.964, z: 2.7 }
+  ];
+  var TANG = ART === 'p-tang-';
+  // baseline offset from the painting's centre (fraction of its height) and where the drawn line ends
+  var LAY = TANG ? { base: 0.1923, right: 0.49 } : { base: 0.4576, right: 0.487 };
   var SOURCES = [
-    { src: 'assets/img/' + ART + 'lineup.webp?v=uk1', boostTo: 0.42, boost: 3.0 },   // the small animals get more points than their area would earn
-    { src: 'assets/img/' + ART + 'species.webp?v=uk1' },
-    { src: 'assets/img/' + ART + 'human.webp?v=uk1' },
-    { src: 'assets/img/' + ART + 'tissue.webp?v=uk1' },
-    { src: 'assets/img/' + ART + 'cell.webp?v=uk1' },
-    { src: 'assets/img/' + ART + 'molecule.webp?v=uk1' }
+    { src: 'assets/img/' + ART + 'lineup.webp?v=r2', boostTo: 0.22, boost: 2.6 },   // the small animals get more points than their area would earn
+    { src: 'assets/img/' + ART + 'species.webp?v=r2' },
+    { src: 'assets/img/' + ART + 'human.webp?v=r2' },
+    { src: 'assets/img/' + ART + 'tissue.webp?v=r2' },
+    { src: 'assets/img/' + ART + 'cell.webp?v=r2' },
+    { src: 'assets/img/' + ART + 'molecule.webp?v=r2' }
   ];
 
   /* The road. p is scroll progress through the hero, 0..1.
      x is the place along the lifespan drawing (0 left edge, 1 right edge); z is how far the camera is pushed in. */
-  var STOPS = [
-    { p: 0.000, x: 0.50, z: 1.00 },
-    { p: 0.030, x: 0.50, z: 1.00 },
-    { p: 0.095, x: LAY.mouse, z: 2.6 },
-    { p: 0.160, x: LAY.mole, z: 2.6 },
-    { p: 0.225, x: LAY.human, z: 1.9 },
-    { p: 0.290, x: LAY.whale, z: 1.35 },
-    { p: 0.350, x: LAY.shark, z: 1.35 },
-    { p: 0.415, x: 1.300, z: 1.18 },
-    { p: 1.000, x: 1.300, z: 1.18 }
-  ];
+  var P0 = 0.06, STEP = 0.042;
+  var STOPS = [{ p: 0.000, x: 0.50, z: 1.00 }, { p: 0.030, x: 0.50, z: 1.00 }];
+  var BEATS = [];
+  SPECIES.forEach(function (s, k) {
+    var p = P0 + STEP * k;
+    STOPS.push({ p: p, x: TANG ? s.tang : s.uk, z: s.z });
+    BEATS.push({ p: p, name: s.name, sub: 'Maximum lifespan &nbsp;/&nbsp; ' + s.years, w: 0.021 });
+  });
+  var PEND = P0 + STEP * SPECIES.length;           // the camera runs on past the last animal
+  STOPS.push({ p: PEND + 0.02, x: 1.30, z: 1.18 }, { p: 1.0, x: 1.30, z: 1.18 });
+  BEATS.push({ p: PEND + 0.025, name: '<i>One order of magnitude</i>', sub: 'Ten times the human record', w: 0.03 });
   // Which drawing the points hold: [p, stage]. Flat stretches are where a drawing rests.
-  var STAGE = [[0, 0], [0.445, 0], [0.505, 1], [0.535, 1], [0.590, 2], [0.620, 2], [0.680, 3], [0.710, 3], [0.770, 4], [0.800, 4], [0.860, 5], [1, 5]];
-  var BEATS = [
-    { p: 0.095, name: 'House mouse', sub: 'Maximum lifespan &nbsp;/&nbsp; 4 years' },
-    { p: 0.160, name: 'Naked mole-rat', sub: 'Maximum lifespan &nbsp;/&nbsp; 31 years' },
-    { p: 0.225, name: 'Human', sub: 'Maximum lifespan &nbsp;/&nbsp; 122 years' },
-    { p: 0.290, name: 'Bowhead whale', sub: 'Maximum lifespan &nbsp;/&nbsp; 211 years, estimated' },
-    { p: 0.350, name: 'Greenland shark', sub: 'Maximum lifespan &nbsp;/&nbsp; 392 years, estimated' },
-    { p: 0.420, name: '<i>One order of magnitude</i>', sub: 'Ten times the human record', w: 0.05 },
-    { p: 0.520, name: 'Species', sub: 'Across scales &nbsp;/&nbsp; Pan-species models' },
-    { p: 0.605, name: 'Human', sub: 'Across scales &nbsp;/&nbsp; Human health models' },
-    { p: 0.695, name: 'Tissue', sub: 'Across scales &nbsp;/&nbsp; Virtual tissues' },
-    { p: 0.785, name: 'Cell', sub: 'Across scales &nbsp;/&nbsp; Virtual cells' },
-    { p: 0.875, name: 'Molecule', sub: 'Across scales &nbsp;/&nbsp; Protein models and design', w: 0.045, last: true }
-  ];
+  var STAGE = [[0, 0], [0.53, 0], [0.575, 1], [0.60, 1], [0.65, 2], [0.675, 2], [0.725, 3], [0.75, 3], [0.80, 4], [0.825, 4], [0.875, 5], [1, 5]];
+  BEATS.push(
+    { p: 0.588, name: 'Species', sub: 'Across scales &nbsp;/&nbsp; Pan-species models', w: 0.024 },
+    { p: 0.663, name: 'Human', sub: 'Across scales &nbsp;/&nbsp; Human health models', w: 0.024 },
+    { p: 0.738, name: 'Tissue', sub: 'Across scales &nbsp;/&nbsp; Virtual tissues', w: 0.024 },
+    { p: 0.813, name: 'Cell', sub: 'Across scales &nbsp;/&nbsp; Virtual cells', w: 0.024 },
+    { p: 0.890, name: 'Molecule', sub: 'Across scales &nbsp;/&nbsp; Protein models and design', w: 0.03, last: true }
+  );
   var SOAK_FROM = 0.925, SOAK_TO = 0.992;
 
   function ease(t) { return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2; }
@@ -195,7 +203,7 @@
   ].join('\n');
 
   // The sheet: painted blue that drifts, the open dotted rule, and the turn to paper.
-  var GROUND = ART === 'p-tang-' ? 'vec3(TANG_R, TANG_G, TANG_B)' : 'vec3(0.0, 0.235, 0.55)';
+  var GROUND = ART === 'p-tang-' ? 'vec3(0.66, 0.47, 0.27)' : 'vec3(0.004, 0.30, 0.56)';
   var ground = program(
     'attribute vec2 a; varying vec2 vUv; void main(){ vUv = a*0.5+0.5; gl_Position = vec4(a,0.,1.); }',
     ['precision highp float;', 'varying vec2 vUv;',
@@ -230,7 +238,7 @@
     ['precision highp float;',
       'attribute vec4 aA, aB, aC, aR, aK0, aK1, aK2, aK3, aK4, aK5;',
       'uniform vec2 uRes, uOff0, uOffC, uMouse;',
-      'uniform float uSc0, uScC, uS, uTime, uIntro, uPix, uFade, uSize, uBurst;',
+      'uniform float uSc0, uScC, uS, uTime, uIntro, uPix, uFade, uSize, uBurst; uniform vec3 uFlight;',
       'varying float vAlpha; varying vec3 vCol;',
       'void main(){',
       '  vec2 p0 = aA.xy*uSc0 + uOff0;',
@@ -246,7 +254,7 @@
       '  vCol = aK0.rgb*max(0.0, 1.0-abs(s)) + aK1.rgb*max(0.0, 1.0-abs(s-1.0)) + aK2.rgb*max(0.0, 1.0-abs(s-2.0))',
       '       + aK3.rgb*max(0.0, 1.0-abs(s-3.0)) + aK4.rgb*max(0.0, 1.0-abs(s-4.0)) + aK5.rgb*max(0.0, 1.0-abs(s-5.0));',
       // in flight a point lightens toward the colour of paper, so a dissolve reads as light, then settles into paint
-      '  vCol = mix(vCol, vec3(0.95, 0.94, 0.90), mid*0.55);',
+      '  vCol = mix(vCol, uFlight, mid*0.55);',
       // in flight the points ride a slow turning current
       '  float ang = aR.y*6.2832 + uTime*0.35 + pos.y*0.0021 + pos.x*0.0013;',
       '  vec2 flow = vec2(cos(ang), sin(ang)) * (0.35 + aR.w) + vec2(sin(pos.y*0.006 + uTime*0.5), cos(pos.x*0.006 - uTime*0.4))*0.6;',
@@ -278,7 +286,7 @@
   if (!ground || !points) return;
 
   var GU = uniforms(ground, ['uRes', 'uMouse', 'uTime', 'uSoak', 'uLineY', 'uLineX', 'uBeyond', 'uGrain']);
-  var PU = uniforms(points, ['uRes', 'uOff0', 'uOffC', 'uMouse', 'uSc0', 'uScC', 'uS', 'uTime', 'uIntro', 'uPix', 'uFade', 'uSize', 'uBurst']);
+  var PU = uniforms(points, ['uFlight', 'uRes', 'uOff0', 'uOffC', 'uMouse', 'uSc0', 'uScC', 'uS', 'uTime', 'uIntro', 'uPix', 'uFade', 'uSize', 'uBurst']);
 
   var quad = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, quad);
   gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
@@ -385,9 +393,9 @@
     if (mouse.tx > -9000) { mouse.x += (mouse.tx - mouse.x) * 0.16; mouse.y += (mouse.ty - mouse.y) * 0.16; }
 
     // lifespan drawing: a wide strip standing on a baseline
-    var sc0 = cam.z * W * 0.92 / aspect0;
+    var sc0 = cam.z * W * 0.84 / aspect0;
     var off0x = W * 0.5 - (cam.x - 0.5) * aspect0 * sc0;
-    var baseY = H * 0.72;
+    var baseY = H * 0.84;
     var off0y = baseY - LAY.base * sc0;
     // scale drawings: a disc on the right, beside the caption
     var wide = W / dpr > 1100;
@@ -401,7 +409,7 @@
     gl.uniform2f(GU.uRes, W, H); gl.uniform2f(GU.uMouse, mouse.x, mouse.y);
     gl.uniform1f(GU.uTime, now / 1000); gl.uniform1f(GU.uSoak, soak);
     gl.uniform1f(GU.uLineY, baseY); gl.uniform1f(GU.uLineX, off0x + aspect0 * sc0 * LAY.right);
-    gl.uniform1f(GU.uBeyond, smooth(0.36, 0.40, p) * (1 - smooth(0.445, 0.48, p)));
+    gl.uniform1f(GU.uBeyond, smooth(PEND - 0.03, PEND + 0.01, p) * (1 - smooth(PEND + 0.05, PEND + 0.08, p)));
     gl.uniform1f(GU.uGrain, 0.035);
     gl.drawArrays(gl.TRIANGLES, 0, 3);
 
@@ -413,6 +421,7 @@
     for (var c6 = 0; c6 < 6; c6++) { if (cA[c6] < 0) continue; gl.enableVertexAttribArray(cA[c6]); gl.vertexAttribPointer(cA[c6], 4, gl.UNSIGNED_BYTE, true, 24, c6 * 4); }
     gl.uniform2f(PU.uRes, W, H); gl.uniform2f(PU.uOff0, off0x, off0y); gl.uniform2f(PU.uOffC, offCx, offCy);
     gl.uniform2f(PU.uMouse, mouse.x, mouse.y);
+    gl.uniform3f(PU.uFlight, TANG ? 0.11 : 0.95, TANG ? 0.11 : 0.94, TANG ? 0.10 : 0.90);
     gl.uniform1f(PU.uSc0, sc0); gl.uniform1f(PU.uScC, scC); gl.uniform1f(PU.uS, s);
     gl.uniform1f(PU.uTime, now / 1000); gl.uniform1f(PU.uIntro, intro); gl.uniform1f(PU.uPix, dpr);
     var disc = clamp(s, 0, 1);                       // 0 on the lifespan strip, 1 on the discs
