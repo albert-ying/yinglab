@@ -532,3 +532,4 @@ html[data-art="tang"] .portrait img { object-fit: contain; border-radius: 0; fil
 .pd-meta { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; text-transform: none; letter-spacing: 0; }
 .pd-meta .pub-journal { font-size: 1.25rem; }
 html[data-art="tang"] .pub-under .pub-authors { display: block; color: var(--ink-2); }
+html[data-art="tang"] .portrait img { aspect-ratio: 1; max-width: 420px; }

@@ -3,7 +3,7 @@
   // An alternate art series can be shown with ?art=tang; image names differ only by prefix.
   if (document.documentElement.getAttribute('data-art') === 'tang') {
     Array.prototype.forEach.call(document.querySelectorAll('img[src*="assets/img/uk-"], img[src*="assets/img/p-"]'), function (im) {
-      im.src = im.getAttribute('src').replace('assets/img/uk-', 'assets/img/tang-').replace('assets/img/p-', 'assets/img/p-tang-').replace(/\.webp(\?.*)?$/, '.webp?v=t5');
+      im.src = im.getAttribute('src').replace('assets/img/uk-', 'assets/img/tang-').replace('assets/img/p-', 'assets/img/p-tang-').replace(/\.webp(\?.*)?$/, '.webp?v=t10');
     });
   }
   var NS = 'http://www.w3.org/2000/svg';
