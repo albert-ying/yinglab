@@ -94,12 +94,15 @@
   function keep(t) { return t.replace(/\bde novo\b/g, 'de\u00a0novo'); }
 
   var pubList = document.getElementById('pub-list');
-  // The home page shows the newest few (data-limit); the publications page shows all.
+  // The home page shows a few chosen papers (data-limit); the publications page shows all.
   var pubLimit = pubList ? parseInt(pubList.getAttribute('data-limit'), 10) || Infinity : 0;
   // Each paper is a full-width band of its painting with the text beneath; it opens a detail view.
   var dlg = document.getElementById('pub-dialog');
   var TANGART = document.documentElement.getAttribute('data-art') === 'tang';
-  (window.LAB_PUBS || []).slice(0, pubLimit).forEach(function (p, k) {
+  // The home page shows the papers marked home: 1..n, in that order: the two flagship preprints, then first-author journal papers.
+  var pubsShown = (window.LAB_PUBS || []).slice();
+  if (pubLimit !== Infinity) pubsShown = pubsShown.filter(function (p) { return p.home; }).sort(function (a, b) { return a.home - b.home; }).slice(0, pubLimit);
+  pubsShown.forEach(function (p, k) {
     var li = h('li', 'pub');
     li.setAttribute('data-tag', p.tag);
     var band = h('button', 'pub-band'); band.type = 'button';
@@ -109,7 +112,7 @@
     var plate = h('span', 'pub-plate');
     var vline = h('span', 'pub-venue-line');
     vline.appendChild(h('b', 'pub-journal', p.venue));
-    vline.appendChild(h('span', 'pub-meta', p.year + (p.preprint ? ' · Preprint' : '')));
+    vline.appendChild(h('span', 'pub-meta', (p.yearLabel || p.year) + (p.preprint ? ' · Preprint' : '')));
     plate.appendChild(vline);
     plate.appendChild(h('span', 'pub-title', keep(p.title)));
     var a = h('span', 'pub-authors');
@@ -126,7 +129,7 @@
     if (!dlg) { window.open(p.url, '_blank', 'noopener'); return; }
     dlg.querySelector('.pd-img').src = p.art ? p.art + '?v=t12' : '';
     var pm = dlg.querySelector('.pd-meta'); pm.textContent = '';
-    pm.appendChild(h('b', 'pub-journal', p.venue)); pm.appendChild(h('span', 'pub-meta', p.year + (p.preprint ? ' · Preprint' : '')));
+    pm.appendChild(h('b', 'pub-journal', p.venue)); pm.appendChild(h('span', 'pub-meta', (p.yearLabel || p.year) + (p.preprint ? ' · Preprint' : '')));
     dlg.querySelector('.pd-title').textContent = keep(p.title);
     var au = dlg.querySelector('.pd-authors'); au.textContent = '';
     authorsInto(au, p.authors);
