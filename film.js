@@ -109,20 +109,6 @@
   var ART = document.documentElement.getAttribute('data-art') === 'tang' ? 'p-tang-' : 'p-';
   // Where each figure sits in the procession image (fraction of its width), where the baseline is
   // (offset from the image centre as a fraction of its height) and where the drawn line ends.
-  // The procession, in lifespan order (AnAge maximum lifespan). x is each figure's centre as a fraction of the
-  // painting's width for each art series; z is how far the camera pushes in on it.
-  var SPECIES = [
-    { name: 'House mouse', years: '4 years', uk: 0.043, tang: 0.040, z: 2.7 },
-    { name: 'Naked mole-rat', years: '31 years', uk: 0.114, tang: 0.114, z: 2.7 },
-    { name: 'Brandt’s bat', years: '41 years', uk: 0.190, tang: 0.183, z: 2.7 },
-    { name: 'Horse', years: '57 years', uk: 0.257, tang: 0.270, z: 2.0 },
-    { name: 'Asian elephant', years: '80 years', uk: 0.371, tang: 0.430, z: 1.7 },
-    { name: 'Human', years: '122 years', uk: 0.483, tang: 0.536, z: 2.0 },
-    { name: 'Galápagos tortoise', years: '177 years', uk: 0.567, tang: 0.614, z: 2.2 },
-    { name: 'Bowhead whale', years: '211 years, estimated', uk: 0.721, tang: 0.750, z: 1.45 },
-    { name: 'Greenland shark', years: '392 years, estimated', uk: 0.843, tang: 0.857, z: 1.9 },
-    { name: 'Ocean quahog', years: '507 years', uk: 0.954, tang: 0.964, z: 2.7 }
-  ];
   var TANG = ART === 'p-tang-';
   // baseline offset from the painting's centre (fraction of its height) and where the drawn line ends
   var LAY = TANG ? { base: 0.1923, right: 0.49 } : { base: 0.4576, right: 0.487 };
@@ -135,29 +121,26 @@
     { src: 'assets/img/' + ART + 'molecule.webp?v=r2' }
   ];
 
-  /* The road. p is scroll progress through the hero, 0..1.
-     x is the place along the lifespan drawing (0 left edge, 1 right edge); z is how far the camera is pushed in. */
-  var P0 = 0.06, STEP = 0.042;
-  var STOPS = [{ p: 0.000, x: 0.50, z: 1.00 }, { p: 0.030, x: 0.50, z: 1.00 }];
-  var BEATS = [];
-  SPECIES.forEach(function (s, k) {
-    var p = P0 + STEP * k;
-    STOPS.push({ p: p, x: TANG ? s.tang : s.uk, z: s.z });
-    BEATS.push({ p: p, name: s.name, sub: 'Maximum lifespan &nbsp;/&nbsp; ' + s.years, w: 0.021 });
-  });
-  var PEND = P0 + STEP * SPECIES.length;           // the camera runs on past the last animal
-  STOPS.push({ p: PEND + 0.02, x: 1.30, z: 1.18 }, { p: 1.0, x: 1.30, z: 1.18 });
-  BEATS.push({ p: PEND + 0.025, name: '<i>One order of magnitude</i>', sub: 'Ten times the human record', w: 0.03 });
-  // Which drawing the points hold: [p, stage]. Flat stretches are where a drawing rests.
-  var STAGE = [[0, 0], [0.53, 0], [0.575, 1], [0.60, 1], [0.65, 2], [0.675, 2], [0.725, 3], [0.75, 3], [0.80, 4], [0.825, 4], [0.875, 5], [1, 5]];
-  BEATS.push(
-    { p: 0.588, name: 'Species', sub: 'Across scales &nbsp;/&nbsp; Pan-species models', w: 0.024 },
-    { p: 0.663, name: 'Human', sub: 'Across scales &nbsp;/&nbsp; Human health models', w: 0.024 },
-    { p: 0.738, name: 'Tissue', sub: 'Across scales &nbsp;/&nbsp; Virtual tissues', w: 0.024 },
-    { p: 0.813, name: 'Cell', sub: 'Across scales &nbsp;/&nbsp; Virtual cells', w: 0.024 },
-    { p: 0.890, name: 'Molecule', sub: 'Across scales &nbsp;/&nbsp; Protein models and design', w: 0.03, last: true }
-  );
-  var SOAK_FROM = 0.925, SOAK_TO = 0.992;
+  /* The road. p is scroll progress through the hero, 0..1. Three perspectives, each passed through quickly:
+     species (one sweep along the procession), scales (the points re-form from species to molecule) and the model
+     (the points gather into a network). x is the place along the procession (0 left, 1 right); z is the push-in. */
+  var STOPS = [
+    { p: 0.00, x: 0.50, z: 1.00 },
+    { p: 0.04, x: 0.50, z: 1.00 },
+    { p: 0.10, x: 0.10, z: 1.75 },
+    { p: 0.27, x: 0.92, z: 1.75 },
+    { p: 0.32, x: 0.50, z: 1.00 },
+    { p: 1.00, x: 0.50, z: 1.00 }
+  ];
+  // Which drawing the points hold: [p, stage]. 0 procession, 1-5 species to molecule, 6 the network.
+  var STAGE = [[0, 0], [0.33, 0], [0.37, 1], [0.39, 1], [0.43, 2], [0.45, 2], [0.49, 3], [0.51, 3], [0.55, 4], [0.57, 4], [0.61, 5], [0.63, 5], [0.69, 6], [1, 6]];
+  var BEATS = [
+    { p: 0.185, name: 'Across species', sub: 'Maximum lifespan spans more than a hundredfold, from a 4-year mouse to a 507-year ocean quahog', w: 0.09 },
+    { p: 0.50, name: 'Across scales', sub: 'Species &nbsp;/&nbsp; human &nbsp;/&nbsp; tissue &nbsp;/&nbsp; cell &nbsp;/&nbsp; molecule', w: 0.13 },
+    { p: 0.745, name: 'One model', sub: 'AI that learns from every species and every scale', w: 0.06, last: true }
+  ];
+  var PEND = 0.30;
+  var SOAK_FROM = 0.84, SOAK_TO = 0.95;
 
   function ease(t) { return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2; }
   function camera(p) {
@@ -176,7 +159,7 @@
         return a[1] + (b[1] - a[1]) * clamp((p - a[0]) / (b[0] - a[0] || 1), 0, 1);
       }
     }
-    return 5;
+    return 6;
   }
 
   /* ---- programs ---- */
@@ -236,23 +219,23 @@
   // The points. Each carries its place in all six drawings and moves between them.
   var points = program(
     ['precision highp float;',
-      'attribute vec4 aA, aB, aC, aR, aK0, aK1, aK2, aK3, aK4, aK5;',
+      'attribute vec4 aA, aB, aC, aR, aK0, aK1, aK2, aK3, aK4, aK5; attribute vec2 aN;',
       'uniform vec2 uRes, uOff0, uOffC, uMouse;',
-      'uniform float uSc0, uScC, uS, uTime, uIntro, uPix, uFade, uSize, uBurst; uniform vec3 uFlight;',
+      'uniform float uSc0, uScC, uS, uTime, uIntro, uPix, uFade, uSize, uBurst; uniform vec3 uFlight, uNetCol; uniform vec2 uOffN; uniform float uScN;',
       'varying float vAlpha; varying vec3 vCol;',
       'void main(){',
       '  vec2 p0 = aA.xy*uSc0 + uOff0;',
-      '  vec2 p1 = aA.zw*uScC + uOffC, p2 = aB.xy*uScC + uOffC, p3 = aB.zw*uScC + uOffC, p4 = aC.xy*uScC + uOffC, p5 = aC.zw*uScC + uOffC;',
+      '  vec2 p1 = aA.zw*uScC + uOffC, p2 = aB.xy*uScC + uOffC, p3 = aB.zw*uScC + uOffC, p4 = aC.xy*uScC + uOffC, p5 = aC.zw*uScC + uOffC, p6 = aN*uScN + uOffN;',
       // each point leaves and arrives on its own clock, so a drawing dissolves and gathers rather than slides
       '  float i = floor(uS); float t = uS - i;',
       '  float tt = smoothstep(aR.x*0.5, 0.5 + aR.x*0.5, t);',
       '  tt = tt*tt*(3.0-2.0*tt);',
       '  float s = i + tt;',
       '  vec2 pos = p0*max(0.0, 1.0-abs(s)) + p1*max(0.0, 1.0-abs(s-1.0)) + p2*max(0.0, 1.0-abs(s-2.0))',
-      '           + p3*max(0.0, 1.0-abs(s-3.0)) + p4*max(0.0, 1.0-abs(s-4.0)) + p5*max(0.0, 1.0-abs(s-5.0));',
+      '           + p3*max(0.0, 1.0-abs(s-3.0)) + p4*max(0.0, 1.0-abs(s-4.0)) + p5*max(0.0, 1.0-abs(s-5.0)) + p6*max(0.0, 1.0-abs(s-6.0));',
       '  float mid = sin(3.14159*tt);',
       '  vCol = aK0.rgb*max(0.0, 1.0-abs(s)) + aK1.rgb*max(0.0, 1.0-abs(s-1.0)) + aK2.rgb*max(0.0, 1.0-abs(s-2.0))',
-      '       + aK3.rgb*max(0.0, 1.0-abs(s-3.0)) + aK4.rgb*max(0.0, 1.0-abs(s-4.0)) + aK5.rgb*max(0.0, 1.0-abs(s-5.0));',
+      '       + aK3.rgb*max(0.0, 1.0-abs(s-3.0)) + aK4.rgb*max(0.0, 1.0-abs(s-4.0)) + aK5.rgb*max(0.0, 1.0-abs(s-5.0)) + uNetCol*max(0.0, 1.0-abs(s-6.0));',
       // in flight a point lightens toward the colour of paper, so a dissolve reads as light, then settles into paint
       '  vCol = mix(vCol, uFlight, mid*0.55);',
       // in flight the points ride a slow turning current
@@ -286,13 +269,14 @@
   if (!ground || !points) return;
 
   var GU = uniforms(ground, ['uTex', 'uRes', 'uMouse', 'uTime', 'uSoak', 'uLineY', 'uLineX', 'uBeyond', 'uGrain']);
-  var PU = uniforms(points, ['uFlight', 'uRes', 'uOff0', 'uOffC', 'uMouse', 'uSc0', 'uScC', 'uS', 'uTime', 'uIntro', 'uPix', 'uFade', 'uSize', 'uBurst']);
+  var PU = uniforms(points, ['uNetCol', 'uOffN', 'uScN', 'uFlight', 'uRes', 'uOff0', 'uOffC', 'uMouse', 'uSc0', 'uScC', 'uS', 'uTime', 'uIntro', 'uPix', 'uFade', 'uSize', 'uBurst']);
 
   var quad = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, quad);
   gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
-  var pbuf = gl.createBuffer(), cbuf = gl.createBuffer();
+  var pbuf = gl.createBuffer(), cbuf = gl.createBuffer(), nbuf = gl.createBuffer();
   var gA = gl.getAttribLocation(ground, 'a');
   var pA = ['aA', 'aB', 'aC', 'aR'].map(function (n) { return gl.getAttribLocation(points, n); });
+  var nA = gl.getAttribLocation(points, 'aN');
   var cA = ['aK0', 'aK1', 'aK2', 'aK3', 'aK4', 'aK5'].map(function (n) { return gl.getAttribLocation(points, n); });
 
   /* ---- sample the drawings into point positions ---- */
@@ -343,6 +327,19 @@
     var cols = new Uint8Array(N * 24);
     for (var n2 = 0; n2 < N; n2++) for (var k2 = 0; k2 < 6; k2++) cols.set(sets[k2].col.subarray(n2 * 4, n2 * 4 + 4), n2 * 24 + k2 * 4);
     gl.bindBuffer(gl.ARRAY_BUFFER, cbuf); gl.bufferData(gl.ARRAY_BUFFER, cols, gl.STATIC_DRAW);
+    // The last drawing is the model itself: a layered network. Points sit on its nodes and along its edges.
+    var LAYERS = [6, 9, 9, 6, 1], nodes = [];
+    LAYERS.forEach(function (cnt, li) { for (var q = 0; q < cnt; q++) nodes.push({ x: (li / (LAYERS.length - 1) - 0.5) * 1.6, y: (cnt === 1 ? 0 : (q / (cnt - 1) - 0.5)) * 0.9, l: li }); });
+    var edges = [];
+    nodes.forEach(function (a) { nodes.forEach(function (b) { if (b.l === a.l + 1) edges.push([a, b]); }); });
+    var net = new Float32Array(N * 2);
+    for (var n3 = 0; n3 < N; n3++) {
+      var x, y;
+      if (rnd() < 0.42) { var nd = nodes[Math.floor(rnd() * nodes.length)], ang = rnd() * 6.2832, rr = Math.sqrt(rnd()) * (nd.l === 4 ? 0.055 : 0.032); x = nd.x + Math.cos(ang) * rr; y = nd.y + Math.sin(ang) * rr; }
+      else { var e = edges[Math.floor(rnd() * edges.length)], u = rnd(); x = e[0].x + (e[1].x - e[0].x) * u; y = e[0].y + (e[1].y - e[0].y) * u + (rnd() - 0.5) * 0.004; }
+      net[n3 * 2] = x; net[n3 * 2 + 1] = y;
+    }
+    gl.bindBuffer(gl.ARRAY_BUFFER, nbuf); gl.bufferData(gl.ARRAY_BUFFER, net, gl.STATIC_DRAW);
     ready = true; introStart = performance.now() + 200;
     hero.classList.add('is-film');
     if (!reduced) splitAll();
@@ -409,7 +406,7 @@
     gl.uniform2f(GU.uRes, W, H); gl.uniform2f(GU.uMouse, mouse.x, mouse.y);
     gl.uniform1f(GU.uTime, now / 1000); gl.uniform1f(GU.uSoak, soak);
     gl.uniform1f(GU.uLineY, baseY); gl.uniform1f(GU.uLineX, off0x + aspect0 * sc0 * LAY.right);
-    gl.uniform1f(GU.uBeyond, smooth(PEND - 0.03, PEND + 0.01, p) * (1 - smooth(PEND + 0.05, PEND + 0.08, p)));
+    gl.uniform1f(GU.uBeyond, 0.0);
     gl.uniform1f(GU.uGrain, TANG ? 0.035 : 0.006);
     gl.uniform1f(GU.uTex, TANG ? 1.0 : 0.12);
     gl.drawArrays(gl.TRIANGLES, 0, 3);
@@ -420,12 +417,15 @@
     for (var a = 0; a < 4; a++) { gl.enableVertexAttribArray(pA[a]); gl.vertexAttribPointer(pA[a], 4, gl.FLOAT, false, 64, a * 16); }
     gl.bindBuffer(gl.ARRAY_BUFFER, cbuf);
     for (var c6 = 0; c6 < 6; c6++) { if (cA[c6] < 0) continue; gl.enableVertexAttribArray(cA[c6]); gl.vertexAttribPointer(cA[c6], 4, gl.UNSIGNED_BYTE, true, 24, c6 * 4); }
+    gl.bindBuffer(gl.ARRAY_BUFFER, nbuf); if (nA >= 0) { gl.enableVertexAttribArray(nA); gl.vertexAttribPointer(nA, 2, gl.FLOAT, false, 8, 0); }
+    gl.uniform3f(PU.uNetCol, TANG ? 0.18 : 0.11, TANG ? 0.12 : 0.11, TANG ? 0.06 : 0.10);
+    gl.uniform2f(PU.uOffN, W * (wide ? 0.66 : 0.5), H * 0.52); gl.uniform1f(PU.uScN, H * (wide ? 0.5 : 0.38));
     gl.uniform2f(PU.uRes, W, H); gl.uniform2f(PU.uOff0, off0x, off0y); gl.uniform2f(PU.uOffC, offCx, offCy);
     gl.uniform2f(PU.uMouse, mouse.x, mouse.y);
     gl.uniform3f(PU.uFlight, 0.11, 0.11, 0.10);
     gl.uniform1f(PU.uSc0, sc0); gl.uniform1f(PU.uScC, scC); gl.uniform1f(PU.uS, s);
     gl.uniform1f(PU.uTime, now / 1000); gl.uniform1f(PU.uIntro, intro); gl.uniform1f(PU.uPix, dpr);
-    var disc = clamp(s, 0, 1);                       // 0 on the lifespan strip, 1 on the discs
+    var disc = clamp(s, 0, 1);                       // 0 on the lifespan strip, 1 on the discs and the network
     gl.uniform1f(PU.uSize, (1.7 + 0.6 * (cam.z - 1)) * (1 - disc) + 2.7 * disc);
     gl.uniform1f(PU.uFade, (0.9 * (1 - disc) + 0.85 * disc) * (1 - smooth(SOAK_FROM, SOAK_FROM + 0.05, p)));
     gl.uniform1f(PU.uBurst, smooth(SOAK_FROM - 0.012, SOAK_FROM + 0.05, p));
@@ -443,7 +443,7 @@
         var o = 1 - smooth(w * 0.6, w * 1.2, dist);
         if (b.last && p > b.p) o = 1 - smooth(SOAK_FROM, SOAK_FROM + 0.03, p);
         c.el.style.opacity = o;
-        c.el.style.transform = 'translateY(' + ((p - b.p) * -420) + 'px)';
+        c.el.style.transform = 'translateY(' + ((p - b.p) * -160) + 'px)';
       });
       meterBar.style.transform = 'scaleY(' + p + ')';
       meter.style.opacity = (1 - out) * (1 - soak);

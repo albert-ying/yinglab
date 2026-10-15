@@ -336,7 +336,7 @@ html[data-art="tang"] .nav .mark { color: #1d1c19; --mark-in: #a8784a; }
 /* ---------- Hero film: a pinned WebGL scene driven by scroll ---------- */
 .film, .scroll-cue, .film-cap { display: none; }
 .hero .stage { display: contents; }
-.hero.is-film { height: 1500vh; min-height: 0; padding: 0; display: block; overflow: visible; background: var(--blue); }
+.hero.is-film { height: 700vh; min-height: 0; padding: 0; display: block; overflow: visible; background: var(--blue); }
 .hero.is-film .stage { position: sticky; top: 0; height: 100vh; height: 100svh; overflow: hidden; display: flex; flex-direction: column; padding-top: clamp(112px, 17vh, 176px); padding-bottom: clamp(28px, 5vh, 56px); }
 .hero.is-film .film { display: block; position: absolute; inset: 0; width: 100%; height: 100%; z-index: 0; }
 .hero.is-film .hero-copy, .hero.is-film .hero-foot { z-index: 2; will-change: opacity, transform; }
@@ -477,3 +477,5 @@ html[data-art="tang"] .hero-foot .chip { background: rgba(29, 28, 25, 0.12); col
 .pd-link { justify-self: start; margin-top: 10px; }
 .pd-close { position: absolute; top: 12px; right: 12px; width: 38px; height: 38px; border: 0; border-radius: 50%; background: rgba(250, 249, 246, 0.92); font-size: 1.5rem; line-height: 1; cursor: pointer; color: var(--ink); }
 @media (max-width: 760px) { .pd-grid { grid-template-columns: 1fr; } .pd-img { aspect-ratio: 16 / 10; } .pub-plate .pub-authors { display: none; } }
+
+.hero.is-film .film-cap span { max-width: 46ch; line-height: 1.6; }
