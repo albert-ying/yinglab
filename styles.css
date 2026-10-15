@@ -479,3 +479,17 @@ html[data-art="tang"] .hero-foot .chip { background: rgba(29, 28, 25, 0.12); col
 @media (max-width: 760px) { .pd-grid { grid-template-columns: 1fr; } .pd-img { aspect-ratio: 16 / 10; } .pub-plate .pub-authors { display: none; } }
 
 .hero.is-film .film-cap span { max-width: 46ch; line-height: 1.6; }
+
+/* Tang (default): the whole page in gold. Painting gold for the former blue sheets, a lighter silk for reading sections. */
+html[data-art="tang"] { --paper: #efe3cb; --white: #efe3cb; --paper-2: #efe3cb; --blue: #c0915b; --muted: #5e5141; --rule: rgba(29, 28, 25, 0.22); background: #1d1c19; }
+html[data-art="tang"] body { background: #efe3cb; }
+html[data-art="tang"] .blue { --bg: #c0915b; background-color: #c0915b; --muted: rgba(29, 28, 25, 0.72); }
+html[data-art="tang"] .nav.scrolled { background: #efe3cb; }
+html[data-art="tang"] .pub-under { margin-top: 14px; background: none; box-shadow: none; padding: 0 0 22px; text-align: center; justify-items: center; max-width: none; cursor: pointer; border-bottom: 1px solid var(--rule); }
+html[data-art="tang"] .pub-band { min-height: clamp(200px, 30vw, 520px); border-radius: 4px; }
+html[data-art="tang"] .pub-list { gap: 40px; }
+html[data-art="tang"] .pd-grid { grid-template-columns: 1fr; }
+html[data-art="tang"] .pd-img { aspect-ratio: 3 / 2; height: auto; }
+html[data-art="tang"] .pub-dialog { background: #efe3cb; }
+html[data-art="tang"] .pub-under { display: flex; flex-direction: column; align-items: center; gap: 6px; margin-left: auto; margin-right: auto; }
+html[data-art="tang"] .pub-under > * { grid-column: auto; text-align: center; max-width: 760px; }

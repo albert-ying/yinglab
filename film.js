@@ -113,12 +113,12 @@
   // baseline offset from the painting's centre (fraction of its height) and where the drawn line ends
   var LAY = TANG ? { base: 0.1923, right: 0.49 } : { base: 0.4576, right: 0.487 };
   var SOURCES = [
-    { src: 'assets/img/' + ART + 'lineup.webp?v=r2', boostTo: 0.22, boost: 2.6 },   // the small animals get more points than their area would earn
-    { src: 'assets/img/' + ART + 'species.webp?v=r2' },
-    { src: 'assets/img/' + ART + 'human.webp?v=r2' },
-    { src: 'assets/img/' + ART + 'tissue.webp?v=r2' },
-    { src: 'assets/img/' + ART + 'cell.webp?v=r2' },
-    { src: 'assets/img/' + ART + 'molecule.webp?v=r2' }
+    { src: 'assets/img/' + ART + 'lineup.webp?v=t3', boostTo: 0.22, boost: 2.6 },   // the small animals get more points than their area would earn
+    { src: 'assets/img/' + ART + (TANG ? 'brain' : 'species') + '.webp?v=t3' },   // Tang: the brain among the longest-lived species
+    { src: 'assets/img/' + ART + 'human.webp?v=t3' },
+    { src: 'assets/img/' + ART + 'tissue.webp?v=t3' },
+    { src: 'assets/img/' + ART + 'cell.webp?v=t3' },
+    { src: 'assets/img/' + ART + 'molecule.webp?v=t3' }
   ];
 
   /* The road. p is scroll progress through the hero, 0..1. Three perspectives, each passed through quickly:
@@ -133,11 +133,12 @@
     { p: 1.00, x: 0.50, z: 1.00 }
   ];
   // Which drawing the points hold: [p, stage]. 0 procession, 1-5 species to molecule, 6 the network.
-  var STAGE = [[0, 0], [0.33, 0], [0.37, 1], [0.39, 1], [0.43, 2], [0.45, 2], [0.49, 3], [0.51, 3], [0.55, 4], [0.57, 4], [0.61, 5], [0.63, 5], [0.69, 6], [1, 6]];
+  var STAGE = [[0, 0], [0.33, 0], [0.37, 1], [0.44, 1], [0.48, 2], [0.50, 2], [0.54, 3], [0.56, 3], [0.60, 4], [0.62, 4], [0.66, 5], [0.68, 5], [0.73, 6], [1, 6]];
   var BEATS = [
     { p: 0.185, name: 'Across species', sub: 'Maximum lifespan spans more than a hundredfold, from a 4-year mouse to a 507-year ocean quahog', w: 0.09 },
-    { p: 0.50, name: 'Across scales', sub: 'Species &nbsp;/&nbsp; human &nbsp;/&nbsp; tissue &nbsp;/&nbsp; cell &nbsp;/&nbsp; molecule', w: 0.13 },
-    { p: 0.745, name: 'One model', sub: 'AI that learns from every species and every scale', w: 0.06, last: true }
+    { p: 0.405, name: 'Brain resilience', sub: 'The longest-lived species may have the most resilient brains', w: 0.045 },
+    { p: 0.58, name: 'Across scales', sub: 'Human &nbsp;/&nbsp; tissue &nbsp;/&nbsp; cell &nbsp;/&nbsp; molecule', w: 0.11 },
+    { p: 0.785, name: 'AI that does research', sub: 'Models and agents that learn from every species and scale, and propose what to test', w: 0.05, last: true }
   ];
   var PEND = 0.30;
   var SOAK_FROM = 0.84, SOAK_TO = 0.95;
@@ -186,7 +187,9 @@
   ].join('\n');
 
   // The sheet: painted blue that drifts, the open dotted rule, and the turn to paper.
-  var GROUND = ART === 'p-tang-' ? 'vec3(0.66, 0.47, 0.27)' : 'vec3(1.0, 0.996, 0.988)';
+  var GROUND = ART === 'p-tang-' ? 'vec3(0.753, 0.569, 0.357)' : 'vec3(1.0, 0.996, 0.988)';
+  var PAPER = ART === 'p-tang-' ? 'vec3(0.937, 0.890, 0.796)' : 'vec3(0.949, 0.945, 0.929)';   // the section after the hero
+  var GLOW = ART === 'p-tang-' ? 'vec3(0.07, 0.05, 0.02)' : 'vec3(0.04, 0.06, 0.10)';
   var ground = program(
     'attribute vec2 a; varying vec2 vUv; void main(){ vUv = a*0.5+0.5; gl_Position = vec4(a,0.,1.); }',
     ['precision highp float;', 'varying vec2 vUv;',
@@ -200,14 +203,14 @@
       '  vec3 col = blue*(1.0 + uTex*(0.25*(drift-0.5) + 0.07*(brush-0.5)));',
       // a soft pool of light follows the pointer
       '  float md = length((px - uMouse)/uRes.y);',
-      '  col += vec3(0.04, 0.06, 0.10)*exp(-md*md*9.0);',
+      '  col += ' + GLOW + '*exp(-md*md*9.0);',
       '  col += (hash(px + fract(uTime)*71.0) - 0.5)*uGrain;',
       '  if (px.x > uLineX) {',
       '    float onLine = 1.0 - smoothstep(0.6, 1.7, abs(px.y - uLineY));',
       '    float dash = step(0.5, fract((px.x - uLineX)/14.0));',
       '    col = mix(col, vec3(0.11), onLine*(1.0-dash)*uBeyond*0.9);',
       '  }',
-      '  vec3 paper = vec3(0.949, 0.945, 0.929);',
+      '  vec3 paper = ' + PAPER + ';',
       '  vec2 rr = (vUv - vec2(0.5, 0.5))*vec2(asp, 1.0);',
       '  float front = uSoak*(0.62*asp + 0.75) - length(rr) + (fbm(vUv*vec2(asp,1.0)*3.5 + 3.0)-0.5)*0.55 + (fbm(vUv*vec2(asp,1.0)*15.0)-0.5)*0.12;',
       '  float k = smoothstep(0.0, 0.035, front) * step(0.0001, uSoak);',

@@ -3,7 +3,7 @@
   // An alternate art series can be shown with ?art=tang; image names differ only by prefix.
   if (document.documentElement.getAttribute('data-art') === 'tang') {
     Array.prototype.forEach.call(document.querySelectorAll('img[src*="assets/img/uk-"], img[src*="assets/img/p-"]'), function (im) {
-      im.src = im.getAttribute('src').replace('assets/img/uk-', 'assets/img/tang-').replace('assets/img/p-', 'assets/img/p-tang-');
+      im.src = im.getAttribute('src').replace('assets/img/uk-', 'assets/img/tang-').replace('assets/img/p-', 'assets/img/p-tang-').replace(/\.webp(\?.*)?$/, '.webp?v=t3');
     });
   }
   var NS = 'http://www.w3.org/2000/svg';
@@ -228,26 +228,30 @@
   var pubList = document.getElementById('pub-list');
   // Each paper is a full-width band of its painting with the title on a plate in the middle; it opens a detail view.
   var dlg = document.getElementById('pub-dialog');
+  var TANGART = document.documentElement.getAttribute('data-art') === 'tang';
   (window.LAB_PUBS || []).forEach(function (p, k) {
     var li = h('li', 'pub');
     li.setAttribute('data-tag', p.tag);
     var band = h('button', 'pub-band'); band.type = 'button';
-    if (p.img) band.style.backgroundImage = 'url(' + p.img.replace('.webp', '-wide.webp') + '?v=m1), url(' + p.img + '?v=m1)';
+    var art = TANGART && p.img ? p.img.replace('assets/img/paper-', 'assets/img/tang-paper-') : p.img;
+    p.art = art;
+    if (art) band.style.backgroundImage = 'url(' + art.replace('.webp', '-wide.webp') + '?v=t3), url(' + art + '?v=t3)';
     var plate = h('span', 'pub-plate');
     plate.appendChild(h('span', 'pub-meta', p.venue + ' · ' + p.year + (p.preprint ? ' · Preprint' : '')));
     plate.appendChild(h('span', 'pub-title', p.title));
     var a = h('span', 'pub-authors');
     p.authors.split(/(Ying, K\.)/).forEach(function (part) { a.appendChild(part === 'Ying, K.' ? h('b', null, part) : document.createTextNode(part)); });
     plate.appendChild(a);
-    band.appendChild(plate);
+    if (TANGART) { li.appendChild(band); li.appendChild(plate); plate.addEventListener('click', function () { openPub(p); }); plate.classList.add('pub-under'); }
+    else band.appendChild(plate);
     band.setAttribute('aria-label', p.title + ', ' + p.venue + ' ' + p.year + '. Open details.');
     band.addEventListener('click', function () { openPub(p); });
-    li.appendChild(band);
+    if (!TANGART) li.appendChild(band);
     pubList.appendChild(li);
   });
   function openPub(p) {
     if (!dlg) { window.open(p.url, '_blank', 'noopener'); return; }
-    dlg.querySelector('.pd-img').src = p.img ? p.img + '?v=m1' : '';
+    dlg.querySelector('.pd-img').src = p.art ? p.art + '?v=t3' : '';
     dlg.querySelector('.pd-meta').textContent = p.venue + ' · ' + p.year + (p.preprint ? ' · Preprint' : '');
     dlg.querySelector('.pd-title').textContent = p.title;
     var au = dlg.querySelector('.pd-authors'); au.textContent = '';
