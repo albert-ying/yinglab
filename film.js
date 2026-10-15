@@ -1,5 +1,5 @@
-/* Motion layer: line-by-line headlines, rules that draw in, eased wheel scrolling,
-   and the hero film (a pinned WebGL scene whose camera is driven by scroll). */
+/* Motion layer, shared by every page: line-by-line headlines, rules that draw in, eased wheel scrolling,
+   and on the home page the hero film (a pinned WebGL scene whose camera is driven by scroll). */
 (function () {
   'use strict';
   var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -8,7 +8,7 @@
 
   /* ---------- Headlines split into lines ---------- */
 
-  var splitTargets = Array.prototype.slice.call(document.querySelectorAll('.hero h1, main section:not(.hero) h2, .statement'));
+  var splitTargets = Array.prototype.slice.call(document.querySelectorAll('.hero h1, .page-title, main section:not(.hero) h2, .statement'));
   splitTargets.forEach(function (n) { n.setAttribute('data-text', n.textContent.trim().replace(/\s+/g, ' ')); n.setAttribute('aria-label', n.getAttribute('data-text')); });
   function splitLines(node) {
     var words = node.getAttribute('data-text').split(' ');
@@ -44,7 +44,7 @@
     });
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(splitAll);
     // reveal the headline on the second frame; the timer covers tabs that hold back animation frames
-    var showH1 = function () { var h1 = document.querySelector('.hero h1'); if (h1) h1.classList.add('lines-in'); };
+    var showH1 = function () { Array.prototype.forEach.call(document.querySelectorAll('.hero h1, .page-title'), function (h1) { h1.classList.add('lines-in'); }); };
     requestAnimationFrame(function () { requestAnimationFrame(showH1); });
     setTimeout(showH1, 600);
   }

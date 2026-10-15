@@ -94,10 +94,12 @@
   function keep(t) { return t.replace(/\bde novo\b/g, 'de\u00a0novo'); }
 
   var pubList = document.getElementById('pub-list');
+  // The home page shows the newest few (data-limit); the publications page shows all.
+  var pubLimit = pubList ? parseInt(pubList.getAttribute('data-limit'), 10) || Infinity : 0;
   // Each paper is a full-width band of its painting with the text beneath; it opens a detail view.
   var dlg = document.getElementById('pub-dialog');
   var TANGART = document.documentElement.getAttribute('data-art') === 'tang';
-  (window.LAB_PUBS || []).forEach(function (p, k) {
+  (window.LAB_PUBS || []).slice(0, pubLimit).forEach(function (p, k) {
     var li = h('li', 'pub');
     li.setAttribute('data-tag', p.tag);
     var band = h('button', 'pub-band'); band.type = 'button';
@@ -162,20 +164,45 @@
     b.addEventListener('click', function () {
       var f = b.getAttribute('data-filter');
       filters.forEach(function (x) { x.setAttribute('aria-pressed', x === b ? 'true' : 'false'); });
+      if (!pubList) return;
       Array.prototype.forEach.call(pubList.children, function (li) {
         li.hidden = f !== 'all' && li.getAttribute('data-tag') !== f;
       });
     });
   });
 
+  /* ---------- News ---------- */
+
+  // A dated list, newest first: the date in the mono column, the item beside it, the linked words taken from `link`.
+  Array.prototype.forEach.call(document.querySelectorAll('.news-list'), function (list) {
+    var limit = parseInt(list.getAttribute('data-limit'), 10) || Infinity;
+    (window.LAB_NEWS || []).slice(0, limit).forEach(function (n) {
+      var li = h('li', 'news-item');
+      var t = h('time', 'news-date', n.date);
+      if (n.iso) t.setAttribute('datetime', n.iso);
+      li.appendChild(t);
+      var p = h('p', 'news-text');
+      var at = n.link && n.url ? n.text.indexOf(n.link) : -1;
+      if (at < 0) p.textContent = n.text;
+      else {
+        p.appendChild(document.createTextNode(n.text.slice(0, at)));
+        p.appendChild(link(n.link, n.url));
+        p.appendChild(document.createTextNode(n.text.slice(at + n.link.length)));
+      }
+      li.appendChild(p);
+      list.appendChild(li);
+    });
+  });
+
   /* ---------- Navigation state ---------- */
 
   var nav = document.getElementById('nav');
-  var navLinks = Array.prototype.slice.call(nav.querySelectorAll('nav a'));
+  // Only in-page links follow the scroll; a subpage keeps its own link marked as the current page.
+  var navLinks = Array.prototype.slice.call(nav.querySelectorAll('nav a[href^="#"]'));
   function onScroll() {
     // While the hero film is on screen it decides when the bar turns to paper.
     var hero = document.getElementById('top');
-    if (hero.classList.contains('is-film') && window.scrollY < hero.offsetHeight - window.innerHeight) return;
+    if (hero && hero.classList.contains('is-film') && window.scrollY < hero.offsetHeight - window.innerHeight) return;
     nav.classList.toggle('scrolled', window.scrollY > 8);
   }
   window.addEventListener('scroll', onScroll, { passive: true });
@@ -192,7 +219,7 @@
         });
       });
     }, { rootMargin: '-45% 0px -50% 0px' });
-    ['top', 'mission', 'research', 'brain', 'agents', 'directions-sec', 'publications', 'people', 'join'].forEach(function (id) {
+    ['top', 'mission', 'research', 'brain', 'agents', 'directions-sec', 'publications', 'news', 'people', 'join'].forEach(function (id) {
       var s = document.getElementById(id);
       if (s) io.observe(s);
     });
@@ -293,7 +320,7 @@
   /* ---------- Scroll reveal ---------- */
 
   (function reveal() {
-    var sel = 'main section:not(.hero) h2, .deck, main section:not(.hero) .label, .section-lede, .prose, .theme figure, .theme h3, .track figure, .track h3, .brain-block figure, .brain-block h3, .directions article, .loop, .pub, .portrait, .pi-name, .pi-role, .links, .founding, .values li, .join-lede, .join-note, .filter';
+    var sel = 'main section:not(.hero) h2, .deck, main section:not(.hero) .label, .section-lede, .prose, .theme figure, .theme h3, .track figure, .track h3, .brain-block figure, .brain-block h3, .directions article, .loop, .pub, .news-item, .section-more, .portrait, .pi-name, .pi-role, .links, .founding, .values li, .join-lede, .join-note, .filter';
     var nodes = Array.prototype.slice.call(document.querySelectorAll(sel));
     var extra = Array.prototype.slice.call(document.querySelectorAll('.scales-fig'));
     if (!('IntersectionObserver' in window)) {

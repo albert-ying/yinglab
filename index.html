@@ -17,7 +17,7 @@
 <link rel="canonical" href="https://lab.kejunying.com/">
 <meta name="theme-color" content="#c0915b">
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="styles.css?v=20261015a">
+<link rel="stylesheet" href="styles.css?v=20261015b">
 <script>document.documentElement.classList.add('js');(function(){var a=new URLSearchParams(location.search).get('art');if(a!=='uk')document.documentElement.setAttribute('data-art','tang');})();</script>
 </head>
 <body>
@@ -33,6 +33,7 @@
       <a href="#mission">Vision</a>
       <a href="#research">Research</a>
       <a href="#publications">Publications</a>
+      <a href="#news">News</a>
       <a href="#people">People</a>
       <a class="nav-join btn" href="#join">Join <span aria-hidden="true">&rarr;</span></a>
     </nav>
@@ -133,15 +134,19 @@
   <div class="wrap">
     <div class="pubs-head">
       <h2>Selected publications</h2>
-      <div class="filter" role="group" aria-label="Filter publications">
-        <button type="button" data-filter="all" aria-pressed="true">All</button>
-        <button type="button" data-filter="ai" aria-pressed="false">Models and agents</button>
-        <button type="button" data-filter="aging" aria-pressed="false">Aging biology and biomarkers</button>
-      </div>
     </div>
-    <ol class="pub-list" id="pub-list"></ol>
-    <noscript><p>The publication list needs JavaScript. The full list is on Google Scholar.</p></noscript>
-    <p class="pubs-more">The full list is on <a href="https://scholar.google.com/citations?user=JS7AdkcAAAAJ&hl=en" rel="noopener">Google Scholar</a>.</p>
+    <ol class="pub-list" id="pub-list" data-limit="6"></ol>
+    <noscript><p>The publication list needs JavaScript. See <a href="publications.html">all publications</a>.</p></noscript>
+    <p class="section-more"><a href="publications.html">All publications <span aria-hidden="true">&rarr;</span></a></p>
+  </div>
+</section>
+
+<section class="news" id="news">
+  <div class="wrap">
+    <div class="news-head"><h2>News</h2></div>
+    <ol class="news-list" data-limit="3"></ol>
+    <noscript><p>The news list needs JavaScript.</p></noscript>
+    <p class="section-more"><a href="news.html">All news <span aria-hidden="true">&rarr;</span></a></p>
   </div>
 </section>
 
@@ -225,7 +230,7 @@
 <footer class="foot">
   <div class="wrap foot-row">
     <p class="label">Ying Lab. Opening January 2027</p>
-    <nav class="label foot-nav" aria-label="Footer"><a href="#mission">Vision</a><a href="#research">Research</a><a href="#publications">Publications</a><a href="#people">People</a><a href="#join">Join</a></nav>
+    <nav class="label foot-nav" aria-label="Footer"><a href="#mission">Vision</a><a href="#research">Research</a><a href="#publications">Publications</a><a href="#news">News</a><a href="#people">People</a><a href="#join">Join</a></nav>
     <p class="label"><a href="mailto:keying@stanford.edu">keying@stanford.edu</a></p>
   </div>
 </footer>
@@ -244,8 +249,8 @@
     </div>
   </div>
 </dialog>
-<script src="data.js?v=20261015a"></script>
-<script src="main.js?v=20261015a"></script>
-<script src="film.js?v=20261015a"></script>
+<script src="data.js?v=20261015b"></script>
+<script src="main.js?v=20261015b"></script>
+<script src="film.js?v=20261015b"></script>
 </body>
 </html>

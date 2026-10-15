@@ -59,3 +59,31 @@ window.LAB_PUBS = [
     authors: 'Moqri, M., Herzog, C., Poganik, J. R., Ying, K., …, Ferrucci, L.',
     venue: 'Nature Medicine', url: 'https://doi.org/10.1038/s41591-023-02784-9' }
 ];
+
+// News, newest first. `link` is the words in `text` that carry the link.
+window.LAB_NEWS = [
+  { date: 'January 2027', iso: '2027-01', text: 'The lab opens.' },
+  { date: 'October 3, 2026', iso: '2026-10-03', text: 'Albert gave an invited talk, "AI for Aging Across Biological Scales", at ARDD 2026.',
+    link: 'ARDD 2026', url: 'https://agingpharma.org/' },
+  { date: 'September 21, 2026', iso: '2026-09-21', text: 'We posted HealthFlux on medRxiv. It is a world model of human health trained on 502,166 UK Biobank participants.',
+    link: 'HealthFlux', url: 'https://doi.org/10.64898/2026.09.19.26363460' },
+  { date: 'July 2026', iso: '2026-07', text: 'Albert received the 2026 WAIC Yunfan Award at the World Artificial Intelligence Conference in Shanghai.' },
+  { date: 'June 11, 2026', iso: '2026-06-11', text: '"An open competition for biomarkers of aging" is out in Nature Aging.',
+    link: 'An open competition for biomarkers of aging', url: 'https://doi.org/10.1038/s43587-026-01139-6' },
+  { date: 'May 27, 2026', iso: '2026-05-27', text: '"Universal transcriptomic hallmarks of mammalian ageing and mortality" is out in Nature.',
+    link: 'Universal transcriptomic hallmarks of mammalian ageing and mortality', url: 'https://doi.org/10.1038/s41586-026-10542-3' },
+  { date: 'May 2026', iso: '2026-05', text: 'Proteo-R1, a reasoning model for de novo protein design, appears at ICML 2026.',
+    link: 'Proteo-R1', url: 'https://arxiv.org/abs/2605.02937' },
+  { date: 'February 13, 2026', iso: '2026-02-13', text: 'We released Autonomous Lab as open source. AI agents run the research loop and people make the decisions.',
+    link: 'Autonomous Lab', url: 'https://github.com/albert-ying/autonomous-lab' },
+  { date: 'January 19, 2026', iso: '2026-01-19', text: '"Integrative epigenetics and transcriptomics identify aging genes in human blood" is out in Nature Communications.',
+    link: 'Integrative epigenetics and transcriptomics identify aging genes in human blood', url: 'https://doi.org/10.1038/s41467-025-67369-1' },
+  { date: 'November 20, 2025', iso: '2025-11-20', text: 'We posted the ClockBase Agent preprint, in which AI agents reanalyze public molecular profiles with aging clocks and nominate interventions.',
+    link: 'ClockBase Agent preprint', url: 'https://doi.org/10.1101/2023.02.28.530532' },
+  { date: 'November 2025', iso: '2025-11', text: 'Albert spoke on AI agents that mine public data for aging interventions at the Biomarkers of Aging Symposium in Boston.' },
+  { date: 'November 4, 2025', iso: '2025-11-04', text: 'Biolearn, an open-source library for aging biomarkers, is out in Nature Aging.',
+    link: 'Biolearn', url: 'https://doi.org/10.1038/s43587-025-00987-y' },
+  { date: 'October 2025', iso: '2025-10', text: 'Albert presented "Decoding the Aging Methylome: From Causal Inference to Foundation Models" at the ASHG 2025 Annual Meeting.' },
+  { date: 'July 15, 2025', iso: '2025-07-15', text: 'The study of the cerebrospinal fluid and plasma protein balance in 2,171 older adults is out in Nature Medicine.',
+    link: 'study of the cerebrospinal fluid and plasma protein balance in 2,171 older adults', url: 'https://doi.org/10.1038/s41591-025-03831-3' }
+];
