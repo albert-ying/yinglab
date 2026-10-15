@@ -200,7 +200,7 @@
       '  vec3 col = blue*(0.84 + 0.25*drift + 0.07*(brush-0.5));',
       // a soft pool of light follows the pointer
       '  float md = length((px - uMouse)/uRes.y);',
-      '  col += vec3(0.10, 0.16, 0.26)*exp(-md*md*9.0);',
+      '  col += vec3(0.04, 0.06, 0.10)*exp(-md*md*9.0);',
       '  col += (hash(px + fract(uTime)*71.0) - 0.5)*uGrain;',
       '  if (px.x > uLineX) {',
       '    float onLine = 1.0 - smoothstep(0.6, 1.7, abs(px.y - uLineY));',
@@ -251,16 +251,17 @@
       '  pos = mix(chaos, pos, it);',
       // a faint tremor keeps the drawing alive
       '  pos += vec2(sin(uTime*1.3 + aR.y*90.0), cos(uTime*1.1 + aR.z*90.0)) * 0.55 * uPix;',
-      // the pointer pushes points aside; they close behind it
+      // near the pointer the paint stirs slightly: a small swirl and a faint lift, not a push
       '  vec2 d = pos - uMouse; float dl = length(d) + 0.0001;',
-      '  float rad = uRes.y*0.13;',
+      '  float rad = uRes.y*0.11;',
       '  float f = exp(-dl*dl/(rad*rad));',
-      '  pos += (d/dl) * f * rad * (0.45 + aR.w*0.7);',
+      '  vec2 tang = vec2(-d.y, d.x)/dl;',
+      '  pos += (tang*0.10 + (d/dl)*0.04) * f * rad * (0.6 + aR.w*0.6) * (1.0 + 0.4*sin(uTime*1.7 + aR.y*20.0));',
       // when the sheet turns to paper they scatter outward and go out
       '  vec2 away = pos - uRes*0.5;',
       '  pos += normalize(away + 0.001) * uBurst * uRes.y * (0.2 + aR.w*0.9);',
       '  gl_Position = vec4(pos.x/uRes.x*2.0-1.0, 1.0-pos.y/uRes.y*2.0, 0.0, 1.0);',
-      '  gl_PointSize = uPix * uSize * (0.75 + aR.w*0.9) * (1.0 + mid*0.9 + f*1.4);',
+      '  gl_PointSize = uPix * uSize * (0.75 + aR.w*0.9) * (1.0 + mid*0.9 + f*0.3);',
       '  vAlpha = uFade * (0.62 + 0.38*aR.z) * (1.0 - mid*0.35) * (0.25 + 0.75*it);',
       '}'].join('\n'),
     ['precision mediump float;', 'varying float vAlpha; varying vec3 vCol;',
