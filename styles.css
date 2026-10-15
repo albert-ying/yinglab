@@ -571,3 +571,252 @@ html[data-art="tang"] .pub-title { font-size: clamp(1.25rem, 1.7vw, 1.625rem); }
 @media (max-width: 760px) { html[data-art="tang"] .pub-list { grid-template-columns: 1fr; } }
 
 
+
+/* ==========================================================================
+   Editorial grid. A strict 12-column field between the margin rules, four type
+   sizes with wide steps between them, and art locked to the same lines as text.
+   ========================================================================== */
+:root {
+  --gut: clamp(16px, 1.7vw, 24px);
+  --xl: clamp(4.25rem, 10.4vw, 9.5rem);   /* section words: Research, Join the lab */
+  --lg: clamp(3rem, 6.6vw, 6rem);          /* Selected publications, People, Brain resilience */
+  --md: clamp(2.125rem, 3.7vw, 3.5rem);    /* decks and lead sentences */
+  --sm: clamp(1.75rem, 2.5vw, 2.375rem);   /* track and sub-heads */
+  --rule-ink: rgba(29, 28, 25, 0.5);
+}
+.g12 { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--gut); align-items: start; }
+html[data-art] .prose { max-width: none; font-size: 1.0625rem; line-height: 1.62; }
+html[data-art] main h2 { letter-spacing: -0.028em; }
+
+/* Hero: the title takes eight columns, the question and the button hang on the right four. */
+.hero-copy.wrap { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--gut); align-items: end; }
+.hero h1 { grid-column: 1 / span 8; grid-row: 1 / span 2; font-size: clamp(3rem, 8.1vw, 7.75rem); line-height: 0.92; max-width: none; letter-spacing: -0.03em; }
+.hero-sub { grid-column: 9 / span 4; grid-row: 1; margin: 0; font-size: clamp(1.25rem, 1.95vw, 1.75rem); line-height: 1.16; padding-top: 14px; border-top: 1px solid var(--rule-ink); }
+.hero .hero-copy .btn { grid-column: 9 / span 4; grid-row: 2; justify-self: start; align-self: end; margin: 22px 0 0.12em; }
+@media (min-width: 761px) {
+  html[data-art] .hero-foot { grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--gut); align-items: baseline; }
+  html[data-art] .hero-foot .chip { grid-column: 1 / span 3; }
+  html[data-art] .hero-foot .hero-lede { grid-column: 4 / span 5; max-width: none; }
+}
+
+/* Section openers share one hairline at the top of the field. */
+html[data-art] .band .two { margin-top: 0; }
+.band .two, .scales .two { padding-top: clamp(28px, 3vw, 44px); }
+
+/* Vision: a small head on the left, the aim set as a deck across nine columns, two body columns beneath. */
+.vision { row-gap: 0; }
+html[data-art] .vision h2 { grid-column: 1 / span 3; grid-row: 1; align-self: first baseline; font-size: var(--sm); line-height: 1.1; }
+.vision .deck { grid-column: 4 / span 9; grid-row: 1; align-self: first baseline; font-family: var(--title); font-size: var(--md); line-height: 1.04; letter-spacing: -0.022em; color: var(--ink); text-wrap: balance; }
+.vision .v-body { grid-column: 4 / span 5; grid-row: 2; margin-top: clamp(32px, 4vw, 56px); }
+.vision .v-note { grid-column: 10 / span 3; grid-row: 2; margin-top: clamp(32px, 4vw, 56px); padding-top: 0; color: var(--ink); }
+.vision .v-note p { font-family: var(--title); font-size: clamp(1.25rem, 1.6vw, 1.5rem); line-height: 1.22; letter-spacing: -0.01em; }
+
+/* Research: the word at full scale, the claim set against its baseline. */
+.r-head { align-items: end; }
+html[data-art] .r-head h2 { grid-column: 1 / span 7; font-size: var(--xl); line-height: 0.86; margin-bottom: -0.1em; }
+.r-head .prose { grid-column: 8 / span 5; }
+
+/* Six scales: discs shrink from species to molecule and stand on one line, names hang below it. */
+html[data-art] .scales-fig { margin-top: clamp(48px, 6vw, 88px); }
+.scales-row { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)) !important; column-gap: var(--gut); row-gap: 0; align-items: end; border-bottom: 1px solid var(--rule-ink); position: relative; }
+.scales-row li { grid-column: span 2; display: flex !important; flex-direction: column; justify-content: flex-end; align-items: flex-start; text-align: left !important; }
+.scales-row li img { width: calc(100% * var(--s, 1)) !important; margin: 0 0 14px !important; }
+.scales-row li:nth-child(1) { --s: 1; }
+.scales-row li:nth-child(2) { --s: 0.88; }
+.scales-row li:nth-child(3) { --s: 0.76; }
+.scales-row li:nth-child(4) { --s: 0.64; }
+.scales-row li:nth-child(5) { --s: 0.53; }
+.scales-row li:nth-child(6) { --s: 0.43; }
+.scales-row li b, .scales-row li span { position: absolute; top: calc(100% + 14px); }
+.scales-row li { position: relative !important; }
+.scales-row li span { top: calc(100% + 52px); }
+html[data-art] .scales-labels b { font-size: clamp(1.375rem, 1.9vw, 1.75rem); line-height: 1; }
+.scales-fig { padding-bottom: 92px; }
+
+/* Two tracks as a spread: disc on three columns, the head standing on the disc's base line, a rule between them. */
+.tracks { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--gut); row-gap: 0; }
+.track { grid-column: span 6; display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); column-gap: var(--gut); align-content: start; position: relative; }
+.track + .track::before { content: ""; position: absolute; left: calc(var(--gut) / -2); top: 0; bottom: 0; width: 1px; background: var(--rule); }
+.track figure { grid-column: 1 / span 3; grid-row: 1; width: 100%; margin: 0; }
+.track h3, html[data-art] .track h3 { grid-column: 4 / span 3; grid-row: 1; align-self: end; margin: 0 0 -0.16em; font-size: var(--sm); line-height: 1.02; }
+.track .prose { grid-column: 1 / span 6; padding-right: 8%; margin-top: clamp(28px, 3vw, 40px); padding-top: 18px; border-top: 1px solid var(--rule-ink); }
+.track .links { grid-column: 1 / span 6; }
+.track:nth-child(2) { padding-left: 0; }
+
+/* Brain resilience: both tracks meet here, so it runs the full field. Text on five columns, the painting on six. */
+.brain-block { grid-template-columns: repeat(12, minmax(0, 1fr)) !important; column-gap: var(--gut) !important; align-items: center; border-top-color: var(--rule-ink); }
+.brain-block > div { grid-column: 1 / span 5; grid-row: 1; }
+.brain-block figure { grid-column: 7 / span 6; grid-row: 1; }
+.brain-block h3, html[data-art] .brain-block h3 { font-size: var(--lg); line-height: 0.92; margin-bottom: clamp(24px, 3vw, 40px); letter-spacing: -0.026em; }
+
+/* Publications: the head on eight columns with the filters on its baseline; captions set as a ruled index under each painting. */
+.pubs-head { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--gut); align-items: end; padding-top: clamp(28px, 3vw, 44px); }
+html[data-art] .pubs-head h2 { grid-column: 1 / span 7; font-size: var(--lg); line-height: 0.92; }
+.pubs-head .filter { grid-column: 8 / span 5; flex-wrap: nowrap; justify-content: flex-end; padding-bottom: 0.5em; }
+html[data-art="tang"] .pub-list { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: var(--gut); row-gap: clamp(44px, 4.4vw, 64px); margin-top: clamp(40px, 4.4vw, 64px); }
+html[data-art="tang"] .pub-band { border-radius: 2px; }
+html[data-art="tang"] .pub-under { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); column-gap: var(--gut); row-gap: 8px; align-items: start; justify-items: start; text-align: left; margin: 16px 0 0; padding: 14px 0 0; border-top: 1px solid var(--rule-ink); border-bottom: 0; }
+html[data-art="tang"] .pub-under > * { text-align: left; max-width: none; }
+html[data-art="tang"] .pub-under .pub-venue-line { grid-column: 1; grid-row: 1 / span 2; display: grid; justify-content: start; gap: 4px; }
+html[data-art="tang"] .pub-under .pub-title { grid-column: 2; grid-row: 1; font-size: clamp(1.25rem, 1.65vw, 1.5rem); line-height: 1.12; }
+html[data-art="tang"] .pub-under .pub-authors { grid-column: 2; grid-row: 2; font-size: 0.875rem; line-height: 1.5; }
+.pub-journal { font-size: clamp(1rem, 1.15vw, 1.0625rem); line-height: 1.25; }
+.pubs-more { margin-top: clamp(40px, 4vw, 56px); padding-top: 16px; border-top: 1px solid var(--rule-ink); }
+
+/* People: portrait on four columns, the name on its top line, the biography in two columns. */
+.people-head { padding-top: clamp(28px, 3vw, 44px); margin-bottom: clamp(36px, 4vw, 64px); }
+.people-head h2, html[data-art] .people-head h2 { font-size: var(--lg); line-height: 0.92; }
+.people-grid { grid-template-columns: repeat(12, minmax(0, 1fr)) !important; column-gap: var(--gut) !important; }
+.people-grid .portrait { grid-column: 1 / span 4; }
+html[data-art="tang"] .portrait img { max-width: none; width: 100%; }
+.people-grid > div { grid-column: 6 / span 7; }
+.pi-name, html[data-art] .pi-name { font-size: var(--md); line-height: 1; margin-top: -0.08em; }
+.pi-role { margin: 12px 0 0; padding-bottom: 22px; border-bottom: 1px solid var(--rule-ink); }
+.people-grid .prose { columns: 2; column-gap: var(--gut); margin-top: 22px; }
+.people-grid .prose p { break-inside: avoid; }
+.people-grid .prose p + p { margin-top: 0; padding-top: 1.05em; }
+.members { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--gut); border-top-color: var(--rule-ink); }
+.members .sub-h { grid-column: 1 / span 3; margin: 0; font-size: var(--sm); }
+.member-list, html[data-art] .member-list { grid-column: 4 / span 9; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--gut); }
+.member-list img { max-width: none !important; width: 100%; }
+.member-list b { font-size: clamp(1.375rem, 1.8vw, 1.75rem); }
+.member-list p { font-size: 0.9375rem; line-height: 1.5; }
+
+/* Join: the words at full scale on eight columns, the painting on the last four, six values as a ruled three-by-two table. */
+.join-grid { row-gap: 0; align-items: end; }
+.join-grid h2, html[data-art] .join h2 { grid-column: 1 / span 8; grid-row: 1; font-size: var(--xl); line-height: 0.86; margin-bottom: -0.08em; }
+.join-grid .join-art { grid-column: 9 / span 4; grid-row: 1 / span 2; width: 100%; max-width: none; justify-self: stretch; align-self: start; }
+.join-grid .join-lede { grid-column: 1 / span 4; grid-row: 2; align-self: start; margin-top: clamp(28px, 3vw, 44px); padding-top: 16px; border-top: 1px solid var(--rule-ink); font-size: var(--sm); line-height: 1.08; max-width: none; }
+.join-grid .join-act { grid-column: 5 / span 4; grid-row: 2; align-self: start; margin-top: clamp(28px, 3vw, 44px); padding-top: 16px; border-top: 1px solid var(--rule-ink); }
+.join-act .founding, .join .join-act .founding { margin: 0; padding: 0; border: 0; max-width: none; }
+.join .join-act .btn { margin-top: 24px; }
+.join .values, .join-grid .values { grid-column: 1 / span 12; grid-row: 3; max-width: none; margin-top: clamp(56px, 6vw, 96px); display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); column-gap: var(--gut); }
+.join .values li { display: block; padding: 18px 0 30px; border-top: 1px solid var(--rule-ink); border-bottom: 0; }
+.join .values li:last-child { border-bottom: 0; }
+.join .values b { display: block; font-size: clamp(1.5rem, 2vw, 1.875rem); line-height: 1.05; margin-bottom: 10px; }
+.join .values span { display: block; max-width: 30ch; font-size: 1rem; }
+
+/* Footer on the same twelve columns. */
+.foot-row { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--gut); align-items: baseline; }
+.foot-row > :nth-child(1) { grid-column: 1 / span 4; }
+.foot-row > :nth-child(2) { grid-column: 5 / span 5; }
+.foot-row > :nth-child(3) { grid-column: 10 / span 3; justify-self: end; }
+
+/* Opening rules run across the text field only, from the first column to the twelfth. */
+:root { --pad: calc(var(--edge) + clamp(16px, 2.2vw, 36px)); }
+.js .band .two::before, .js .scales .two::before, .js .pubs-head::before { left: var(--pad); width: auto; right: var(--pad); background: var(--rule-ink); }
+.band .two, .scales .two, .pubs-head { border-top: 0 !important; }
+.pubs { padding-top: var(--section); }
+.people { padding-top: var(--section); }
+.people-head { border-top: 0; position: relative; }
+.people-head::before, .members::before { content: ""; position: absolute; top: 0; left: var(--pad); right: var(--pad); height: 1px; background: var(--rule-ink); }
+.members { border-top: 0; position: relative; }
+
+/* Tablet: the field keeps twelve columns; tracks stack and members go two-up. */
+@media (max-width: 1040px) and (min-width: 761px) {
+  .tracks { row-gap: clamp(56px, 7vw, 88px); }
+  .track { grid-column: 1 / -1; }
+  .track figure { grid-column: 1 / span 2; }
+  .track h3, html[data-art] .track h3 { grid-column: 3 / span 4; }
+  .track .prose { padding-right: 0; columns: 2; column-gap: var(--gut); }
+  .track .prose p { break-inside: avoid; }
+  .track + .track::before { left: 0; right: 0; top: calc(clamp(56px, 7vw, 88px) / -2); bottom: auto; width: auto; height: 1px; }
+  .member-list, html[data-art] .member-list { grid-column: 1 / -1; grid-template-columns: repeat(4, minmax(0, 1fr)); margin-top: 28px; }
+  .members .sub-h { grid-column: 1 / -1; }
+  .people-grid .portrait { grid-column: 1 / span 5; }
+  .people-grid > div { grid-column: 6 / span 7; }
+  .people-grid .prose { columns: 1; }
+  .join .values, .join-grid .values { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .pubs-head .filter { grid-column: 1 / -1; justify-content: flex-start; margin-top: 24px; flex-wrap: wrap; }
+  html[data-art] .pubs-head h2 { grid-column: 1 / -1; }
+}
+
+/* Phone: a six-column field. Single reading column, with indents on the grid lines for the asides and the art. */
+@media (max-width: 760px) {
+  :root { --gut: 14px; }
+  .g12, .hero-copy.wrap, .tracks, .track, .brain-block, .people-grid, .members, .pubs-head, .foot-row, .scales-row { grid-template-columns: repeat(6, minmax(0, 1fr)) !important; }
+  .g12 > *, .hero-copy > *, .brain-block > *, .people-grid > *, .members > *, .pubs-head > *, .foot-row > * { grid-column: 1 / -1 !important; grid-row: auto !important; }
+  .hero h1 { font-size: clamp(2.75rem, 13.4vw, 3.5rem); line-height: 0.94; }
+  .hero-sub { margin-top: 26px; font-size: 1.375rem; }
+  .hero .hero-copy .btn { margin-top: 22px; }
+  .hero-lede { margin-top: 2px; }
+
+  html[data-art] .vision h2 { font-size: 1.75rem; margin-bottom: 14px; }
+  .vision .deck { font-size: 2.125rem; line-height: 1.06; }
+  .vision .v-body { margin-top: 28px; }
+  .vision .v-note { grid-column: 2 / -1 !important; margin-top: 28px; padding-top: 14px; border-top: 1px solid var(--rule-ink); }
+
+  html[data-art] .r-head h2 { font-size: 4.5rem; margin-bottom: 20px; }
+
+  /* Six scales as an index: the disc shrinks down the list, the names sit on each row's line. */
+  .scales-fig { padding-bottom: 0; }
+  .scales-row { display: block !important; border-bottom: 0; }
+  .scales-row li { display: grid !important; grid-template-columns: 112px minmax(0, 1fr); column-gap: 18px; align-items: center; padding: 12px 0; border-top: 1px solid var(--rule); }
+  .scales-row li:last-child { border-bottom: 1px solid var(--rule-ink); }
+  .scales-row li img { grid-row: 1 / span 2; width: calc(112px * var(--s, 1)) !important; margin: 0 !important; justify-self: center; }
+  .scales-row li b, .scales-row li span { position: static; align-self: end; }
+  .scales-row li span { align-self: start; margin-top: 4px; }
+
+  .tracks { row-gap: 64px; }
+  .track { grid-column: 1 / -1; }
+  .track figure { grid-column: 1 / span 3; }
+  .track h3, html[data-art] .track h3 { grid-column: 4 / span 3; font-size: 1.5rem; line-height: 1.04; }
+  .track .prose { padding-right: 0; margin-top: 22px; }
+  .track + .track::before { left: 0; right: 0; top: -32px; bottom: auto; width: auto; height: 1px; }
+
+  .brain-block figure { grid-column: 2 / -1 !important; grid-row: 1 !important; margin-bottom: 28px; }
+  .brain-block > div { grid-row: 2 !important; }
+  .brain-block h3, html[data-art] .brain-block h3 { font-size: 3.25rem; margin-bottom: 22px; }
+
+  html[data-art] .pubs-head h2 { font-size: 3.25rem; }
+  .pubs-head .filter { flex-wrap: wrap; justify-content: flex-start; margin-top: 22px; padding-bottom: 0; }
+  html[data-art="tang"] .pub-list { grid-template-columns: minmax(0, 1fr); row-gap: 44px; }
+  html[data-art="tang"] .pub-under { grid-template-columns: minmax(0, 1fr); row-gap: 6px; margin-top: 12px; padding-top: 12px; }
+  html[data-art="tang"] .pub-under .pub-venue-line { grid-row: auto; display: flex; flex-wrap: wrap; gap: 4px 12px; align-items: baseline; }
+  html[data-art="tang"] .pub-under .pub-title, html[data-art="tang"] .pub-under .pub-authors { grid-column: 1; grid-row: auto; }
+  html[data-art="tang"] .pub-under .pub-title { font-size: 1.375rem; }
+
+  html[data-art] .people-head h2 { font-size: 3.25rem; }
+  .people-grid .portrait { grid-column: 1 / span 4 !important; margin-bottom: 26px; }
+  .pi-name, html[data-art] .pi-name { font-size: 2.25rem; }
+  .people-grid .prose { columns: 1; }
+  .members .sub-h { margin-bottom: 24px; }
+  .member-list, html[data-art] .member-list { grid-column: 1 / -1 !important; grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: 36px; }
+  .member-list b { font-size: 1.375rem; }
+
+  html[data-art] .join h2, .join-grid h2 { font-size: 4.25rem; line-height: 0.9; }
+  .join-grid .join-art { grid-column: 3 / -1 !important; width: 100%; margin-top: 28px; }
+  .join-grid .join-lede { font-size: 1.75rem; }
+  .join .values, .join-grid .values { grid-template-columns: minmax(0, 1fr); margin-top: 48px; }
+  .join .values li { padding: 16px 0 22px; }
+
+  .foot-row { row-gap: 10px; }
+  .foot-row > :nth-child(3) { justify-self: start; }
+}
+
+/* The publications rule sits inside the field already. */
+.js .pubs-head::before { left: 0; right: 0; }
+.people { padding-top: calc(var(--section) * 0.6); }
+.people-grid .prose p, .people-grid .prose p + p { padding: 0 0 1.05em; margin: 0; }
+.pubs { padding-bottom: calc(var(--section) * 0.6); }
+
+/* Grafts from the layout judges */
+/* six scale discs at one size so Cell and Molecule stay readable */
+.scales-row li { --s: 1 !important; }
+/* research tracks: a larger painting with the heading below it at full size */
+@media (min-width: 761px) {
+  .track figure { grid-column: 1 / span 4; grid-row: auto; }
+  .track h3, html[data-art] .track h3 { grid-column: 1 / -1; grid-row: auto; align-self: start; margin: 26px 0 0; font-size: clamp(2rem, 3vw, 2.75rem); line-height: 1.06; }
+  .track .prose { margin-top: 18px; }
+}
+@media (max-width: 760px) {
+  .track figure { grid-column: 1 / span 4; }
+  .track h3, html[data-art] .track h3 { grid-column: 1 / -1; grid-row: auto; margin-top: 18px; font-size: 1.75rem; }
+}
+/* publication filters as text tabs */
+.filter button { border: 0; border-radius: 0; background: none; padding: 6px 0; margin-right: 18px; box-shadow: inset 0 -1px 0 transparent; }
+.filter button:hover { color: var(--ink); box-shadow: inset 0 -1px 0 var(--rule-ink, var(--ink)); }
+.filter button[aria-pressed="true"] { background: none; color: var(--ink); box-shadow: inset 0 -2px 0 var(--ink); }
+/* room for long journal names, set in bold */
+@media (min-width: 761px) { html[data-art="tang"] .pub-under { grid-template-columns: minmax(170px, 1fr) minmax(0, 2.1fr); } }
+html[data-art="tang"] .pub-journal { font-weight: 700; color: var(--ink); }

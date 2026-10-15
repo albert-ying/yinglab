@@ -166,7 +166,7 @@
   /* ---------- Scroll reveal ---------- */
 
   (function reveal() {
-    var sel = 'main section:not(.hero) h2, main section:not(.hero) .label, .section-lede, .prose, .theme figure, .theme h3, .track figure, .track h3, .brain-block figure, .brain-block h3, .directions article, .loop, .pub, .portrait, .pi-name, .pi-role, .links, .founding, .values li, .join-lede, .join-note, .filter';
+    var sel = 'main section:not(.hero) h2, .deck, main section:not(.hero) .label, .section-lede, .prose, .theme figure, .theme h3, .track figure, .track h3, .brain-block figure, .brain-block h3, .directions article, .loop, .pub, .portrait, .pi-name, .pi-role, .links, .founding, .values li, .join-lede, .join-note, .filter';
     var nodes = Array.prototype.slice.call(document.querySelectorAll(sel));
     var extra = Array.prototype.slice.call(document.querySelectorAll('.scales-fig'));
     if (!('IntersectionObserver' in window)) {
