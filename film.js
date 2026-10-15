@@ -137,10 +137,10 @@
   // Which drawing the points hold: [p, stage]. 0 procession, 1-5 species to molecule, 6 the network.
   var STAGE = [[0, 0], [0.29, 0], [0.33, 1], [0.37, 1], [0.41, 2], [0.43, 2], [0.47, 3], [0.49, 3], [0.53, 4], [0.55, 4], [0.59, 5], [0.61, 5], [0.65, 6], [0.71, 6], [0.75, 7], [1, 7]];
   var BEATS = [
-    { p: 0.165, name: 'Across species', sub: 'Maximum lifespan spans more than a hundredfold, from a 4-year mouse to a 507-year ocean quahog', w: 0.085 },
+    { p: 0.165, name: 'Across species', sub: 'Maximum lifespan runs from 4 years in a mouse to 507 in an ocean quahog', w: 0.085 },
     { p: 0.45, name: 'Across scales', sub: 'Species &nbsp;/&nbsp; population &nbsp;/&nbsp; individual &nbsp;/&nbsp; tissue &nbsp;/&nbsp; cell &nbsp;/&nbsp; molecule', w: 0.15 },
     { p: 0.68, name: 'Brain resilience', sub: 'The longest-lived species may have the most resilient brains', w: 0.035 },
-    { p: 0.80, name: 'AI that does research', sub: 'Models and agents that learn from every species and scale, and propose what to test', w: 0.04, last: true }
+    { p: 0.80, name: 'AI that does research', sub: 'Models and agents that learn from every scale and propose what to test', w: 0.04, last: true }
   ];
   var PEND = 0.30;
   var SOAK_FROM = 0.86, SOAK_TO = 0.96;

@@ -238,7 +238,10 @@
     p.art = art;
     if (art) band.style.backgroundImage = 'url(' + art.replace('.webp', '-wide.webp') + '?v=t4), url(' + art + '?v=t4)';
     var plate = h('span', 'pub-plate');
-    plate.appendChild(h('span', 'pub-meta', p.venue + ' · ' + p.year + (p.preprint ? ' · Preprint' : '')));
+    var vline = h('span', 'pub-venue-line');
+    vline.appendChild(h('b', 'pub-journal', p.venue));
+    vline.appendChild(h('span', 'pub-meta', p.year + (p.preprint ? ' · Preprint' : '')));
+    plate.appendChild(vline);
     plate.appendChild(h('span', 'pub-title', p.title));
     var a = h('span', 'pub-authors');
     p.authors.split(/(Ying, K\.)/).forEach(function (part) { a.appendChild(part === 'Ying, K.' ? h('b', null, part) : document.createTextNode(part)); });
@@ -253,7 +256,8 @@
   function openPub(p) {
     if (!dlg) { window.open(p.url, '_blank', 'noopener'); return; }
     dlg.querySelector('.pd-img').src = p.art ? p.art + '?v=t4' : '';
-    dlg.querySelector('.pd-meta').textContent = p.venue + ' · ' + p.year + (p.preprint ? ' · Preprint' : '');
+    var pm = dlg.querySelector('.pd-meta'); pm.textContent = '';
+    pm.appendChild(h('b', 'pub-journal', p.venue)); pm.appendChild(h('span', 'pub-meta', p.year + (p.preprint ? ' · Preprint' : '')));
     dlg.querySelector('.pd-title').textContent = p.title;
     var au = dlg.querySelector('.pd-authors'); au.textContent = '';
     p.authors.split(/(Ying, K\.)/).forEach(function (part) { au.appendChild(part === 'Ying, K.' ? h('b', null, part) : document.createTextNode(part)); });
