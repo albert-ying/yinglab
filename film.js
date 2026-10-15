@@ -203,7 +203,7 @@
   ].join('\n');
 
   // The sheet: painted blue that drifts, the open dotted rule, and the turn to paper.
-  var GROUND = ART === 'p-tang-' ? 'vec3(0.66, 0.47, 0.27)' : 'vec3(0.004, 0.30, 0.56)';
+  var GROUND = ART === 'p-tang-' ? 'vec3(0.66, 0.47, 0.27)' : 'vec3(0.0, 0.247, 0.54)';
   var ground = program(
     'attribute vec2 a; varying vec2 vUv; void main(){ vUv = a*0.5+0.5; gl_Position = vec4(a,0.,1.); }',
     ['precision highp float;', 'varying vec2 vUv;',

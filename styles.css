@@ -11,7 +11,7 @@
 /* Ying Lab. A press sheet: painted blue, warm paper, ink. Serif titles, hairline rules, small mono labels. */
 
 :root {
-  --blue: #014c8c;
+  --blue: #003d86;
   --paper: #f2f1ed;
   --paper-2: #e9e7e1;
   --press: #0b0a09;
@@ -91,7 +91,10 @@ h3 { font-family: var(--title); font-weight: 400; font-size: 1.5rem; line-height
 .nav.scrolled { background: #f2f1ed; color: var(--ink); border-bottom-color: rgba(29, 28, 25, 0.16); }
 .nav-row { display: flex; align-items: center; justify-content: space-between; height: 60px; padding-inline: calc(var(--edge) + clamp(16px, 2.2vw, 36px)); max-width: none; }
 .mark { display: inline-flex; align-items: center; gap: 10px; font-family: var(--text); font-weight: 700; font-size: 1.125rem; letter-spacing: -0.01em; text-decoration: none; }
-.mark svg { width: 22px; height: 24px; }
+.mark svg { width: 28px; height: 28px; }
+.nav .mark { color: #f2f1ed; --mark-in: #003d86; }
+.nav.scrolled .mark { color: var(--blue); --mark-in: #f2f1ed; }
+html[data-art="tang"] .nav .mark { color: #1d1c19; --mark-in: #a8784a; }
 .nav nav { display: flex; align-items: center; gap: clamp(14px, 2.2vw, 34px); }
 .nav nav a:not(.btn) { font-family: var(--code); font-size: 0.6875rem; letter-spacing: 0.2em; text-transform: uppercase; text-decoration: none; opacity: 0.78; padding: 6px 0; background: linear-gradient(currentColor, currentColor) 0 100% / 0 1px no-repeat; transition: opacity 0.2s, background-size 0.4s var(--ease); }
 .nav nav a:not(.btn):hover, .nav nav a:not(.btn)[aria-current="true"] { opacity: 1; background-size: 100% 1px; }
@@ -254,7 +257,7 @@ h3 { font-family: var(--title); font-weight: 400; font-size: 1.5rem; line-height
 .pubs-more { margin-top: 28px; color: var(--ink-2); font-size: 0.9375rem; }
 
 /* People */
-.people { --bg: var(--paper-2); }
+.people { --bg: var(--paper); }
 .people-grid { display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 7fr); gap: clamp(28px, 6vw, 104px); align-items: start; }
 .portrait img { width: 100%; aspect-ratio: 4 / 5; object-fit: cover; border-radius: 4px; filter: saturate(0.9); }
 .pi-name { margin-top: 18px; font-size: clamp(2rem, 3.9vw, 3.5rem); line-height: 1.04; }
@@ -429,3 +432,9 @@ html[data-art="tang"] .hero-foot .chip { background: rgba(29, 28, 25, 0.12); col
   .nav nav { gap: 14px; }
   .nav nav a:not(.btn) { letter-spacing: 0.1em; font-size: 0.625rem; }
 }
+
+/* Research now sits on the blue sheet like the hero, brain and join sections. */
+.research .lp-node { fill: var(--bg); }
+.research .roundel { background: var(--bg); }
+.hero h1 { max-width: 13ch; }
+@media (max-width: 760px) { .nav .mark, .nav.scrolled .mark { color: var(--blue); --mark-in: #f2f1ed; } }
