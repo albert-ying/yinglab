@@ -369,8 +369,6 @@ html[data-art="tang"] .hero-foot .chip { background: rgba(29, 28, 25, 0.12); col
 .pub-band { position: relative; display: grid; place-items: center; width: 100%; min-height: clamp(220px, 26vw, 360px); padding: clamp(18px, 3vw, 40px); border: 0; border-radius: 6px; cursor: pointer; font: inherit; color: inherit; text-align: center;
   background-color: var(--blue); background-size: cover; background-position: center; overflow: hidden; transition: transform 0.6s var(--ease); }
 .pub-band::after { content: ""; position: absolute; inset: 0; background: rgba(250, 249, 246, 0); transition: background 0.4s; }
-.pub-band:hover { transform: translateY(-2px); }
-.pub-band:hover::after { background: rgba(250, 249, 246, 0.06); }
 .pub-band:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
 .pub-plate { position: relative; z-index: 1; display: grid; gap: 8px; max-width: min(720px, 92%); padding: clamp(14px, 2vw, 24px) clamp(18px, 3vw, 36px); background: rgba(250, 249, 246, 0.94); border-radius: 4px; box-shadow: 0 1px 0 rgba(29, 28, 25, 0.08); }
 .pub-meta { font-family: var(--code); font-size: 0.6875rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted); }
@@ -390,7 +388,9 @@ html[data-art="tang"] .hero-foot .chip { background: rgba(29, 28, 25, 0.12); col
 .pd-text .label { margin-top: 10px; }
 .pd-finding { font-size: 1.0313rem; line-height: 1.6; color: var(--ink-2); }
 .pd-link { justify-self: start; margin-top: 10px; }
-.pd-close { position: absolute; top: 12px; right: 12px; width: 38px; height: 38px; border: 0; border-radius: 50%; background: rgba(250, 249, 246, 0.92); font-size: 1.5rem; line-height: 1; cursor: pointer; color: var(--ink); }
+.pd-close { position: sticky; top: 12px; z-index: 3; display: grid; place-items: center; width: 40px; height: 40px; margin: 12px 12px -52px auto; padding: 0; border: 1px solid transparent; border-radius: 50%; background: #efe3cb; color: #1d1c19; font-family: var(--text); font-size: 1.5rem; line-height: 1; cursor: pointer; transition: border-color 0.2s; }
+.pd-close:hover { border-color: #1d1c19; }
+.pd-close:focus-visible { outline: 2px solid #1d1c19; outline-offset: 2px; }
 @media (max-width: 760px) { .pd-grid { grid-template-columns: 1fr; } .pd-img { aspect-ratio: 16 / 10; } }
 
 .hero.is-film .film-cap span { max-width: 46ch; line-height: 1.6; }
@@ -578,7 +578,7 @@ html[data-art="tang"] .pub-title { font-size: clamp(1.25rem, 1.7vw, 1.625rem); }
    ========================================================================== */
 :root {
   --gut: clamp(16px, 1.7vw, 24px);
-  --xl: clamp(4.25rem, 10.4vw, 9.5rem);   /* section words: Research, Join the lab */
+  --xl: clamp(3rem, 8.1vw, 7.75rem);      /* section words: Research, Join the lab; never larger than the hero title */
   --lg: clamp(3rem, 6.6vw, 6rem);          /* Selected publications, People, Brain resilience */
   --md: clamp(2.125rem, 3.7vw, 3.5rem);    /* decks and lead sentences */
   --sm: clamp(1.75rem, 2.5vw, 2.375rem);   /* track and sub-heads */
@@ -612,7 +612,7 @@ html[data-art] .vision h2 { grid-column: 1 / span 3; grid-row: 1; align-self: fi
 .vision .v-note p { font-family: var(--title); font-size: clamp(1.25rem, 1.6vw, 1.5rem); line-height: 1.22; letter-spacing: -0.01em; }
 
 /* Research: the word at full scale, the claim set against its baseline. */
-.r-head { align-items: end; }
+.r-head { align-items: end; row-gap: 0; }
 html[data-art] .r-head h2 { grid-column: 1 / span 7; font-size: var(--xl); line-height: 0.86; margin-bottom: -0.1em; }
 .r-head .prose { grid-column: 8 / span 5; }
 
@@ -672,9 +672,7 @@ html[data-art="tang"] .portrait img { max-width: none; width: 100%; }
 .people-grid > div { grid-column: 6 / span 7; }
 .pi-name, html[data-art] .pi-name { font-size: var(--md); line-height: 1; margin-top: -0.08em; }
 .pi-role { margin: 12px 0 0; padding-bottom: 22px; border-bottom: 1px solid var(--rule-ink); }
-.people-grid .prose { columns: 2; column-gap: var(--gut); margin-top: 22px; }
-.people-grid .prose p { break-inside: avoid; }
-.people-grid .prose p + p { margin-top: 0; padding-top: 1.05em; }
+.people-grid .prose { margin-top: 22px; }
 .members { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--gut); border-top-color: var(--rule-ink); }
 .members .sub-h { grid-column: 1 / span 3; margin: 0; font-size: var(--sm); }
 .member-list, html[data-art] .member-list { grid-column: 4 / span 9; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--gut); }
@@ -814,9 +812,224 @@ html[data-art="tang"] .portrait img { max-width: none; width: 100%; }
   .track h3, html[data-art] .track h3 { grid-column: 1 / -1; grid-row: auto; margin-top: 18px; font-size: 1.75rem; }
 }
 /* publication filters as text tabs */
-.filter button { border: 0; border-radius: 0; background: none; padding: 6px 0; margin-right: 18px; box-shadow: inset 0 -1px 0 transparent; }
-.filter button:hover { color: var(--ink); box-shadow: inset 0 -1px 0 var(--rule-ink, var(--ink)); }
-.filter button[aria-pressed="true"] { background: none; color: var(--ink); box-shadow: inset 0 -2px 0 var(--ink); }
+.filter { column-gap: 22px; row-gap: 0; }
+.filter button { border: 0; border-radius: 0; background: none; padding: 6px 0; white-space: nowrap; text-decoration: underline 1px transparent; text-underline-offset: 0.6em; transition: color 0.25s, text-decoration-color 0.25s; }
+.filter button:hover { color: var(--ink); text-decoration-color: var(--rule-ink); }
+.filter button[aria-pressed="true"] { background: none; color: var(--ink); text-decoration: underline 2px var(--ink); text-underline-offset: 0.6em; }
 /* room for long journal names, set in bold */
 @media (min-width: 761px) { html[data-art="tang"] .pub-under { grid-template-columns: minmax(170px, 1fr) minmax(0, 2.1fr); } }
 html[data-art="tang"] .pub-journal { font-weight: 700; color: var(--ink); }
+
+/* ==========================================================================
+   Craft pass. One rule-to-heading distance and one section space, two
+   heading sizes, one caption style, and line breaks without lonely words.
+   ========================================================================== */
+:root {
+  --rh: clamp(28px, 3vw, 44px);   /* from a section rule to the heading below it */
+  --cap-size: 0.6875rem;          /* mono caption under a serif name */
+  --cap-track: 0.1em;
+  --cap-gap: 6px;
+  --cap-drop: 0.08;               /* cap height offset of Instrument Serif at line-height 0.92, in em */
+}
+@media (max-width: 760px) { :root { --cap-size: 0.75rem; } }
+
+/* Line breaks: headings balance, short paragraphs avoid a lonely last word, names never split. */
+.pub-title, .pd-title, .track h3, .brain-block h3, .sub-h, .hero-sub, .join-lede, .film-cap span, .pi-role { text-wrap: balance; }
+main p, .hero-lede, .member-list p, .values span, .pd-finding, .pd-authors, .pub-authors, .join-note, .founding { text-wrap: pretty; }
+.au, .nw, .pub-authors b, .pd-authors b { white-space: nowrap; }
+
+/* Heading scale. --xl sets the two section words that stand against a claim (Research, Join the lab);
+   --lg sets every other section head (Our vision, Selected publications, People) and Brain resilience. */
+html[data-art] .vision h2 { grid-column: 1 / -1; grid-row: 1; align-self: start; font-size: var(--lg); line-height: 0.92; margin: 0; }
+.vision .deck { grid-row: 2; align-self: start; margin-top: clamp(36px, 4vw, 64px); }
+.vision .v-body { grid-row: 3; }
+@media (max-width: 760px) { html[data-art] .vision h2 { font-size: 3.25rem; margin-bottom: 0; } .vision .deck { margin-top: 24px; } }
+/* Tablet: the Research word on its own line like the other heads, its claim and the vision body indented on columns 4 to 10. */
+@media (max-width: 1040px) and (min-width: 761px) {
+  .r-head { align-items: start; }
+  html[data-art] .r-head h2 { grid-column: 1 / -1; margin-bottom: 0; }
+  .r-head .prose { grid-column: 4 / span 7; grid-row: 2; margin-top: clamp(36px, 4vw, 64px); }
+  .vision .v-body { grid-column: 4 / span 7; }
+}
+
+/* Vertical rhythm. Every section opens with its rule a full --section below the content above,
+   and every heading starts --rh under its rule. */
+.band .two, .scales .two, .pubs-head, .people-head, .members, .brain-block { padding-top: var(--rh); }
+.brain-block, .members { margin-top: var(--section); }
+.pubs { padding-bottom: var(--section); }
+.people { padding-top: 0; }
+.hero.is-film + .band { padding-top: 0; }
+
+/* Research head: the word keeps the shared distance under the rule when its claim runs taller. */
+html[data-art] .r-head h2 { align-self: start; }
+
+/* Brain resilience: heading and painting both start under the rule. */
+.brain-block { align-items: start; }
+.brain-block > div, .brain-block figure { align-self: start; }
+
+/* Research tracks: both columns run the height of the taller one, so the rule between them does too. */
+@media (min-width: 761px) { .tracks { align-items: stretch; } }
+@media (min-width: 761px) { .track .prose { padding-right: 0; } }
+@media (min-width: 1280px) { .track .prose { grid-column: 1 / span 5; } }
+/* From 901px to 1040px the tracks stay side by side; below that each track puts its disc beside its heading. */
+@media (max-width: 1040px) and (min-width: 901px) {
+  .tracks { row-gap: 0; }
+  .track { grid-column: span 6; }
+  .track .prose { columns: auto; }
+  .track + .track::before { left: calc(var(--gut) / -2); right: auto; top: 0; bottom: 0; width: 1px; height: auto; }
+  .track figure { grid-column: 1 / span 4; }
+}
+@media (max-width: 900px) and (min-width: 761px) {
+  .track figure { grid-column: 1 / span 2; grid-row: 1; }
+  .track h3, html[data-art] .track h3 { grid-column: 3 / span 4; grid-row: 1; align-self: end; margin: 0 0 -0.12em; }
+}
+
+/* Six scales: one caption style, the label a fixed step under the name, and the figure ends with its labels. */
+html[data-art] .scales-labels span, .member-role, html[data-art] .pub-meta {
+  font-family: var(--code); font-size: var(--cap-size); letter-spacing: var(--cap-track); text-transform: uppercase; color: var(--muted); line-height: 1.5; font-style: normal;
+}
+@media (min-width: 761px) {
+  .scales-row li span { top: calc(100% + 14px + clamp(1.375rem, 1.9vw, 1.75rem) + var(--cap-gap)); margin: 0; }
+  .scales-fig { padding-bottom: calc(14px + clamp(1.375rem, 1.9vw, 1.75rem) + var(--cap-gap) + 1.5 * var(--cap-size)); }
+}
+.member-role { margin: var(--cap-gap) 0 10px; white-space: nowrap; }
+html[data-art="tang"] .pub-under .pub-venue-line { row-gap: var(--cap-gap); }
+
+/* Publications head: title on six columns, the filters on the other six, ending on the right edge of the field. */
+@media (min-width: 1041px) {
+  html[data-art] .pubs-head h2 { grid-column: 1 / span 6; }
+  .pubs-head .filter { grid-column: 7 / span 6; justify-content: flex-end; flex-wrap: nowrap; align-items: last baseline; padding-bottom: 0; }
+  .pubs-head { align-items: last baseline; }
+}
+.filter button:focus-visible { outline: 1.5px solid var(--ink); outline-offset: 4px; }
+@media (max-width: 760px) {
+  .pubs-head .filter { flex-direction: column; align-items: flex-start; flex-wrap: nowrap; }
+  .filter button { display: flex; align-items: center; min-height: 40px; padding: 0; text-align: left; }
+}
+
+/* Publication captions: square rules; hover and keyboard focus underline the title and darken its rule. */
+html[data-art="tang"] .pub-under { border-radius: 0; transition: border-color 0.3s; }
+.pub-band::after { display: none; }
+.pub:hover .pub-under, .pub:has(.pub-band:focus-visible) .pub-under { border-top-color: var(--ink); }
+.pub:hover .pub-title, .pub:has(.pub-band:focus-visible) .pub-title { text-decoration: underline 1px; text-underline-offset: 0.16em; }
+
+/* Lab members: the sub-head above, four members on three columns each. */
+@media (min-width: 761px) {
+  .members .sub-h { grid-column: 1 / -1; margin: 0 0 clamp(28px, 3vw, 44px); }
+  .member-list, html[data-art] .member-list { grid-column: 1 / -1; grid-template-columns: repeat(4, minmax(0, 1fr)); margin-top: 0; }
+}
+
+/* Hero: the question's rule on the title's cap line, the button a fixed step below the question. */
+@media (min-width: 761px) {
+  .hero-copy.wrap { grid-template-rows: auto 1fr; }
+  .hero h1 { align-self: start; }
+  .hero-sub { grid-row: 1; align-self: start; margin-top: calc(var(--cap-drop, 0) * clamp(3rem, 8.1vw, 7.75rem)); }
+  .hero .hero-copy .btn { grid-row: 2; align-self: start; margin: 24px 0 0; }
+}
+
+/* Phone hero: the procession in a frame on the text edges, panning slowly from the mouse to the quahog. */
+.hero-pan { display: block; }
+@media (max-width: 760px) {
+  .hero-pan { height: clamp(150px, 44vw, 190px); margin-inline: calc(var(--pad) - var(--edge)); overflow: hidden; }
+  .hero-art img, .js .hero-art img { width: auto; max-width: none; height: 100%; margin: 0; clip-path: none; animation: hero-pan 40s ease-in-out 0.8s infinite alternate; }
+}
+@keyframes hero-pan { from { transform: translateX(0); } to { transform: translateX(calc(-100% + 100vw - 2 * var(--pad))); } }
+@media (prefers-reduced-motion: reduce) { .hero-art img, .js .hero-art img { animation: none; transform: none; } }
+
+/* Publication detail: the dialog spans the text field, its painting keeps the art's 3:2 and is never cropped. */
+.pub-dialog { width: calc(100% - 2 * var(--edge)); max-width: none; }
+.pd-text { padding-right: 56px; }
+.btn:focus-visible { outline: 2px solid #1d1c19; outline-offset: 3px; }
+@media (min-width: 900px) {
+  html[data-art="tang"] .pub-dialog { --dc: 12; width: calc(100% - 2 * var(--pad)); max-height: 88vh; }
+  html[data-art="tang"] .pd-grid { grid-template-columns: repeat(var(--dc), minmax(0, 1fr)); column-gap: var(--gut); align-items: start; }
+  html[data-art="tang"] .pd-img { grid-column: 1 / span 7; aspect-ratio: 3 / 2; height: auto; object-fit: cover; position: sticky; top: 0; }
+  html[data-art="tang"] .pd-text { grid-column: 8 / -1; padding: var(--rh) 56px var(--rh) 0; }
+}
+@media (min-width: 1600px) {
+  html[data-art="tang"] .pub-dialog { --dc: 10; width: calc((100% - 2 * var(--pad) - 11 * var(--gut)) / 12 * 10 + 9 * var(--gut)); }
+  html[data-art="tang"] .pd-img { grid-column: 1 / span 6; }
+  html[data-art="tang"] .pd-text { grid-column: 7 / -1; }
+}
+/* From 1280px each member's painting takes two of its three columns, so the PI's portrait leads. */
+@media (min-width: 1280px) { .member-list img { width: calc((200% - var(--gut)) / 3); } }
+
+/* ==========================================================================
+   Round 2. Grid edges for the biography and the tracks, one heading step
+   below the hero title, captions that fit their columns, the dialog under
+   the nav, and phone discs on one left edge.
+   ========================================================================== */
+:root { --navh: 61px; }
+
+/* People: the biography in one column at a reading measure, its edges on the page grid: five of
+   the block's seven columns from 1280px, four from 1700px, all seven below 1280px. Three paragraphs
+   of unequal length cannot end level in two columns. */
+@media (min-width: 1280px) {
+  .people-grid .prose { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); column-gap: var(--gut); }
+  .people-grid .prose p { grid-column: 1 / span 5; }
+}
+@media (min-width: 1700px) { .people-grid .prose p { grid-column: 1 / span 4; } }
+
+/* Short blurbs set as balanced lines, so none ends on a word or two. */
+.hero-lede, .member-list p, .values span, .founding, .join-note { text-wrap: balance; }
+.join .values span { max-width: 34ch; }
+
+/* Research tracks: each track's content keeps five of its six columns, the left track from its
+   first column and the right track from its second, so the rule between them has a column of
+   silk on each side. */
+@media (min-width: 901px) {
+  .track figure { grid-column: 1 / span 4; }
+  .track h3, html[data-art] .track h3, .track .prose, .track .links { grid-column: 1 / span 5; }
+  .track + .track figure { grid-column: 2 / span 4; }
+  .track + .track h3, html[data-art] .track + .track h3, .track + .track .prose, .track + .track .links { grid-column: 2 / span 5; }
+  .track .links { gap: 10px 22px; }
+}
+/* Where the three links no longer fit the measure on one line, they stand as a short list. */
+@media (max-width: 1365px) {
+  .track .links { flex-direction: column; align-items: flex-start; gap: 8px; }
+}
+@media (max-width: 760px) { .track .links { gap: 0; } }
+
+/* Six scales: below 1181px a caption may take two lines inside its own two columns. */
+@media (min-width: 761px) and (max-width: 1180px) {
+  html[data-art] .scales-labels span { white-space: normal; width: 100%; }
+  .scales-fig { padding-bottom: calc(14px + clamp(1.375rem, 1.9vw, 1.75rem) + var(--cap-gap) + 3 * var(--cap-size)); }
+}
+
+/* Footer: below 1260px the name and the email share the first row and the links take the second. */
+@media (min-width: 761px) and (max-width: 1259px) {
+  .foot-row { row-gap: 14px; }
+  .foot-row > :nth-child(1) { grid-column: 1 / span 6; grid-row: 1; }
+  .foot-row > :nth-child(3) { grid-column: 7 / span 6; grid-row: 1; justify-self: end; }
+  .foot-row > :nth-child(2) { grid-column: 1 / -1; grid-row: 2; }
+}
+.foot-row > * { white-space: nowrap; }
+@media (max-width: 760px) { .foot-row > * { white-space: normal; } }
+
+/* Publication detail: centred in the space under the nav, a gutter clear of it. The painting
+   keeps its 3:2 and stands at the middle of the text beside it. */
+.pub-dialog:modal { top: var(--navh); max-height: calc(100vh - var(--navh) - 2 * var(--gut)); max-height: calc(100dvh - var(--navh) - 2 * var(--gut)); }
+@media (min-width: 900px) {
+  html[data-art="tang"] .pub-dialog:modal { max-height: calc(100vh - var(--navh) - 2 * var(--gut)); max-height: calc(100dvh - var(--navh) - 2 * var(--gut)); }
+  html[data-art="tang"] .pd-img { align-self: center; }
+}
+
+/* Phone */
+@media (max-width: 760px) {
+  :root { --navh: 82px; }
+  html[data-art] .r-head h2, html[data-art] .join h2, .join-grid h2 { font-size: 3.25rem; }
+  /* Brain resilience and Join hang their discs on the same left edge and size as the track discs. */
+  .brain-block figure { grid-column: 1 / span 4 !important; }
+  .join-grid .join-art { grid-column: 1 / span 4 !important; }
+  /* the procession clears the hero rule by the same step under every animal */
+  .hero-pan { height: calc(clamp(150px, 44vw, 190px) + 12px); padding-bottom: 12px; }
+}
+@media (max-width: 760px) and (prefers-reduced-motion: reduce) {
+  /* without the pan the whole procession is shown at the frame's width */
+  .hero-pan { height: auto; padding-bottom: 12px; }
+  .hero-art img, .js .hero-art img { width: 100%; height: auto; }
+}
+
+/* The film hands over to Vision as the paper turn completes: the Vision sheet rises over the
+   last of the pinned frame, which by then is the same silk. */
+.hero.is-film + .band { margin-top: -13vh; }

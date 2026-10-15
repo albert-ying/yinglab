@@ -78,6 +78,21 @@
     return a;
   }
 
+  // Each author stays on one line: the surname keeps its initials, and Ying, K. is set in bold.
+  function authorsInto(node, str) {
+    var names = [];
+    str.split(', ').forEach(function (t) {
+      if (names.length && /^(?:[A-Z]\.[\s-]?)+$/.test(t)) names[names.length - 1] += ', ' + t;
+      else names.push(t);
+    });
+    names.forEach(function (n, i) {
+      if (i) node.appendChild(document.createTextNode(', '));
+      node.appendChild(h(n === 'Ying, K.' ? 'b' : 'span', 'au', n));
+    });
+  }
+  // Fixed phrases in titles do not break across lines.
+  function keep(t) { return t.replace(/\bde novo\b/g, 'de\u00a0novo'); }
+
   var pubList = document.getElementById('pub-list');
   // Each paper is a full-width band of its painting with the text beneath; it opens a detail view.
   var dlg = document.getElementById('pub-dialog');
@@ -94,9 +109,9 @@
     vline.appendChild(h('b', 'pub-journal', p.venue));
     vline.appendChild(h('span', 'pub-meta', p.year + (p.preprint ? ' · Preprint' : '')));
     plate.appendChild(vline);
-    plate.appendChild(h('span', 'pub-title', p.title));
+    plate.appendChild(h('span', 'pub-title', keep(p.title)));
     var a = h('span', 'pub-authors');
-    p.authors.split(/(Ying, K\.)/).forEach(function (part) { a.appendChild(part === 'Ying, K.' ? h('b', null, part) : document.createTextNode(part)); });
+    authorsInto(a, p.authors);
     plate.appendChild(a);
     if (TANGART) { li.appendChild(band); li.appendChild(plate); plate.addEventListener('click', function () { openPub(p); }); plate.classList.add('pub-under'); }
     else band.appendChild(plate);
@@ -110,12 +125,13 @@
     dlg.querySelector('.pd-img').src = p.art ? p.art + '?v=t12' : '';
     var pm = dlg.querySelector('.pd-meta'); pm.textContent = '';
     pm.appendChild(h('b', 'pub-journal', p.venue)); pm.appendChild(h('span', 'pub-meta', p.year + (p.preprint ? ' · Preprint' : '')));
-    dlg.querySelector('.pd-title').textContent = p.title;
+    dlg.querySelector('.pd-title').textContent = keep(p.title);
     var au = dlg.querySelector('.pd-authors'); au.textContent = '';
-    p.authors.split(/(Ying, K\.)/).forEach(function (part) { au.appendChild(part === 'Ying, K.' ? h('b', null, part) : document.createTextNode(part)); });
+    authorsInto(au, p.authors);
     dlg.querySelector('.pd-finding').textContent = p.finding || '';
     dlg.querySelector('.pd-link').href = p.url;
     if (dlg.showModal) dlg.showModal(); else dlg.setAttribute('open', '');
+    ragOne(dlg.querySelector('.pd-finding'));
     dlg.scrollTop = 0; dlg.querySelector('.pd-close').focus();
   }
   if (dlg) {
@@ -163,6 +179,90 @@
       if (s) io.observe(s);
     });
   }
+  /* ---------- Rag: no lonely last line in a short paragraph ---------- */
+
+  // A paragraph should not end on a line of one or two words or on a stub under a third of its longest
+  // line. When it does, its measure is narrowed a little at a time (or widened, where its CSS measure is
+  // narrower than its column) until the last line holds at least three words. The smallest change wins.
+  // Runs after fonts load, on resize and when the detail view opens.
+  var RAG = 'main p:not(.label):not(.hero-sub):not(.deck):not(.join-lede):not(.pi-role):not(.links), .member-list p, .values span';
+  function lineBoxes(el) {
+    var r = document.createRange(); r.selectNodeContents(el);
+    var rows = [];
+    Array.prototype.forEach.call(r.getClientRects(), function (c) {
+      if (!c.width) return;
+      var row = rows.filter(function (x) { return Math.abs(x.top - c.top) < 6; })[0];
+      if (row) { row.left = Math.min(row.left, c.left); row.right = Math.max(row.right, c.right); }
+      else rows.push({ top: c.top, left: c.left, right: c.right });
+    });
+    rows.sort(function (a, b) { return a.top - b.top; });
+    return rows;
+  }
+  // Words on the line whose top is `top`, counted back from the end of the paragraph.
+  function wordsOnLast(el, top) {
+    var texts = [], tw = document.createTreeWalker(el, NodeFilter.SHOW_TEXT), n;
+    while ((n = tw.nextNode())) texts.push(n);
+    var r = document.createRange(), count = 0;
+    for (var i = texts.length - 1; i >= 0; i--) {
+      var t = texts[i].data, re = /\S+/g, m, spans = [];
+      while ((m = re.exec(t))) spans.push([m.index, m.index + m[0].length]);
+      for (var j = spans.length - 1; j >= 0; j--) {
+        r.setStart(texts[i], spans[j][0]); r.setEnd(texts[i], spans[j][1]);
+        var rs = r.getClientRects(), c = rs[rs.length - 1];
+        if (!c) continue;
+        if (Math.abs(c.top - top) < 6) count++;
+        else if (c.top < top - 6) return count;
+      }
+    }
+    return count;
+  }
+  function lastLine(el) {
+    var rows = lineBoxes(el);
+    if (rows.length < 2) return { n: rows.length, share: 1, words: 9 };
+    var widest = Math.max.apply(null, rows.map(function (x) { return x.right - x.left; }));
+    var last = rows[rows.length - 1];
+    return { n: rows.length, share: (last.right - last.left) / widest, words: wordsOnLast(el, last.top) };
+  }
+  function good(s) { return s.n < 2 || (s.words >= 3 && s.share >= 0.3); }
+  function fair(s) { return s.n < 2 || (s.words >= 2 && s.share >= 0.3); }
+  function ragOne(el) {
+    el.style.maxWidth = '';
+    if (!el.offsetParent) return;
+    var first = lastLine(el);
+    if (good(first)) return;
+    var w = el.getBoundingClientRect().width, em = parseFloat(getComputedStyle(el).fontSize) || 16;
+    el.style.maxWidth = 'none';
+    var room = el.getBoundingClientRect().width;   // the column, without the CSS measure
+    var step = em * 0.25, best = null, fallback = null;
+    function tryW(x) {
+      el.style.maxWidth = x + 'px';
+      var s = lastLine(el), d = Math.abs(x - w);
+      if (good(s) && (!best || d < best.d)) best = { x: x, d: d };
+      else if (fair(s) && !fair(first) && (!fallback || d < fallback.d)) fallback = { x: x, d: d };
+      return s;
+    }
+    // Narrower, keeping the number of lines.
+    for (var k = 1; k * step <= w * 0.24; k++) {
+      var s = tryW(w - k * step);
+      if (best || s.n > first.n) break;
+    }
+    // Wider, up to the column, where the CSS measure leaves room.
+    for (var q = 1; w + q * step <= room + 0.5 && (!best || q * step < best.d); q++) {
+      if (good(tryW(w + q * step))) break;
+    }
+    var pick = best || fallback;
+    el.style.maxWidth = pick ? pick.x + 'px' : '';
+  }
+  function rag(root) { Array.prototype.forEach.call((root || document).querySelectorAll(RAG), ragOne); }
+  window.__rag = rag;
+  var ragT, ragW = window.innerWidth;
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { rag(); });
+  window.addEventListener('load', function () { rag(); });
+  window.addEventListener('resize', function () {
+    if (window.innerWidth === ragW) return;
+    ragW = window.innerWidth; clearTimeout(ragT); ragT = setTimeout(function () { rag(); }, 220);
+  });
+
   /* ---------- Scroll reveal ---------- */
 
   (function reveal() {

@@ -134,8 +134,8 @@
   var STOPS = [
     { p: 0.00, x: 0.50, z: 1.00 },
     { p: 0.04, x: 0.50, z: 1.00 },
-    { p: 0.09, x: 0.10, z: 1.75 },
-    { p: 0.24, x: 0.92, z: 1.75 },
+    { p: 0.09, x: 0.10, z: 1.45 },
+    { p: 0.24, x: 0.92, z: 1.45 },
     { p: 0.29, x: 0.50, z: 1.00 },
     { p: 1.00, x: 0.50, z: 1.00 }
   ];
@@ -149,7 +149,8 @@
     { into: [0.705, 0.73], name: 'AI for discovery', sub: 'Models and agents that learn across species and scales and propose what to test', last: true }
   ];
   var PEND = 0.30;
-  var SOAK_FROM = 0.86, SOAK_TO = 0.96;
+  // The paper turn covers the frame at about p = 0.975 and is complete at p = 1, as the Vision rule comes up.
+  var SOAK_FROM = 0.93, SOAK_TO = 1.0;
 
   function ease(t) { return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2; }
   function camera(p) {
@@ -235,6 +236,7 @@
       'attribute vec4 aA, aB, aC, aR, aK0, aK1, aK2, aK3, aK4, aK5, aK6; attribute vec2 aD, aN;',
       'uniform vec2 uRes, uOff0, uOffC, uMouse;',
       'uniform float uSc0, uScC, uS, uTime, uIntro, uPix, uFade, uSize, uBurst; uniform vec3 uFlight, uNetCol; uniform vec2 uOffN; uniform float uScN;',
+      'uniform vec4 uCap; uniform float uCapO, uTop; uniform vec2 uEdge;',
       'varying float vAlpha; varying vec3 vCol;',
       'void main(){',
       '  vec2 p0 = aA.xy*uSc0 + uOff0;',
@@ -276,13 +278,22 @@
       '  gl_Position = vec4(pos.x/uRes.x*2.0-1.0, 1.0-pos.y/uRes.y*2.0, 0.0, 1.0);',
       '  gl_PointSize = uPix * uSize * (0.75 + aR.w*0.9) * (1.0 + mid*0.9 + f*0.3);',
       '  vAlpha = uFade * (0.62 + 0.38*aR.z) * (1.0 - mid*0.35) * (0.25 + 0.75*it);',
+      // points in flight or in the burst stay out of the caption column and out from under the nav
+      '  float m = 18.0*uPix;',
+      '  float inCap = smoothstep(uCap.x - m, uCap.x, pos.x) * (1.0 - smoothstep(uCap.z, uCap.z + m, pos.x))',
+      '              * smoothstep(uCap.y - m, uCap.y, pos.y) * (1.0 - smoothstep(uCap.w, uCap.w + m, pos.y));',
+      '  vAlpha *= 1.0 - uCapO * inCap * clamp(mid*4.0 + uBurst*4.0 + (1.0 - it), 0.0, 1.0);',
+      '  vAlpha *= smoothstep(uTop, uTop + 28.0*uPix, pos.y);',
+      // and they fade out before the margin rules, so nothing is cut by the edge of the frame
+      '  float fw = 40.0*uPix;',
+      '  vAlpha *= smoothstep(uEdge.x, uEdge.x + fw, pos.x) * (1.0 - smoothstep(uEdge.y - fw, uEdge.y, pos.x));',
       '}'].join('\n'),
     ['precision mediump float;', 'varying float vAlpha; varying vec3 vCol;',
       'void main(){ float d = length(gl_PointCoord - 0.5); float a = smoothstep(0.5, 0.18, d) * vAlpha; gl_FragColor = vec4(vCol, a); }'].join('\n'));
   if (!ground || !points) return;
 
   var GU = uniforms(ground, ['uTex', 'uRes', 'uMouse', 'uTime', 'uSoak', 'uLineY', 'uLineX', 'uBeyond', 'uGrain']);
-  var PU = uniforms(points, ['uNetCol', 'uOffN', 'uScN', 'uFlight', 'uRes', 'uOff0', 'uOffC', 'uMouse', 'uSc0', 'uScC', 'uS', 'uTime', 'uIntro', 'uPix', 'uFade', 'uSize', 'uBurst']);
+  var PU = uniforms(points, ['uCap', 'uCapO', 'uTop', 'uEdge', 'uNetCol', 'uOffN', 'uScN', 'uFlight', 'uRes', 'uOff0', 'uOffC', 'uMouse', 'uSc0', 'uScC', 'uS', 'uTime', 'uIntro', 'uPix', 'uFade', 'uSize', 'uBurst']);
 
   var quad = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, quad);
   gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
@@ -297,7 +308,7 @@
 
   var seed = 20270101;
   function rnd() { seed = (seed * 1664525 + 1013904223) % 4294967296; return seed / 4294967296; }
-  var aspect0 = 1536 / 391;
+  var aspect0 = 1536 / 391, top0 = 0;   // the procession's width over height, and its highest painted row
 
   function sample(img, opts) {
     // Returns N positions in a unit frame (height 1, centred on 0), denser where the engraving is lighter.
@@ -305,10 +316,11 @@
     var c = document.createElement('canvas'); c.width = w; c.height = h;
     var cx = c.getContext('2d', { willReadFrequently: true }); cx.drawImage(img, 0, 0, w, h);
     var px = cx.getImageData(0, 0, w, h).data, cdf = new Float32Array(w * h), acc = 0;
-    var xmax = (opts.xmax || 1) * w;
+    var xmax = (opts.xmax || 1) * w, top = -1;
     for (var y = 0, k = 0; y < h; y++) for (var x = 0; x < w; x++, k++) {
       var v = px[k * 4 + 3] / 255;
       v = (v < 0.25 || x > xmax) ? 0 : v;
+      if (v > 0 && top < 0) top = y;
       if (opts.boost && x < opts.boostTo * w) v *= opts.boost;
       acc += v; cdf[k] = acc;
     }
@@ -320,7 +332,7 @@
       out[n * 2 + 1] = (Math.floor(lo / w) + rnd()) / h - 0.5;
       col[n * 4] = px[lo * 4]; col[n * 4 + 1] = px[lo * 4 + 1]; col[n * 4 + 2] = px[lo * 4 + 2]; col[n * 4 + 3] = 255;
     }
-    return { pos: out, col: col, aspect: asp };
+    return { pos: out, col: col, aspect: asp, top: Math.max(0, top) / h };
   }
 
   var ready = false, introStart = 0;
@@ -335,7 +347,7 @@
     if (!imgs[0]) return;
     for (var q0 = 1; q0 < imgs.length; q0++) if (!imgs[q0]) imgs[q0] = imgs[q0 - 1];
     var sets = imgs.map(function (im, i) { return sample(im, SOURCES[i]); });
-    aspect0 = sets[0].aspect;
+    aspect0 = sets[0].aspect; top0 = sets[0].top;
     // Points are paired at random between drawings, so each change is a dissolve and not a slide.
     var data = new Float32Array(N * 18);
     for (var n = 0; n < N; n++) {
@@ -383,14 +395,31 @@
 
   /* ---- frame ---- */
 
-  var W = 0, H = 0, dpr = 1, running = false, raf = 0, pShown = -1, footTop = 0;
+  var W = 0, H = 0, dpr = 1, running = false, raf = 0, pShown = -1, footTop = 0, navBottom = 0, capFloor = 0, edgeL = 0, edgeR = 0;
   var mouse = { x: -9999, y: -9999, tx: -9999, ty: -9999 };
   function resize() {
     dpr = Math.min(window.devicePixelRatio || 1, 2);
     W = Math.round(stage.clientWidth * dpr); H = Math.round(stage.clientHeight * dpr);
     canvas.width = W; canvas.height = H; gl.viewport(0, 0, W, H);
     footTop = (foot.getBoundingClientRect().top - stage.getBoundingClientRect().top) * dpr;
+    navBottom = nav.getBoundingClientRect().bottom * dpr;
+    // the margin rules: the meter hangs on the right one
+    var sr = stage.getBoundingClientRect();
+    var mr = meter.getBoundingClientRect();
+    edgeR = mr.right > sr.left ? (mr.right - sr.left) * dpr : W; edgeL = W - edgeR;
+    measureCaps();
   }
+  // Each caption's column, before its scroll offset, in device pixels with a small margin.
+  function measureCaps() {
+    caps.forEach(function (c) {
+      var e = c.el, pad = 14;
+      c.box = [(e.offsetLeft - pad) * dpr, (e.offsetTop - pad) * dpr, (e.offsetLeft + e.offsetWidth + pad) * dpr, (e.offsetTop + e.offsetHeight + pad) * dpr];
+    });
+    // The species caption drifts down by up to about 18px while the camera pushes in; the procession
+    // keeps 40px clear of its lowest point.
+    capFloor = (caps[0].el.offsetTop + caps[0].el.offsetHeight + 18 + 40) * dpr;
+  }
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { if (W) measureCaps(); });
   var rz; window.addEventListener('resize', function () { clearTimeout(rz); rz = setTimeout(resize, 120); });
   stage.addEventListener('pointermove', function (e) {
     var r = canvas.getBoundingClientRect();
@@ -412,11 +441,13 @@
     if (mouse.tx > -9000) { mouse.x += (mouse.tx - mouse.x) * 0.16; mouse.y += (mouse.ty - mouse.y) * 0.16; }
 
     // lifespan drawing: a wide strip standing on a baseline
-    var sc0 = cam.z * W * 0.84 / aspect0;
-    var off0x = W * 0.5 - (cam.x - 0.5) * aspect0 * sc0;
     // the procession stands clear of the chip and the lede, including the part of the strip below the waterline
     var sc1 = W * 0.84 / aspect0;
     var baseY = Math.min(H * 0.84, footTop - 24 * dpr - 0.26 * sc1);
+    // the push-in stops where the tallest figure (the whale's spray) would come within 40px of the caption
+    var sc0 = Math.max(sc1, Math.min(cam.z * sc1, (baseY - capFloor) / (LAY.base + 0.5 - top0)));
+    var zEff = sc0 / sc1;
+    var off0x = W * 0.5 - (cam.x - 0.5) * aspect0 * sc0;
     var off0y = baseY - LAY.base * sc0;
     // scale drawings: a disc on the right, beside the caption column, at every width
     var colL = W * 0.44, room = W - colL - W * 0.05;
@@ -449,9 +480,19 @@
     gl.uniform3f(PU.uFlight, 0.11, 0.11, 0.10);
     gl.uniform1f(PU.uSc0, sc0); gl.uniform1f(PU.uScC, scC); gl.uniform1f(PU.uS, s);
     gl.uniform1f(PU.uTime, now / 1000); gl.uniform1f(PU.uIntro, intro); gl.uniform1f(PU.uPix, dpr);
+    var capO = 0, capBox = [0, 0, 0, 0];
+    caps.forEach(function (c) {
+      var b = c.beat;
+      c.o = smooth(b.into[0], b.into[1], p) * (1 - (b.last ? smooth(SOAK_FROM, SOAK_FROM + 0.03, p) : smooth(b.out[0], b.out[1], p)));
+      c.ty = (p - (b.last ? b.into[1] : (b.into[1] + b.out[0]) / 2)) * -160;
+      if (c.o > capO && c.box) { capO = c.o; capBox = [c.box[0], c.box[1] + c.ty * dpr, c.box[2], c.box[3] + c.ty * dpr]; }
+    });
+    gl.uniform4f(PU.uCap, capBox[0], capBox[1], capBox[2], capBox[3]); gl.uniform1f(PU.uCapO, capO);
+    gl.uniform1f(PU.uTop, navBottom);
+    gl.uniform2f(PU.uEdge, edgeL + 4 * dpr, edgeR - 4 * dpr);
     var disc = clamp(s, 0, 1);                       // 0 on the lifespan strip, 1 on the discs and the network
-    gl.uniform1f(PU.uSize, (1.7 + 0.6 * (cam.z - 1)) * (1 - disc) + 2.7 * disc);
-    gl.uniform1f(PU.uFade, (0.9 * (1 - disc) + 0.85 * disc) * (1 - smooth(SOAK_FROM, SOAK_FROM + 0.05, p)));
+    gl.uniform1f(PU.uSize, (1.7 + 0.6 * (zEff - 1)) * (1 - disc) + 2.7 * disc);
+    gl.uniform1f(PU.uFade, (0.9 * (1 - disc) + 0.85 * disc) * (1 - smooth(SOAK_FROM, SOAK_FROM + 0.03, p)));
     gl.uniform1f(PU.uBurst, smooth(SOAK_FROM - 0.012, SOAK_FROM + 0.05, p));
     gl.drawArrays(gl.POINTS, 0, N);
 
@@ -463,15 +504,17 @@
       copy.style.pointerEvents = out < 0.5 ? 'none' : '';
       caps.forEach(function (c) {
         var b = c.beat;
-        var o = smooth(b.into[0], b.into[1], p) * (1 - (b.last ? smooth(SOAK_FROM, SOAK_FROM + 0.03, p) : smooth(b.out[0], b.out[1], p)));
-        var mid = b.last ? b.into[1] : (b.into[1] + b.out[0]) / 2;
-        c.el.style.opacity = o;
-        c.el.style.transform = 'translateY(' + ((p - mid) * -160) + 'px)';
+        c.el.style.opacity = c.o;
+        c.el.style.transform = 'translateY(' + c.ty + 'px)';
         if (b.scales) { var kk = Math.round(clamp(s, 0, 5)); Array.prototype.forEach.call(c.el.querySelectorAll('em'), function (e, i) { e.classList.toggle('now', i === kk); }); }
       });
       meterBar.style.transform = 'scaleY(' + p + ')';
-      meter.style.opacity = (1 - out) * (1 - soak);
-      nav.classList.toggle('scrolled', soak > 0.3);
+      // the meter leaves with the points, before the paper shows
+      meter.style.opacity = (1 - out) * (1 - smooth(SOAK_FROM - 0.02, SOAK_FROM + 0.02, p));
+      // the bar takes on paper as the soak front reaches the top of the frame
+      var navA = smooth(0.3, 0.8, soak);
+      nav.style.backgroundColor = navA > 0 ? 'rgba(239, 227, 203, ' + navA.toFixed(3) + ')' : '';
+      nav.classList.toggle('scrolled', navA >= 1);
     }
     if (running) raf = requestAnimationFrame(tick);
   }
