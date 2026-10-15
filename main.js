@@ -229,6 +229,12 @@
   (window.LAB_PUBS || []).forEach(function (p) {
     var li = h('li', 'pub');
     li.setAttribute('data-tag', p.tag);
+    if (p.img) {
+      var fig = h('span', 'pub-art');
+      var im = document.createElement('img'); im.src = p.img; im.alt = ''; im.loading = 'lazy'; im.width = 240; im.height = 240;
+      im.onerror = function () { fig.remove(); li.classList.add('no-art'); };
+      fig.appendChild(im); li.appendChild(fig);
+    }
     li.appendChild(h('span', 'pub-year', String(p.year)));
     li.appendChild(link(p.title, p.url, 'pub-title'));
     var v = h('span', 'pub-venue', p.venue);
