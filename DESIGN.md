@@ -18,3 +18,13 @@ Reference: https://pear.no/ (named by Albert, 2026-10-12, "要有高级审美"; 
 | Logo | Upright small neural network whose output runs up a dotted line to an open circle | Albert, 2026-10-14: concept E "竖起来"; the mark should say AI as well as aging |
 
 Rejected directions: minimal white with hairlines ("I want fancier"); dark navy with glow, gradient text and glass ("这个coloring太烂大街"). No rust or terracotta (2026-09-17).
+
+## Tang gold (default since 2026-10-14)
+
+Albert, 2026-10-14: "之前说的唐朝style会更好一点，然后整个都换成这个金色", then asked for a slightly lighter gold.
+- Hero ground and gold sheets: #c0915b (the painted silk median #ab7337, lightened one step).
+- Reading sections: light silk #efe3cb. Ink #1d1c19.
+- Paintings: `yinglab-art/2026-10-14_tang3` (no blue, no green). Masks: `yinglab-art/make_tang_masks.py` (GrabCut seeded by outlines).
+- Hero stages: procession, brain among long-lived species, human, tissue, cell, molecule, network.
+- Woodblock version: `?art=uk`.
+- Logo: 7x7 dot lattice with an evenly spaced Y (dots every 6 units along each stroke).

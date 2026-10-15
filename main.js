@@ -136,6 +136,7 @@
   var plot = document.getElementById('axis-plot');
   var lastMode = null, lastW = 0;
   function renderAxis() {
+    if (!plot) return;
     var W = Math.round(plot.clientWidth);
     if (!W) return;
     var mode = window.matchMedia('(max-width: 760px)').matches ? 'v' : 'h';
@@ -213,7 +214,7 @@
   }
 
   var workList = document.getElementById('work-list');
-  (window.LAB_WORK || []).forEach(function (w) {
+  (workList ? window.LAB_WORK || [] : []).forEach(function (w) {
     var item = h('article', 'work-item');
     item.appendChild(h('h3', null, w.name));
     item.appendChild(h('span', 'work-status', w.status));
@@ -299,7 +300,7 @@
         });
       });
     }, { rootMargin: '-45% 0px -50% 0px' });
-    ['top', 'mission', 'scales', 'brain', 'agents', 'research', 'work', 'publications', 'people', 'join'].forEach(function (id) {
+    ['top', 'mission', 'scales', 'brain', 'agents', 'research', 'publications', 'people', 'join'].forEach(function (id) {
       var s = document.getElementById(id);
       if (s) io.observe(s);
     });

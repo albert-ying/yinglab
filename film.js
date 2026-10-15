@@ -422,7 +422,7 @@
     for (var c6 = 0; c6 < 6; c6++) { if (cA[c6] < 0) continue; gl.enableVertexAttribArray(cA[c6]); gl.vertexAttribPointer(cA[c6], 4, gl.UNSIGNED_BYTE, true, 24, c6 * 4); }
     gl.bindBuffer(gl.ARRAY_BUFFER, nbuf); if (nA >= 0) { gl.enableVertexAttribArray(nA); gl.vertexAttribPointer(nA, 2, gl.FLOAT, false, 8, 0); }
     gl.uniform3f(PU.uNetCol, TANG ? 0.18 : 0.11, TANG ? 0.12 : 0.11, TANG ? 0.06 : 0.10);
-    gl.uniform2f(PU.uOffN, W * (wide ? 0.66 : 0.5), H * 0.52); gl.uniform1f(PU.uScN, H * (wide ? 0.5 : 0.38));
+    gl.uniform2f(PU.uOffN, W * (wide ? 0.66 : 0.5), H * (wide ? 0.52 : 0.66)); gl.uniform1f(PU.uScN, wide ? H * 0.5 : Math.min(H * 0.34, W * 0.5));
     gl.uniform2f(PU.uRes, W, H); gl.uniform2f(PU.uOff0, off0x, off0y); gl.uniform2f(PU.uOffC, offCx, offCy);
     gl.uniform2f(PU.uMouse, mouse.x, mouse.y);
     gl.uniform3f(PU.uFlight, 0.11, 0.11, 0.10);
