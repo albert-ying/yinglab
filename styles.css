@@ -519,3 +519,38 @@ html[data-art="tang"] { background: #efe3cb; }
 html[data-art="tang"] .foot { --bg: #efe3cb; --ink: #1d1c19; --muted: #5e5141; padding-block: clamp(32px, 4vw, 48px); }
 .foot-nav { display: flex; flex-wrap: wrap; gap: 8px 20px; }
 .foot-nav a { text-decoration: none; }
+
+/* Join: the text and two values on the left, the painting beside them, so the section height comes from its content. */
+.join, html[data-art="tang"] .join { padding-bottom: var(--section); }
+@media (min-width: 901px) { .join-grid { grid-template-columns: minmax(0, 6fr) minmax(0, 5fr); align-items: center; } }
+.join .values { margin-top: clamp(36px, 4vw, 56px); max-width: 640px; }
+.join-art { position: static; right: auto; bottom: auto; transform: none; width: min(100%, 460px); justify-self: center; }
+@media (max-width: 900px) { .join-art { width: min(100%, 300px); } }
+
+/* The loop stays beside the four directions down to tablet width. */
+.lp-label { font-size: 15px; }
+@media (max-width: 1040px) and (min-width: 761px) {
+  .research-grid { grid-template-columns: minmax(0, 4fr) minmax(0, 7fr); }
+  .loop { position: sticky; max-width: none; margin-inline: 0; }
+  .lp-label { font-size: 17px; }
+  .lp-center { font-size: 24px; }
+}
+
+/* Scale captions hold one line each from 901px up. */
+@media (min-width: 901px) {
+  html[data-art] .scales-labels span { letter-spacing: 0.06em; white-space: nowrap; }
+}
+@media (min-width: 901px) and (max-width: 1180px) {
+  .scales-row { column-gap: 12px; }
+}
+
+/* Phone: larger mono labels and taller tap targets. */
+@media (max-width: 760px) {
+  .nav nav { padding-bottom: 0; }
+  .nav nav a:not(.btn) { display: inline-block; font-size: 0.75rem; letter-spacing: 0.06em; line-height: 1.5; padding: 11px 0; }
+  html[data-art] .scales-labels span, .filter button, .links, .btn { font-size: 0.75rem; letter-spacing: 0.12em; }
+  html[data-art] .scales-labels span { letter-spacing: 0.06em; }
+  .filter button { min-height: 40px; }
+  .links { gap: 0 22px; margin-top: 18px; }
+  .links a { display: inline-block; padding-block: 10px; }
+}

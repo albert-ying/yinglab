@@ -118,13 +118,13 @@
   // baseline offset from the painting's centre (fraction of its height) and where the drawn line ends
   var LAY = TANG ? { base: 0.1586, right: 0.49 } : { base: 0.4576, right: 0.487 };
   var SOURCES = [
-    { src: 'assets/img/' + ART + 'lineup.webp?v=t12', boostTo: 0.22, boost: 2.6 },   // the small animals get more points than their area would earn
-    { src: 'assets/img/' + ART + (TANG ? 'population' : 'species') + '.webp?v=t12' },
-    { src: 'assets/img/' + ART + 'human.webp?v=t12' },
-    { src: 'assets/img/' + ART + 'tissue.webp?v=t12' },
-    { src: 'assets/img/' + ART + 'cell.webp?v=t12' },
-    { src: 'assets/img/' + ART + 'molecule.webp?v=t12' },
-    { src: 'assets/img/' + ART + (TANG ? 'brain' : 'species') + '.webp?v=t12' }   // the brain among the longest-lived species
+    { src: 'assets/img/' + ART + 'lineup.webp?v=t13', boostTo: 0.22, boost: 2.6 },   // the small animals get more points than their area would earn
+    { src: 'assets/img/' + ART + (TANG ? 'population' : 'species') + '.webp?v=t13' },
+    { src: 'assets/img/' + ART + 'human.webp?v=t13' },
+    { src: 'assets/img/' + ART + 'tissue.webp?v=t13' },
+    { src: 'assets/img/' + ART + 'cell.webp?v=t13' },
+    { src: 'assets/img/' + ART + 'molecule.webp?v=t13' },
+    { src: 'assets/img/' + ART + (TANG ? 'brain' : 'species') + '.webp?v=t13' }   // the brain among the longest-lived species
   ];
   var NP = SOURCES.length;   // paintings; the network is stage NP
 
@@ -141,11 +141,12 @@
   ];
   // Which drawing the points hold: [p, stage]. 0 procession, 1-5 species to molecule, 6 the network.
   var STAGE = [[0, 0], [0.29, 0], [0.315, 1], [0.35, 1], [0.375, 2], [0.41, 2], [0.435, 3], [0.47, 3], [0.495, 4], [0.53, 4], [0.555, 5], [0.59, 5], [0.62, 6], [0.71, 6], [0.75, 7], [1, 7]];
+  // Each caption fades in over `into` and out over `out`, so one caption hands over to the next with no empty frame.
   var BEATS = [
-    { p: 0.165, name: 'Across species', sub: 'Maximum lifespan runs from 4 years in a mouse to 507 in an ocean quahog', w: 0.085 },
-    { p: 0.45, name: 'Across scales', scales: true, sub: '<em>Species</em> &nbsp;/&nbsp; <em>Population</em> &nbsp;/&nbsp; <em>Individual</em><br><em>Tissue</em> &nbsp;/&nbsp; <em>Cell</em> &nbsp;/&nbsp; <em>Molecule</em>', w: 0.15 },
-    { p: 0.68, name: 'Brain resilience', sub: 'The longest-lived species may have the most resilient brains', w: 0.035 },
-    { p: 0.80, name: 'AI that does research', sub: 'Models and agents that learn across species and scales and propose what to test', w: 0.04, last: true }
+    { into: [0.035, 0.065], out: [0.235, 0.265], name: 'Across species', sub: 'Maximum lifespan runs from 4 years in a mouse to 507 in an ocean quahog' },
+    { into: [0.27, 0.30], out: [0.565, 0.588], name: 'Across scales', scales: true, sub: '<em>Species</em> &nbsp;/&nbsp; <em>Population</em> &nbsp;/&nbsp; <em>Individual</em><br><em>Tissue</em> &nbsp;/&nbsp; <em>Cell</em> &nbsp;/&nbsp; <em>Molecule</em>' },
+    { into: [0.592, 0.615], out: [0.69, 0.71], name: 'Brain resilience', sub: 'The longest-lived species may have the most resilient brains' },
+    { into: [0.705, 0.73], name: 'AI for discovery', sub: 'Models and agents that learn across species and scales and propose what to test', last: true }
   ];
   var PEND = 0.30;
   var SOAK_FROM = 0.86, SOAK_TO = 0.96;
@@ -459,12 +460,11 @@
       foot.style.opacity = out; cue.style.opacity = out;
       copy.style.pointerEvents = out < 0.5 ? 'none' : '';
       caps.forEach(function (c) {
-        var b = c.beat, w = b.w || 0.03;
-        var dist = Math.abs(p - b.p);
-        var o = 1 - smooth(w * 0.6, w * 1.2, dist);
-        if (b.last && p > b.p) o = 1 - smooth(SOAK_FROM, SOAK_FROM + 0.03, p);
+        var b = c.beat;
+        var o = smooth(b.into[0], b.into[1], p) * (1 - (b.last ? smooth(SOAK_FROM, SOAK_FROM + 0.03, p) : smooth(b.out[0], b.out[1], p)));
+        var mid = b.last ? b.into[1] : (b.into[1] + b.out[0]) / 2;
         c.el.style.opacity = o;
-        c.el.style.transform = 'translateY(' + ((p - b.p) * -160) + 'px)';
+        c.el.style.transform = 'translateY(' + ((p - mid) * -160) + 'px)';
         if (b.scales) { var kk = Math.round(clamp(s, 0, 5)); Array.prototype.forEach.call(c.el.querySelectorAll('em'), function (e, i) { e.classList.toggle('now', i === kk); }); }
       });
       meterBar.style.transform = 'scaleY(' + p + ')';
