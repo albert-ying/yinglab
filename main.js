@@ -18,7 +18,8 @@
     { key: 'mouse', name: 'House mouse', years: 4, h: 24, lift: 22, hv: 20 },
     { key: 'naked-mole-rat', name: 'Naked mole-rat', years: 31, h: 24, lift: 22, hv: 20 },
     { key: 'human', name: 'Human', years: HUMAN, h: 62, lift: 22, hv: 30, anchor: 'end' },
-    { key: 'bowhead', name: 'Bowhead whale', years: 211, h: 44, lift: 138, hv: 20 }
+    { key: 'bowhead', name: 'Bowhead whale', years: 211, h: 44, lift: 138, hv: 20 },
+    { key: 'shark', name: 'Greenland shark', years: 392, h: 15, lift: 64, hv: 12 }
   ];
   var HUMAN_SHAPE = { w: 24, h: 62, d: 'M4 16 Q4 12.5 8 12.5 H16 Q20 12.5 20 16 V36 H17.6 V19 H16.8 V62 H12.6 V40 H11.4 V62 H7.2 V19 H6.4 V36 H4 Z M12 0.8 A5.2 5.2 0 1 1 11.99 0.8 Z' };
   var MAX = 2400;

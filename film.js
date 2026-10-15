@@ -107,12 +107,12 @@
 
   // Six drawings, each given to the same points. The first is the lifespan line; the rest are the scales.
   var SOURCES = [
-    { src: 'assets/img/p-lineup.webp?v=oil1', boostTo: 0.40, boost: 3.0 },   // the small animals get more points than their area would earn
-    { src: 'assets/img/p-species.webp?v=oil1' },
-    { src: 'assets/img/p-person.webp?v=oil1' },
-    { src: 'assets/img/p-tissue.webp?v=oil1' },
-    { src: 'assets/img/p-cell.webp?v=oil1' },
-    { src: 'assets/img/p-molecule.webp?v=oil1' }
+    { src: 'assets/img/p-lineup.webp?v=uk1', boostTo: 0.42, boost: 3.0 },   // the small animals get more points than their area would earn
+    { src: 'assets/img/p-species.webp?v=uk1' },
+    { src: 'assets/img/p-person.webp?v=uk1' },
+    { src: 'assets/img/p-tissue.webp?v=uk1' },
+    { src: 'assets/img/p-cell.webp?v=uk1' },
+    { src: 'assets/img/p-molecule.webp?v=uk1' }
   ];
 
   /* The road. p is scroll progress through the hero, 0..1.
@@ -120,26 +120,28 @@
   var STOPS = [
     { p: 0.000, x: 0.50, z: 1.00 },
     { p: 0.030, x: 0.50, z: 1.00 },
-    { p: 0.095, x: 0.071, z: 2.6 },
-    { p: 0.165, x: 0.199, z: 2.6 },
-    { p: 0.235, x: 0.472, z: 1.75 },
-    { p: 0.305, x: 0.783, z: 1.18 },
-    { p: 0.375, x: 1.300, z: 1.18 },
+    { p: 0.095, x: 0.078, z: 2.6 },
+    { p: 0.160, x: 0.220, z: 2.6 },
+    { p: 0.225, x: 0.509, z: 1.9 },
+    { p: 0.290, x: 0.745, z: 1.35 },
+    { p: 0.350, x: 0.819, z: 1.35 },
+    { p: 0.415, x: 1.300, z: 1.18 },
     { p: 1.000, x: 1.300, z: 1.18 }
   ];
   // Which drawing the points hold: [p, stage]. Flat stretches are where a drawing rests.
-  var STAGE = [[0, 0], [0.415, 0], [0.485, 1], [0.520, 1], [0.580, 2], [0.615, 2], [0.675, 3], [0.710, 3], [0.770, 4], [0.805, 4], [0.865, 5], [1, 5]];
+  var STAGE = [[0, 0], [0.445, 0], [0.505, 1], [0.535, 1], [0.590, 2], [0.620, 2], [0.680, 3], [0.710, 3], [0.770, 4], [0.800, 4], [0.860, 5], [1, 5]];
   var BEATS = [
     { p: 0.095, name: 'House mouse', sub: 'Maximum lifespan &nbsp;/&nbsp; 4 years' },
-    { p: 0.165, name: 'Naked mole-rat', sub: 'Maximum lifespan &nbsp;/&nbsp; 31 years' },
-    { p: 0.235, name: 'Human', sub: 'Maximum lifespan &nbsp;/&nbsp; 122 years' },
-    { p: 0.305, name: 'Bowhead whale', sub: 'Maximum lifespan &nbsp;/&nbsp; 211 years, estimated' },
-    { p: 0.385, name: '<i>One order of magnitude</i>', sub: 'Ten times the human record', w: 0.05 },
-    { p: 0.503, name: 'Species', sub: 'Across scales &nbsp;/&nbsp; Pan-species models' },
-    { p: 0.598, name: 'Person', sub: 'Across scales &nbsp;/&nbsp; Human health models' },
-    { p: 0.693, name: 'Tissue', sub: 'Across scales &nbsp;/&nbsp; Virtual tissues' },
-    { p: 0.788, name: 'Cell', sub: 'Across scales &nbsp;/&nbsp; Virtual cells' },
-    { p: 0.885, name: 'Molecule', sub: 'Across scales &nbsp;/&nbsp; Protein models and design', w: 0.045, last: true }
+    { p: 0.160, name: 'Naked mole-rat', sub: 'Maximum lifespan &nbsp;/&nbsp; 31 years' },
+    { p: 0.225, name: 'Human', sub: 'Maximum lifespan &nbsp;/&nbsp; 122 years' },
+    { p: 0.290, name: 'Bowhead whale', sub: 'Maximum lifespan &nbsp;/&nbsp; 211 years, estimated' },
+    { p: 0.350, name: 'Greenland shark', sub: 'Maximum lifespan &nbsp;/&nbsp; 392 years, estimated' },
+    { p: 0.420, name: '<i>One order of magnitude</i>', sub: 'Ten times the human record', w: 0.05 },
+    { p: 0.520, name: 'Species', sub: 'Across scales &nbsp;/&nbsp; Pan-species models' },
+    { p: 0.605, name: 'Person', sub: 'Across scales &nbsp;/&nbsp; Human health models' },
+    { p: 0.695, name: 'Tissue', sub: 'Across scales &nbsp;/&nbsp; Virtual tissues' },
+    { p: 0.785, name: 'Cell', sub: 'Across scales &nbsp;/&nbsp; Virtual cells' },
+    { p: 0.875, name: 'Molecule', sub: 'Across scales &nbsp;/&nbsp; Protein models and design', w: 0.045, last: true }
   ];
   var SOAK_FROM = 0.925, SOAK_TO = 0.992;
 
@@ -194,7 +196,7 @@
       'void main(){',
       '  vec2 px = vec2(vUv.x, 1.0-vUv.y)*uRes;',
       '  float asp = uRes.x/uRes.y;',
-      '  vec3 blue = vec3(0.0, 0.31, 0.75);',
+      '  vec3 blue = vec3(0.0, 0.235, 0.55);',
       '  float drift = fbm(vec2(vUv.x*asp, vUv.y)*1.6 + vec2(uTime*0.012, -uTime*0.008));',
       '  float brush = fbm(vec2(vUv.x*asp*9.0, vUv.y*3.0) + 7.0);',
       '  vec3 col = blue*(0.84 + 0.25*drift + 0.07*(brush-0.5));',
@@ -378,8 +380,8 @@
     // lifespan drawing: a wide strip standing on a baseline
     var sc0 = cam.z * W * 0.92 / aspect0;
     var off0x = W * 0.5 - (cam.x - 0.5) * aspect0 * sc0;
-    var baseY = H * 0.80;
-    var off0y = baseY - 0.454 * sc0;
+    var baseY = H * 0.72;
+    var off0y = baseY - 0.0075 * sc0;
     // scale drawings: a disc on the right, beside the caption
     var wide = W / dpr > 1100;
     var scC = H * (wide ? 0.70 : 0.52);
@@ -391,8 +393,8 @@
     gl.enableVertexAttribArray(gA); gl.vertexAttribPointer(gA, 2, gl.FLOAT, false, 0, 0);
     gl.uniform2f(GU.uRes, W, H); gl.uniform2f(GU.uMouse, mouse.x, mouse.y);
     gl.uniform1f(GU.uTime, now / 1000); gl.uniform1f(GU.uSoak, soak);
-    gl.uniform1f(GU.uLineY, baseY); gl.uniform1f(GU.uLineX, off0x + aspect0 * sc0 * 0.487);
-    gl.uniform1f(GU.uBeyond, smooth(0.30, 0.36, p) * (1 - smooth(0.41, 0.45, p)));
+    gl.uniform1f(GU.uLineY, baseY); gl.uniform1f(GU.uLineX, off0x + aspect0 * sc0 * 0.481);
+    gl.uniform1f(GU.uBeyond, smooth(0.36, 0.40, p) * (1 - smooth(0.445, 0.48, p)));
     gl.uniform1f(GU.uGrain, 0.035);
     gl.drawArrays(gl.TRIANGLES, 0, 3);
 
