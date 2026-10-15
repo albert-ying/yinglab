@@ -1,4 +1,4 @@
-/* Ying Lab. White ground, navy ink, one cobalt accent. Type is Oxygen throughout. */
+/* Ying Lab. Tang gold and silk by default (html[data-art="tang"]). Type is Oxygen with Instrument Serif titles. */
 
 @font-face { font-family: 'Oxygen'; font-style: normal; font-weight: 300; font-display: swap; src: url('assets/fonts/oxygen-300-latin-ext.woff2') format('woff2'); unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF; }
 @font-face { font-family: 'Oxygen'; font-style: normal; font-weight: 300; font-display: swap; src: url('assets/fonts/oxygen-300-latin.woff2') format('woff2'); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
@@ -59,7 +59,7 @@ main > section::after { right: var(--edge); }
 .blue { background-color: var(--white); }
 
 /* Type */
-h1, h2, .statement, .pi-name { font-family: var(--title); font-weight: 400; letter-spacing: -0.018em; text-wrap: balance; }
+h1, h2, .pi-name { font-family: var(--title); font-weight: 400; letter-spacing: -0.018em; text-wrap: balance; }
 h2 { font-size: clamp(2rem, 3.9vw, 3.5rem); line-height: 1.06; }
 h3 { font-family: var(--title); font-weight: 400; font-size: 1.5rem; line-height: 1.15; letter-spacing: -0.012em; }
 .label { font-family: var(--code); font-size: 0.6875rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); line-height: 1.5; }
@@ -126,44 +126,13 @@ html[data-art="tang"] .nav .mark { color: #1d1c19; --mark-in: #a8784a; }
 @keyframes rule-in { to { border-bottom-color: var(--rule); } }
 @keyframes cross { 0% { opacity: 0; transform: scale(2.6) rotate(-45deg); } 45% { opacity: 1; transform: scale(0.8) rotate(0); } to { opacity: 1; transform: none; } }
 
-/* Lifespan axis */
-.band, .scales, .research, .work, .pubs, .people, .join { padding-block: var(--section); }
-.axis { margin-top: 26px; }
-.axis-plot { min-height: 330px; }
-.axis-plot svg { display: block; width: 100%; height: auto; overflow: visible; }
-.axis figcaption { margin-top: 18px; font-size: 0.8125rem; color: var(--muted); max-width: 78ch; }
-.ax-line, .ax-tick { stroke: var(--ink); stroke-width: 1; }
-.ax-ticklabel { fill: var(--muted); font-family: var(--code); font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase; }
-.ax-lead { stroke: var(--rule); stroke-width: 1; }
-.ax-dot { fill: var(--ink); }
-.ax-shape { fill: var(--ink); }
-.ax-name { fill: var(--ink); font-family: var(--title); font-size: 19px; letter-spacing: -0.01em; }
-.ax-years { fill: var(--muted); font-family: var(--code); font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase; }
-.ax-ext { stroke: var(--blue); stroke-width: 1.5; stroke-dasharray: 1 7; stroke-linecap: round; }
-.ax-goal { fill: var(--paper); stroke: var(--blue); stroke-width: 1.5; }
-.ax-halo { fill: none; stroke: var(--blue); stroke-width: 1; opacity: 0; transform-box: fill-box; transform-origin: center; }
-.ax-bracket { stroke: var(--blue); stroke-width: 1; fill: none; }
-.ax-goal-label { fill: var(--blue); font-family: var(--title); font-style: italic; font-size: 19px; }
-/* The sequence starts when the figure scrolls into view. */
-.js .axis .ax-line { stroke-dasharray: var(--len); stroke-dashoffset: var(--len); }
-.js .axis .ax-in { opacity: 0; }
-.js .axis .ax-ext { clip-path: inset(-20px 100% -20px 0); }
-.js .axis.vertical .ax-ext { clip-path: inset(0 -20px 100% -20px); }
-.axis.in .ax-line { animation: draw 1.5s cubic-bezier(0.5, 0, 0.2, 1) 0.2s forwards; }
-.axis.in .ax-in { animation: rise 0.6s ease-out forwards; animation-delay: var(--d, 0s); }
-.axis.in .ax-ext { animation: wipe 1.1s cubic-bezier(0.5, 0, 0.2, 1) 2.1s forwards; }
-.axis.in.vertical .ax-ext { animation-name: wipe-v; }
-.axis.in .ax-halo { animation: halo 3s ease-out 3.2s infinite; }
-@keyframes draw { to { stroke-dashoffset: 0; } }
-@keyframes rise { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: none; } }
-@keyframes wipe { to { clip-path: inset(-20px -20px -20px 0); } }
-@keyframes wipe-v { to { clip-path: inset(0 -20px -20px -20px); } }
-@keyframes halo { from { opacity: 0.7; transform: scale(1); } to { opacity: 0; transform: scale(3.4); } }
+
+/* Sections */
+.band, .scales, .research, .pubs, .people, .join { padding-block: var(--section); }
 
 /* Mission */
 .two { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); gap: clamp(24px, 6vw, 104px); align-items: start; }
 .band .two { margin-top: clamp(64px, 9vw, 128px); padding-top: clamp(40px, 5vw, 72px); border-top: 1px solid var(--rule); }
-.statement { margin-top: clamp(64px, 9vw, 128px); font-size: clamp(2rem, 4.6vw, 4.25rem); line-height: 1.04; font-style: italic; max-width: 20ch; color: var(--blue); }
 
 /* Across scales */
 .scales { padding-top: 0; }
@@ -200,12 +169,9 @@ html[data-art="tang"] .nav .mark { color: #1d1c19; --mark-in: #a8784a; }
 .lp-center { fill: var(--ink-2); font-family: var(--title); font-style: italic; font-size: 19px; }
 .lp-arrow { fill: var(--rule); }
 
-.directions article { display: grid; grid-template-columns: 92px minmax(0, 1fr); gap: clamp(16px, 2.4vw, 32px); align-items: start; padding: 28px 0; border-top: 1px solid var(--rule); cursor: default; transition: opacity 0.4s; }
+.directions article { display: grid; grid-template-columns: minmax(0, 1fr); gap: clamp(16px, 2.4vw, 32px); align-items: start; padding: 28px 0; border-top: 1px solid var(--rule); cursor: default; transition: opacity 0.4s; }
 .directions article:last-child { border-bottom: 1px solid var(--rule); }
 @media (hover: hover) { .directions:hover article:not(.on) { opacity: 0.5; } }
-.roundel { width: 92px; height: 92px; border-radius: 50%; background: var(--paper); overflow: hidden; transition: transform 0.7s var(--ease); }
-.roundel img { width: 100%; height: 100%; object-fit: cover; transform: scale(1.04); }
-.directions article.on .roundel { transform: scale(1.08); }
 .directions h3 { font-size: clamp(1.5rem, 2.3vw, 2rem); line-height: 1.1; }
 .dir-body > p { margin-top: 8px; color: var(--muted); font-size: 0.9375rem; max-width: 52ch; }
 .directions ul { margin-top: 12px; color: var(--ink-2); font-size: 0.9375rem; }
@@ -213,24 +179,7 @@ html[data-art="tang"] .nav .mark { color: #1d1c19; --mark-in: #a8784a; }
 .directions li + li { margin-top: 3px; }
 .directions li::before { content: ""; position: absolute; left: 0; top: 0.78em; width: 10px; height: 1px; background: var(--muted); }
 
-.tenets { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: clamp(20px, 3vw, 44px); margin-top: clamp(64px, 9vw, 120px); }
-.tenets > div { position: relative; padding-top: 22px; }
-.tenets > div::before { content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 1px; background: var(--ink); transform-origin: left; }
-.js .tenets > div::before { transform: scaleX(0); transition: transform 1.15s var(--ease); transition-delay: calc(var(--i, 0) * 120ms + 0.2s); }
-.js .tenets > div.in::before { transform: scaleX(1); }
-.tenets dt { font-family: var(--title); font-size: 1.5rem; line-height: 1.12; letter-spacing: -0.012em; }
-.tenets dd { color: var(--ink-2); font-size: 0.9375rem; margin-top: 10px; line-height: 1.55; }
 
-/* Work: a ruled ledger */
-.work-list { margin-top: clamp(40px, 5vw, 64px); border-bottom: 1px solid var(--rule); }
-.work-item { display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 5fr) auto; gap: 8px clamp(20px, 4vw, 64px); align-items: start; padding: 30px 0; border-top: 1px solid var(--rule); position: relative; }
-.work-item::before { content: ""; position: absolute; left: 0; top: -1px; width: 100%; height: 1px; background: var(--ink); transform: scaleX(0); transform-origin: left; transition: transform 0.7s var(--ease); }
-.work-item:hover::before { transform: scaleX(1); }
-.work-item h3 { grid-column: 1; grid-row: 1; font-size: clamp(1.75rem, 3vw, 2.625rem); line-height: 1.02; }
-.work-kind { grid-column: 1; grid-row: 2; font-family: var(--code); font-size: 0.6875rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); }
-.work-status { grid-column: 3; grid-row: 1; justify-self: end; font-family: var(--code); font-size: 0.6875rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--ink); padding: 4px 9px; background: color-mix(in srgb, var(--ink) 9%, transparent); border-radius: 3px; white-space: nowrap; }
-.work-item p { grid-column: 2; grid-row: 1 / span 2; color: var(--ink-2); font-size: 0.9688rem; line-height: 1.55; max-width: 50ch; }
-.work-links { grid-column: 3; grid-row: 2; justify-self: end; display: flex; gap: 18px; font-family: var(--code); font-size: 0.6875rem; letter-spacing: 0.2em; text-transform: uppercase; }
 
 /* Publications */
 .pubs { padding-top: 0; }
@@ -284,14 +233,9 @@ html[data-art="tang"] .nav .mark { color: #1d1c19; --mark-in: #a8784a; }
 @media (max-width: 1040px) {
   .research-grid { grid-template-columns: 1fr; }
   .loop { position: static; max-width: 400px; margin-inline: auto; }
-  .work-item { grid-template-columns: minmax(0, 1fr) auto; }
-  .work-item p { grid-column: 1 / -1; grid-row: 3; margin-top: 8px; }
-  .work-status { grid-column: 2; }
-  .work-links { grid-column: 1 / -1; grid-row: 4; justify-self: start; margin-top: 10px; }
 }
 @media (max-width: 900px) {
   .two, .people-grid, .join-grid { grid-template-columns: 1fr; }
-  .tenets { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .portrait { max-width: 340px; }
   .scales-labels { min-height: 0; margin-top: 20px; display: grid; gap: 12px; }
   .scales-row { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 28px 20px; }
@@ -302,7 +246,6 @@ html[data-art="tang"] .nav .mark { color: #1d1c19; --mark-in: #a8784a; }
   .join-art { width: 300px; right: 50%; transform: translateX(50%); }
 }
 @media (max-width: 760px) {
-  .axis-plot { min-height: 558px; }
   .hero { min-height: 0; padding-top: 128px; }
   .hero-foot { grid-template-columns: 1fr; gap: 12px; }
   .nav { background: #f2f1ed; color: var(--ink); border-bottom-color: rgba(29, 28, 25, 0.16); }
@@ -312,25 +255,18 @@ html[data-art="tang"] .nav .mark { color: #1d1c19; --mark-in: #a8784a; }
   .nav nav a { white-space: nowrap; }
   .nav nav .btn { display: none; }
   html { scroll-padding-top: 100px; }
-  .directions article { grid-template-columns: 64px minmax(0, 1fr); }
-  .roundel { width: 64px; height: 64px; }
   .pub { grid-template-columns: 1fr; gap: 6px; }
   .pub-authors, .pub-venue { grid-column: 1; grid-row: auto; text-align: left; }
   .pub-venue small { display: inline; margin-left: 10px; }
   .values li { grid-template-columns: 1fr; gap: 4px; }
 }
-@media (max-width: 480px) {
-  .tenets { grid-template-columns: 1fr; }
-}
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   *, *::before, *::after { animation: none !important; transition: none !important; }
-  .js [data-reveal], .js .hero-copy > *, .js .hero-foot > *, .js .scales-labels li, .js .axis .ax-in, .js .hero-art .star { opacity: 1; transform: none; }
-  .js .axis .ax-line { stroke-dashoffset: 0; }
-  .js .axis .ax-ext, .js .hero-art img { clip-path: none; }
+  .js [data-reveal], .js .hero-copy > *, .js .hero-foot > *, .js .scales-labels li, .js .hero-art .star { opacity: 1; transform: none; }
+  .js .hero-art img { clip-path: none; }
   .js .hero-art { border-bottom-color: var(--rule); }
-  .js .tenets > div::before { transform: none; }
 }
 
 /* ---------- Hero film: a pinned WebGL scene driven by scroll ---------- */
@@ -360,8 +296,8 @@ html[data-art="tang"] .nav .mark { color: #1d1c19; --mark-in: #a8784a; }
 .lines-in .ln > i { transform: none; }
 .js .hero-copy > h1 { opacity: 1; transform: none; animation: none; }
 
-.js h2[data-reveal], .js .statement[data-reveal] { opacity: 1; transform: none; }
-h2.in .ln > i, .statement.in .ln > i { transform: none; }
+.js h2[data-reveal] { opacity: 1; transform: none; }
+h2.in .ln > i { transform: none; }
 
 /* Margin rules draw down each sheet as it arrives. */
 .js main > section::before, .js main > section::after { transform: scaleY(0); transform-origin: 50% 0; transition: transform 1.6s var(--ease); }
@@ -385,21 +321,6 @@ h2.in .ln > i, .statement.in .ln > i { transform: none; }
 /* Once the film takes over, the opening copy keeps its settled state instead of replaying its entrance. */
 .hero.is-film .hero-copy > *, .hero.is-film .hero-foot > * { animation: none; opacity: 1; transform: none; }
 
-/* Brain resilience */
-.brain { padding-block: var(--section); }
-.brain-grid { display: grid; grid-template-columns: minmax(0, 6fr) minmax(0, 5fr); gap: clamp(28px, 6vw, 104px); align-items: center; }
-.brain-art img { width: 100%; border-radius: 50%; }
-.brain h2 { font-size: clamp(2.4rem, 5vw, 4.5rem); line-height: 1; }
-.brain .prose { margin-top: 26px; color: rgba(255, 255, 255, 0.9); }
-@media (max-width: 900px) { .brain-grid { grid-template-columns: 1fr; } .brain-art { max-width: 420px; } }
-
-/* AI agents */
-.agents { padding-block: var(--section); }
-.agents-grid { display: grid; grid-template-columns: minmax(0, 6fr) minmax(0, 5fr); gap: clamp(28px, 6vw, 104px); align-items: center; }
-.agents h2 { font-size: clamp(2.4rem, 5vw, 4.5rem); line-height: 1; }
-.agents .prose { margin-top: 26px; }
-.agents-art img { width: 100%; border-radius: 50%; }
-@media (max-width: 900px) { .agents-grid { grid-template-columns: 1fr; } .agents-art { max-width: 420px; order: -1; } }
 
 /* Each publication carries a painting drawn from its finding. */
 .pub { grid-template-columns: 112px 64px minmax(0, 1fr) minmax(150px, auto); }
@@ -420,26 +341,20 @@ h2.in .ln > i, .statement.in .ln > i { transform: none; }
 /* Tang series: aged-silk ground. */
 html[data-art="tang"] { --blue: #a8784a; }
 html[data-art="tang"] .blue { --ink: #1d1c19; --ink-2: rgba(29, 28, 25, 0.82); --muted: rgba(29, 28, 25, 0.66); --rule: rgba(29, 28, 25, 0.28); --accent: #1d1c19; }
-html[data-art="tang"] .hero .label, html[data-art="tang"] .hero-sub, html[data-art="tang"] .hero-lede, html[data-art="tang"] .hero.is-film .film-cap, html[data-art="tang"] .hero.is-film .film-cap span, html[data-art="tang"] .brain .prose, html[data-art="tang"] .hero.is-film .scroll-cue { color: #1d1c19; }
+html[data-art="tang"] .hero .label, html[data-art="tang"] .hero-sub, html[data-art="tang"] .hero-lede, html[data-art="tang"] .hero.is-film .film-cap, html[data-art="tang"] .hero.is-film .film-cap span, html[data-art="tang"] .hero.is-film .scroll-cue { color: #1d1c19; }
 html[data-art="tang"] .hero.is-film .scroll-cue::after, html[data-art="tang"] .film-meter i { background: #1d1c19; }
 html[data-art="tang"] .nav:not(.scrolled) { color: #1d1c19; border-bottom-color: rgba(29, 28, 25, 0.25); }
 html[data-art="tang"] .hero-foot .chip { background: rgba(29, 28, 25, 0.12); color: #1d1c19; }
 
-/* Seven nav links: tighten between the phone layout and wide screens so they do not reach the mark. */
-@media (max-width: 1180px) and (min-width: 761px) {
-  .nav nav { gap: 14px; }
-  .nav nav a:not(.btn) { letter-spacing: 0.1em; font-size: 0.625rem; }
-}
 
-/* Research now sits on the blue sheet like the hero, brain and join sections. */
+/* Research directions sit on the gold sheet like the hero and join sections. */
 .research .lp-node { fill: var(--bg); }
-.research .roundel { background: var(--bg); }
 .hero h1 { max-width: 13ch; }
 @media (max-width: 760px) { .nav .mark, .nav.scrolled .mark { color: var(--blue); --mark-in: #f2f1ed; } }
 
 /* White page: the hero and former blue sheets read in ink. */
 .nav:not(.scrolled) { color: #1d1c19; border-bottom-color: rgba(29, 28, 25, 0.16); }
-.hero .label, .hero-sub, .hero-lede, .hero.is-film .film-cap, .hero.is-film .film-cap span, .brain .prose, .hero.is-film .scroll-cue { color: #1d1c19; }
+.hero .label, .hero-sub, .hero-lede, .hero.is-film .film-cap, .hero.is-film .film-cap span, .hero.is-film .scroll-cue { color: #1d1c19; }
 .hero-sub { color: #45433d; }
 .hero.is-film .scroll-cue::after, .film-meter i { background: #1d1c19; }
 .hero-foot .chip { background: rgba(29, 28, 25, 0.08); color: #1d1c19; }
@@ -501,16 +416,13 @@ html[data-art="tang"] .prose { font-size: clamp(1.0625rem, 1.25vw, 1.25rem); lin
 html[data-art="tang"] h2 { font-size: clamp(2.5rem, 5vw, 4.5rem); }
 .sub-h { font-family: var(--title); font-weight: 400; font-size: clamp(2rem, 3.6vw, 3.25rem); line-height: 1.06; letter-spacing: -0.016em; margin: 10px 0 22px; text-wrap: balance; }
 .scales-row { grid-template-columns: repeat(6, minmax(0, 1fr)); }
-html[data-art="tang"] .scales-row img, html[data-art="tang"] .brain-art img, html[data-art="tang"] .agents-art img,
-html[data-art="tang"] .roundel img { border-radius: 0; object-fit: contain; background: none; transform: none; }
-html[data-art="tang"] .roundel { background: none; border-radius: 0; overflow: visible; width: 120px; height: 120px; }
-html[data-art="tang"] .directions article { grid-template-columns: 120px minmax(0, 1fr); padding: 22px 0; }
+html[data-art="tang"] .scales-row img { border-radius: 0; object-fit: contain; background: none; transform: none; }
+html[data-art="tang"] .directions article { padding: 22px 0; }
 html[data-art="tang"] .directions h3 { font-size: clamp(1.75rem, 2.6vw, 2.375rem); }
 html[data-art="tang"] .directions p, html[data-art="tang"] .directions ul { font-size: 1.0625rem; }
 html[data-art="tang"] .scales-labels b { font-size: 1.625rem; }
 html[data-art="tang"] .scales-labels span { font-size: 0.6875rem; }
 html[data-art="tang"] .scales-fig { margin-top: clamp(20px, 3vw, 40px); }
-html[data-art="tang"] .brain-grid, html[data-art="tang"] .agents-grid { align-items: center; }
 html[data-art="tang"] .pub-title { font-size: clamp(1.5rem, 2.2vw, 2rem); }
 html[data-art="tang"] .pub-authors { font-size: 1rem; }
 html[data-art="tang"] .label { font-size: 0.75rem; }
@@ -533,3 +445,77 @@ html[data-art="tang"] .portrait img { object-fit: contain; border-radius: 0; fil
 .pd-meta .pub-journal { font-size: 1.25rem; }
 html[data-art="tang"] .pub-under .pub-authors { display: block; color: var(--ink-2); }
 html[data-art="tang"] .portrait img { aspect-ratio: 1; max-width: 420px; }
+
+/* Film: the caption column stays on the left at every width, so captions never sit on the paintings. */
+.hero.is-film .film-cap { width: calc(44vw - var(--edge) - clamp(16px, 2.2vw, 36px) - 24px); }
+.hero.is-film .film-cap b { font-size: clamp(2.75rem, 5.4vw, 5rem); max-width: none; }
+.hero.is-film .film-cap span { max-width: none; }
+.film-cap span em { font-style: normal; opacity: 0.5; transition: opacity 0.3s; }
+.film-cap span em.now { opacity: 1; box-shadow: inset 0 -1px 0 currentColor; }
+.hero.is-film { height: 700vh; }
+
+/* Hero: the title leads, the opening line sits on one row beside the lede. */
+.hero h1 { margin-top: 0; font-size: clamp(3rem, 7.2vw, 7rem); line-height: 0.98; max-width: 14ch; }
+html[data-art="tang"] .hero-foot .chip { background: none; padding: 0; color: #1d1c19; }
+@media (min-width: 761px) {
+  html[data-art="tang"] .hero-foot { grid-template-columns: auto minmax(0, 1fr); column-gap: clamp(24px, 3vw, 48px); align-items: baseline; }
+  html[data-art="tang"] .hero-foot .chip { white-space: nowrap; }
+}
+
+/* Vision follows the film without an extra gap. */
+html[data-art="tang"] .band .two { margin-top: 0; }
+
+/* Research: the six scales clear the prose above them. */
+.scales-labels { margin-top: 0; }
+html[data-art="tang"] .scales-fig { margin-top: clamp(48px, 6vw, 88px); }
+.js .scales-fig.in .scales-labels li:nth-child(6) { transition-delay: 2.2s; }
+
+/* Research directions: two lead themes side by side, then the loop beside four directions. */
+.themes { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(40px, 6vw, 104px); margin-top: clamp(40px, 5vw, 72px); align-items: start; }
+.theme figure { width: min(100%, 360px); margin-bottom: 28px; }
+.theme figure img { width: 100%; }
+.theme h3 { font-size: clamp(2rem, 3.2vw, 2.75rem); line-height: 1.06; margin-bottom: 18px; text-wrap: balance; }
+#directions-sec .research-grid { margin-top: clamp(64px, 8vw, 112px); padding-top: clamp(40px, 5vw, 64px); border-top: 1px solid var(--rule); }
+@media (max-width: 900px) { .themes { grid-template-columns: 1fr; } .theme figure { width: min(100%, 300px); } }
+@media (max-width: 760px) { .lp-label { font-size: 18px; } .lp-center { font-size: 26px; } }
+
+/* Publications: each band is a lazy image so paintings load as they scroll in. */
+html[data-art="tang"] .pub-band { aspect-ratio: 1600 / 614; }
+.pub-list { grid-template-columns: minmax(0, 1fr); }
+.pub-band img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+
+/* Publication detail: the painting sits beside the text on wide screens. */
+.pub-dialog::backdrop { background: rgba(29, 28, 25, 0.72); backdrop-filter: none; }
+@media (min-width: 900px) {
+  html[data-art="tang"] .pub-dialog { width: min(1180px, 94vw); max-height: 88vh; }
+  html[data-art="tang"] .pd-grid { grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); }
+  html[data-art="tang"] .pd-img { aspect-ratio: 3 / 2; height: 100%; object-fit: cover; }
+  html[data-art="tang"] .pd-text { align-content: start; }
+}
+
+/* People: a section title, then the PI, then the members. */
+.people { padding-top: 0; }
+.people-head { padding-top: clamp(40px, 5vw, 72px); border-top: 1px solid var(--rule); margin-bottom: clamp(32px, 4vw, 56px); }
+.pi-name { margin-top: 0; }
+
+/* Join */
+.join .founding { margin-top: 18px; padding-top: 0; border-top: 0; max-width: 40ch; color: var(--ink-2); }
+.join { padding-bottom: clamp(300px, 36vw, 540px); }
+.join-art { bottom: clamp(16px, 2vw, 32px); }
+
+/* Contrast on gold, and ink selection. */
+html[data-art="tang"] .blue { --muted: rgba(29, 28, 25, 0.86); --ink-2: rgba(29, 28, 25, 0.9); }
+html[data-art="tang"] ::selection { background: #1d1c19; color: #efe3cb; }
+
+/* Phone nav: four links fit on one row on silk. */
+@media (max-width: 760px) {
+  html[data-art="tang"] .nav, html[data-art="tang"] .nav.scrolled { background: #efe3cb; }
+  .nav nav { justify-content: space-between; gap: 12px; overflow: visible; }
+  .nav nav a:not(.btn) { font-size: 0.625rem; letter-spacing: 0.12em; }
+}
+
+/* Footer on silk with the section links. */
+html[data-art="tang"] { background: #efe3cb; }
+html[data-art="tang"] .foot { --bg: #efe3cb; --ink: #1d1c19; --muted: #5e5141; padding-block: clamp(32px, 4vw, 48px); }
+.foot-nav { display: flex; flex-wrap: wrap; gap: 8px 20px; }
+.foot-nav a { text-decoration: none; }

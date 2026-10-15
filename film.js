@@ -67,6 +67,8 @@
     document.documentElement.style.scrollBehavior = 'auto';
     window.addEventListener('wheel', function (e) {
       if (e.ctrlKey || e.metaKey) return;
+      if (document.querySelector('dialog[open]')) return;
+      if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) return;
       e.preventDefault();
       var unit = e.deltaMode === 1 ? 16 : e.deltaMode === 2 ? window.innerHeight : 1;
       if (!S.busy) { S.target = S.current = window.scrollY; }
@@ -79,11 +81,13 @@
       if (!a) return;
       var el = document.getElementById(a.getAttribute('href').slice(1));
       if (!el) return;
+      if (!el.hasAttribute('tabindex')) el.setAttribute('tabindex', '-1');
       e.preventDefault();
       S.current = window.scrollY;
       S.target = clamp(el.getBoundingClientRect().top + window.scrollY - (el.id === 'top' ? 0 : 60), 0, maxScroll());
       history.replaceState(null, '', a.getAttribute('href'));
       if (!S.busy) { S.busy = true; requestAnimationFrame(glide); }
+      el.focus({ preventScroll: true });
     });
   }
   function glide() {
@@ -102,6 +106,7 @@
   if (!hero || !canvas || reduced || window.innerWidth < 761) return;
   var gl = canvas.getContext('webgl', { antialias: false, alpha: false, powerPreference: 'high-performance' });
   if (!gl) return;
+  if (gl.getParameter(gl.MAX_VERTEX_ATTRIBS) < 13) return;
 
   var N = window.innerWidth > 1500 ? 170000 : 130000;
 
@@ -111,15 +116,15 @@
   // (offset from the image centre as a fraction of its height) and where the drawn line ends.
   var TANG = ART === 'p-tang-';
   // baseline offset from the painting's centre (fraction of its height) and where the drawn line ends
-  var LAY = TANG ? { base: 0.2382, right: 0.49 } : { base: 0.4576, right: 0.487 };
+  var LAY = TANG ? { base: 0.1586, right: 0.49 } : { base: 0.4576, right: 0.487 };
   var SOURCES = [
-    { src: 'assets/img/' + ART + 'lineup.webp?v=t5', boostTo: 0.22, boost: 2.6 },   // the small animals get more points than their area would earn
-    { src: 'assets/img/' + ART + (TANG ? 'population' : 'species') + '.webp?v=t5' },
-    { src: 'assets/img/' + ART + 'human.webp?v=t5' },
-    { src: 'assets/img/' + ART + 'tissue.webp?v=t5' },
-    { src: 'assets/img/' + ART + 'cell.webp?v=t5' },
-    { src: 'assets/img/' + ART + 'molecule.webp?v=t5' },
-    { src: 'assets/img/' + ART + (TANG ? 'brain' : 'species') + '.webp?v=t5' }   // the brain among the longest-lived species
+    { src: 'assets/img/' + ART + 'lineup.webp?v=t12', boostTo: 0.22, boost: 2.6 },   // the small animals get more points than their area would earn
+    { src: 'assets/img/' + ART + (TANG ? 'population' : 'species') + '.webp?v=t12' },
+    { src: 'assets/img/' + ART + 'human.webp?v=t12' },
+    { src: 'assets/img/' + ART + 'tissue.webp?v=t12' },
+    { src: 'assets/img/' + ART + 'cell.webp?v=t12' },
+    { src: 'assets/img/' + ART + 'molecule.webp?v=t12' },
+    { src: 'assets/img/' + ART + (TANG ? 'brain' : 'species') + '.webp?v=t12' }   // the brain among the longest-lived species
   ];
   var NP = SOURCES.length;   // paintings; the network is stage NP
 
@@ -135,12 +140,12 @@
     { p: 1.00, x: 0.50, z: 1.00 }
   ];
   // Which drawing the points hold: [p, stage]. 0 procession, 1-5 species to molecule, 6 the network.
-  var STAGE = [[0, 0], [0.29, 0], [0.33, 1], [0.37, 1], [0.41, 2], [0.43, 2], [0.47, 3], [0.49, 3], [0.53, 4], [0.55, 4], [0.59, 5], [0.61, 5], [0.65, 6], [0.71, 6], [0.75, 7], [1, 7]];
+  var STAGE = [[0, 0], [0.29, 0], [0.315, 1], [0.35, 1], [0.375, 2], [0.41, 2], [0.435, 3], [0.47, 3], [0.495, 4], [0.53, 4], [0.555, 5], [0.59, 5], [0.62, 6], [0.71, 6], [0.75, 7], [1, 7]];
   var BEATS = [
     { p: 0.165, name: 'Across species', sub: 'Maximum lifespan runs from 4 years in a mouse to 507 in an ocean quahog', w: 0.085 },
-    { p: 0.45, name: 'Across scales', sub: 'Species &nbsp;/&nbsp; population &nbsp;/&nbsp; individual &nbsp;/&nbsp; tissue &nbsp;/&nbsp; cell &nbsp;/&nbsp; molecule', w: 0.15 },
+    { p: 0.45, name: 'Across scales', scales: true, sub: '<em>Species</em> &nbsp;/&nbsp; <em>Population</em> &nbsp;/&nbsp; <em>Individual</em><br><em>Tissue</em> &nbsp;/&nbsp; <em>Cell</em> &nbsp;/&nbsp; <em>Molecule</em>', w: 0.15 },
     { p: 0.68, name: 'Brain resilience', sub: 'The longest-lived species may have the most resilient brains', w: 0.035 },
-    { p: 0.80, name: 'AI that does research', sub: 'Models and agents that learn from every scale and propose what to test', w: 0.04, last: true }
+    { p: 0.80, name: 'AI that does research', sub: 'Models and agents that learn across species and scales and propose what to test', w: 0.04, last: true }
   ];
   var PEND = 0.30;
   var SOAK_FROM = 0.86, SOAK_TO = 0.96;
@@ -317,13 +322,15 @@
 
   var ready = false, introStart = 0;
   Promise.all(SOURCES.map(function (s) {
-    // a missing painting falls back to the species painting, so the film never drops to the static hero
-    return new Promise(function (res, rej) {
+    // a missing painting is replaced by the one before it, so the film never drops to the static hero
+    return new Promise(function (res) {
       var im = new Image(); im.onload = function () { res(im); };
-      im.onerror = function () { if (s.fallback || !/population|brain/.test(s.src)) { rej(); return; } s.fallback = true; im.src = 'assets/img/' + ART + 'species.webp?v=t5'; };
+      im.onerror = function () { console.warn('film: missing', s.src); res(null); };
       im.src = s.src;
     });
   })).then(function (imgs) {
+    if (!imgs[0]) return;
+    for (var q0 = 1; q0 < imgs.length; q0++) if (!imgs[q0]) imgs[q0] = imgs[q0 - 1];
     var sets = imgs.map(function (im, i) { return sample(im, SOURCES[i]); });
     aspect0 = sets[0].aspect;
     // Points are paired at random between drawings, so each change is a dissolve and not a slide.
@@ -373,12 +380,13 @@
 
   /* ---- frame ---- */
 
-  var W = 0, H = 0, dpr = 1, running = false, raf = 0, pShown = -1;
+  var W = 0, H = 0, dpr = 1, running = false, raf = 0, pShown = -1, footTop = 0;
   var mouse = { x: -9999, y: -9999, tx: -9999, ty: -9999 };
   function resize() {
     dpr = Math.min(window.devicePixelRatio || 1, 2);
     W = Math.round(stage.clientWidth * dpr); H = Math.round(stage.clientHeight * dpr);
     canvas.width = W; canvas.height = H; gl.viewport(0, 0, W, H);
+    footTop = (foot.getBoundingClientRect().top - stage.getBoundingClientRect().top) * dpr;
   }
   var rz; window.addEventListener('resize', function () { clearTimeout(rz); rz = setTimeout(resize, 120); });
   stage.addEventListener('pointermove', function (e) {
@@ -403,12 +411,14 @@
     // lifespan drawing: a wide strip standing on a baseline
     var sc0 = cam.z * W * 0.84 / aspect0;
     var off0x = W * 0.5 - (cam.x - 0.5) * aspect0 * sc0;
-    var baseY = H * 0.84;
+    // the procession stands clear of the chip and the lede, including the part of the strip below the waterline
+    var sc1 = W * 0.84 / aspect0;
+    var baseY = Math.min(H * 0.84, footTop - 24 * dpr - 0.26 * sc1);
     var off0y = baseY - LAY.base * sc0;
-    // scale drawings: a disc on the right, beside the caption
-    var wide = W / dpr > 1100;
-    var scC = H * (wide ? 0.70 : 0.52);
-    var offCx = W * (wide ? 0.665 : 0.5), offCy = H * (wide ? 0.53 : 0.62);
+    // scale drawings: a disc on the right, beside the caption column, at every width
+    var colL = W * 0.44, room = W - colL - W * 0.05;
+    var scC = Math.min(H * 0.70, room * 0.95);
+    var offCx = colL + room / 2, offCy = H * 0.54;
 
     gl.disable(gl.BLEND);
     gl.useProgram(ground);
@@ -430,7 +440,7 @@
     for (var c6 = 0; c6 < NP; c6++) { if (cA[c6] < 0) continue; gl.enableVertexAttribArray(cA[c6]); gl.vertexAttribPointer(cA[c6], 4, gl.UNSIGNED_BYTE, true, 28, c6 * 4); }
     gl.bindBuffer(gl.ARRAY_BUFFER, nbuf); if (nA >= 0) { gl.enableVertexAttribArray(nA); gl.vertexAttribPointer(nA, 2, gl.FLOAT, false, 8, 0); }
     gl.uniform3f(PU.uNetCol, TANG ? 0.18 : 0.11, TANG ? 0.12 : 0.11, TANG ? 0.06 : 0.10);
-    gl.uniform2f(PU.uOffN, W * (wide ? 0.66 : 0.5), H * (wide ? 0.52 : 0.66)); gl.uniform1f(PU.uScN, wide ? H * 0.5 : Math.min(H * 0.34, W * 0.5));
+    gl.uniform2f(PU.uOffN, colL + room / 2, H * 0.54); gl.uniform1f(PU.uScN, Math.min(H * 0.5, room * 0.78 / 1.6));
     gl.uniform2f(PU.uRes, W, H); gl.uniform2f(PU.uOff0, off0x, off0y); gl.uniform2f(PU.uOffC, offCx, offCy);
     gl.uniform2f(PU.uMouse, mouse.x, mouse.y);
     gl.uniform3f(PU.uFlight, 0.11, 0.11, 0.10);
@@ -455,6 +465,7 @@
         if (b.last && p > b.p) o = 1 - smooth(SOAK_FROM, SOAK_FROM + 0.03, p);
         c.el.style.opacity = o;
         c.el.style.transform = 'translateY(' + ((p - b.p) * -160) + 'px)';
+        if (b.scales) { var kk = Math.round(clamp(s, 0, 5)); Array.prototype.forEach.call(c.el.querySelectorAll('em'), function (e, i) { e.classList.toggle('now', i === kk); }); }
       });
       meterBar.style.transform = 'scaleY(' + p + ')';
       meter.style.opacity = (1 - out) * (1 - soak);

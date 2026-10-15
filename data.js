@@ -1,65 +1,20 @@
-// Site content that changes over time. Edit here; the page rebuilds the lists on load.
-
-window.LAB_WORK = [
-  {
-    name: 'ClockBase Agent',
-    kind: 'AI agents',
-    status: 'bioRxiv preprint',
-    text: 'AI agents that score millions of public molecular profiles with aging clocks to find interventions that change biological age. One nominated compound, ouabain, was then tested in aged mice.',
-    links: [['Platform', 'https://www.clockbase.org/'], ['Preprint', 'https://doi.org/10.1101/2023.02.28.530532']]
-  },
-  {
-    name: 'HealthFlux',
-    kind: 'World model',
-    status: 'medRxiv preprint',
-    text: 'A world model of human health. It learns how a person’s health state changes over time from clinical and molecular records.',
-    links: [['Preprint', 'https://doi.org/10.64898/2026.09.19.26363460']]
-  },
-  {
-    name: 'MethylGPT',
-    kind: 'Foundation model',
-    status: 'bioRxiv preprint',
-    text: 'A foundation model for the DNA methylome. It learns reusable representations of methylation that support age prediction and imputation of missing values.',
-    links: [['Code', 'https://github.com/albert-ying/MethylGPT'], ['Preprint', 'https://doi.org/10.1101/2024.10.30.621013']]
-  },
-  {
-    name: 'Causality-enriched clocks',
-    kind: 'Aging biomarkers',
-    status: 'Nature Aging, 2024',
-    text: 'Epigenetic clocks built from methylation sites with genetic evidence of a causal effect on aging-related traits. They distinguish changes inferred to be damaging from those inferred to be adaptive.',
-    links: [['Paper', 'https://doi.org/10.1038/s43587-023-00557-0']]
-  },
-  {
-    name: 'Biolearn',
-    kind: 'Open-source library',
-    status: 'Nature Aging, 2025',
-    text: 'An open-source library for curating and evaluating aging biomarkers across cohorts, so that clocks can be compared on the same data.',
-    links: [['Software', 'https://bio-learn.github.io/'], ['Paper', 'https://doi.org/10.1038/s43587-025-00987-y']]
-  },
-  {
-    name: 'Autonomous Lab',
-    kind: 'Software',
-    status: 'Released 2026',
-    text: 'An open-source MCP server in which AI agents take the roles of principal investigator and trainee and iterate on a project, while a person reviews and steers the work.',
-    links: [['Site', 'https://autolab.kejunying.com'], ['Code', 'https://github.com/albert-ying/autonomous-lab']]
-  }
-];
+// Site content that changes over time. Edit here; the page rebuilds the list on load.
 
 // tag: 'ai' (models and agents) or 'aging' (aging biology and biomarkers)
 window.LAB_PUBS = [
-  { year: 2026, tag: 'ai', preprint: true, img: 'assets/img/paper-00.webp', finding: "HealthFlux is a pan-modal world model trained on 502,166 UK Biobank participants. It treats health as a single hidden state that keeps evolving between observations and is updated whenever a new measurement arrives, such as a blood test, diagnosis, molecular profile or brain and body MRI, and from that state it predicts 1,256 diseases and death over twenty years.",
+  { year: 2026, tag: 'ai', preprint: true, img: 'assets/img/paper-00.webp', finding: "HealthFlux is a world model built from 502,166 UK Biobank participants. It treats a person's health as one hidden state that changes between visits. Each new measurement updates it, such as a blood test, a diagnosis, a molecular profile or a brain and body MRI. In held-out participants it predicts 1,256 diseases and death over twenty years. It was also tested in four independent US cohorts.",
     title: 'A world model simulates the latent dynamics of human health',
     authors: 'Wang, Z., Zhang, O., Wang, J., Jiang, Y., Ma, Z. C., …, Gladyshev, V. N., Wyss-Coray, T., Ying, K.',
     venue: 'medRxiv', url: 'https://doi.org/10.64898/2026.09.19.26363460' },
-  { year: 2025, tag: 'ai', preprint: true, img: 'assets/img/paper-01.webp', finding: "ClockBase Agent uses specialized AI agents to reanalyze millions of public human and mouse methylation and RNA-seq samples with over 40 aging clocks. Across 43,602 intervention-control comparisons, the agents found more than 500 interventions that significantly reduce biological age. One top candidate, ouabain, reduced frailty progression and neuroinflammation and improved cardiac function in aged mice.",
+  { year: 2025, tag: 'ai', preprint: true, img: 'assets/img/paper-01.webp', finding: "ClockBase Agent uses AI agents to reanalyze millions of public human and mouse methylation and RNA-seq samples with more than 40 aging clocks. Across 43,602 intervention-control comparisons it identified more than 500 interventions associated with lower biological age. One candidate, ouabain, slowed frailty progression, reduced neuroinflammation and improved cardiac function in aged mice.",
     title: 'Autonomous AI agents discover aging interventions from millions of molecular profiles',
     authors: 'Ying, K., Tyshkovskiy, A., Moldakozhayev, A., …, Gladyshev, V. N.',
     venue: 'bioRxiv', url: 'https://doi.org/10.1101/2023.02.28.530532' },
-  { year: 2024, tag: 'ai', preprint: true, img: 'assets/img/paper-02.webp', finding: "MethylGPT is a transformer foundation model trained on about 154,000 human DNA methylation profiles across tissues and 49,156 CpG sites. It learns biologically meaningful representations of CpG sites and reconstructs methylation values accurately even when up to 70% of the data are missing.",
+  { year: 2024, tag: 'ai', preprint: true, img: 'assets/img/paper-02.webp', finding: "MethylGPT is a transformer foundation model trained on 154,063 human DNA methylation profiles from 5,281 datasets across tissues. It covers 49,156 CpG sites and predicts methylation values with a Pearson correlation of 0.93. Its downstream predictions stay stable with up to 70% of the data missing.",
     title: 'MethylGPT: a foundation model for the DNA methylome',
     authors: 'Ying, K., Song, J., Cui, H., …, Gladyshev, V. N.',
     venue: 'bioRxiv', url: 'https://doi.org/10.1101/2024.10.30.621013' },
-  { year: 2024, tag: 'aging', preprint: true, img: 'assets/img/paper-03.webp', finding: "Ageome estimates the epigenetic age of thousands of molecular pathways at once in mice and humans, which shows that an organism's functional modules age at different rates and have different biological ages; this view captures more of aging than a single clock estimate.",
+  { year: 2024, tag: 'aging', preprint: true, img: 'assets/img/paper-03.webp', finding: "Ageome estimates the epigenetic age of thousands of molecular pathways at once in mice and humans. Cell reprogramming rejuvenated cells overall yet accelerated the aging of some modules. Some module clocks predicted the onset of age-related disease better than existing clocks, especially cancer.",
     title: 'High-dimensional Ageome representations of biological aging across functional modules',
     authors: 'Ying, K., Tyshkovskiy, A., Chen, Q., …, Gladyshev, V. N.',
     venue: 'bioRxiv', url: 'https://doi.org/10.1101/2024.09.17.613599' },
@@ -67,7 +22,7 @@ window.LAB_PUBS = [
     title: 'Universal transcriptomic hallmarks of mammalian ageing and mortality',
     authors: 'Tyshkovskiy, A., Kholdina, D., Davitadze, M., …, Ying, K., …, Gladyshev, V. N.',
     venue: 'Nature', url: 'https://doi.org/10.1038/s41586-026-10542-3' },
-  { year: 2026, tag: 'aging', img: 'assets/img/paper-05.webp', finding: "In the Biomarkers of Aging Challenge, an open two-phase competition on blinded blood DNA-methylation and proteomic data from 500 Mass General Brigham Biobank participants, architecturally diverse team models roughly halved the age-prediction error of the best published clock, and a proteomic model predicted all-cause mortality better than GrimAge.",
+  { year: 2026, tag: 'aging', img: 'assets/img/paper-05.webp', finding: "The Biomarkers of Aging Challenge was an open two-phase competition on blinded blood DNA-methylation and proteomic data from 500 Mass General Brigham Biobank participants. Team models predicted chronological age more accurately than published clocks. A proteomic model predicted all-cause mortality better than GrimAge.",
     title: 'An open competition for biomarkers of aging',
     authors: 'Ying, K., Paulson, S., Reinhard, J., …, Gladyshev, V. N.',
     venue: 'Nature Aging', url: 'https://doi.org/10.1038/s43587-026-01139-6' },
@@ -83,7 +38,7 @@ window.LAB_PUBS = [
     title: 'A unified framework for systematic curation and evaluation of aging biomarkers',
     authors: 'Ying, K., Paulson, S., Eames, A., Tyshkovskiy, A., …, Gladyshev, V. N.',
     venue: 'Nature Aging', url: 'https://doi.org/10.1038/s43587-025-00987-y' },
-  { year: 2025, tag: 'aging', img: 'assets/img/paper-09.webp', finding: "In paired CSF and plasma samples from 2,171 older adults, CSF-to-plasma ratios rose with age for 848 proteins and fell for 64, which points to a brain barrier system that becomes leakier selectively by protein; higher ratios of some peripherally derived proteins went with preserved cognition, and genetic loci shaped the ratios of 241 proteins.",
+  { year: 2025, tag: 'aging', img: 'assets/img/paper-09.webp', finding: "In paired CSF and plasma samples from 2,171 older adults, CSF-to-plasma ratios rose with age for 848 proteins and fell for 64. This suggests that the brain barriers change selectively by protein rather than leaking uniformly. Higher ratios of some proteins made outside the brain went with preserved cognition. Genetic loci shaped the ratios of 241 proteins.",
     title: 'Disruption of the cerebrospinal fluid–plasma protein balance in cognitive impairment and aging',
     authors: 'Farinas, A., Rutledge, J., Bot, V. A., Western, D., Ying, K., …, Wyss-Coray, T.',
     venue: 'Nature Medicine', url: 'https://doi.org/10.1038/s41591-025-03831-3' },
@@ -99,7 +54,7 @@ window.LAB_PUBS = [
     title: 'Depletion of loss-of-function germline mutations in centenarians reveals longevity genes',
     authors: 'Ying, K., Castro, J. P., Shindyapina, A. V., …, Gladyshev, V. N.',
     venue: 'Nature Communications', url: 'https://doi.org/10.1038/s41467-024-52967-2' },
-  { year: 2024, tag: 'aging', img: 'assets/img/paper-13.webp', finding: "There is no consensus on how omic biomarkers of aging should be validated, so the authors review how well these biomarkers predict aging outcomes in population studies, discuss the problems of comparing them and generalizing across populations, and recommend validation steps to support clinical translation and their use in gerotherapeutic trials.",
+  { year: 2024, tag: 'aging', img: 'assets/img/paper-13.webp', finding: "This review assesses how well omic biomarkers of aging predict outcomes in population studies. It discusses why they are hard to compare and to generalize across populations. It recommends validation steps for clinical translation and for gerotherapeutic trials.",
     title: 'Validation of biomarkers of aging',
     authors: 'Moqri, M., Herzog, C., Poganik, J. R., Ying, K., …, Ferrucci, L.',
     venue: 'Nature Medicine', url: 'https://doi.org/10.1038/s41591-023-02784-9' }
