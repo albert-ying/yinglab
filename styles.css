@@ -391,3 +391,11 @@ h2.in .ln > i, .statement.in .ln > i { transform: none; }
 .brain h2 { font-size: clamp(2.4rem, 5vw, 4.5rem); line-height: 1; }
 .brain .prose { margin-top: 26px; color: rgba(255, 255, 255, 0.9); }
 @media (max-width: 900px) { .brain-grid { grid-template-columns: 1fr; } .brain-art { max-width: 420px; } }
+
+/* AI agents */
+.agents { padding-block: var(--section); }
+.agents-grid { display: grid; grid-template-columns: minmax(0, 6fr) minmax(0, 5fr); gap: clamp(28px, 6vw, 104px); align-items: center; }
+.agents h2 { font-size: clamp(2.4rem, 5vw, 4.5rem); line-height: 1; }
+.agents .prose { margin-top: 26px; }
+.agents-art img { width: 100%; border-radius: 50%; }
+@media (max-width: 900px) { .agents-grid { grid-template-columns: 1fr; } .agents-art { max-width: 420px; order: -1; } }

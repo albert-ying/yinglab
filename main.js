@@ -1,5 +1,11 @@
 (function () {
   'use strict';
+  // An alternate art series can be shown with ?art=tang; image names differ only by prefix.
+  if (document.documentElement.getAttribute('data-art') === 'tang') {
+    Array.prototype.forEach.call(document.querySelectorAll('img[src*="assets/img/uk-"], img[src*="assets/img/p-"]'), function (im) {
+      im.src = im.getAttribute('src').replace('assets/img/uk-', 'assets/img/tang-').replace('assets/img/p-', 'assets/img/p-tang-');
+    });
+  }
   var NS = 'http://www.w3.org/2000/svg';
 
   function el(name, attrs, parent, text) {
@@ -270,7 +276,7 @@
         });
       });
     }, { rootMargin: '-45% 0px -50% 0px' });
-    ['top', 'mission', 'scales', 'brain', 'research', 'work', 'publications', 'people', 'join'].forEach(function (id) {
+    ['top', 'mission', 'scales', 'brain', 'agents', 'research', 'work', 'publications', 'people', 'join'].forEach(function (id) {
       var s = document.getElementById(id);
       if (s) io.observe(s);
     });

@@ -14,8 +14,8 @@
 <link rel="canonical" href="https://albert-ying.github.io/yinglab/">
 <meta name="theme-color" content="#0a53a3">
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="styles.css?v=20261014e">
-<script>document.documentElement.classList.add('js');</script>
+<link rel="stylesheet" href="styles.css?v=20261014g">
+<script>document.documentElement.classList.add('js');(function(){var a=new URLSearchParams(location.search).get('art');if(a==='tang')document.documentElement.setAttribute('data-art','tang');})();</script>
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
@@ -23,12 +23,13 @@
 <header class="nav" id="nav">
   <div class="wrap nav-row">
     <a class="mark" href="#top" aria-label="Ying Lab, home">
-      <svg viewBox="0 0 32 42" width="22" height="29" aria-hidden="true"><g stroke="currentColor" stroke-width="1.1" opacity=".8"><line x1="6" y1="38" x2="10" y2="29"/><line x1="6" y1="38" x2="22" y2="29"/><line x1="16" y1="38" x2="10" y2="29"/><line x1="16" y1="38" x2="22" y2="29"/><line x1="26" y1="38" x2="10" y2="29"/><line x1="26" y1="38" x2="22" y2="29"/><line x1="10" y1="29" x2="16" y2="20"/><line x1="22" y1="29" x2="16" y2="20"/></g><g fill="currentColor"><circle cx="6" cy="38" r="2.5"/><circle cx="16" cy="38" r="2.5"/><circle cx="26" cy="38" r="2.5"/><circle cx="10" cy="29" r="2.5"/><circle cx="22" cy="29" r="2.5"/><circle cx="16" cy="20" r="3.4"/></g><line x1="16" y1="15" x2="16" y2="8.5" stroke="currentColor" stroke-width="2.0" stroke-dasharray="1.4 3" stroke-linecap="round"/><circle cx="16" cy="5" r="3.4" fill="none" stroke="currentColor" stroke-width="1.9"/></svg>
+      <svg viewBox="0 0 32 42" width="22" height="29" aria-hidden="true"><g stroke="currentColor" stroke-width="1.0" opacity=".55"><line x1="4" y1="4" x2="22" y2="12"/><line x1="28" y1="4" x2="10" y2="12"/></g><path d="M4 4 L16 20 L28 4 M16 20 V29" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="4" cy="4" r="2.5" fill="currentColor"/><circle cx="28" cy="4" r="2.5" fill="currentColor"/><circle cx="16" cy="20" r="3.1" fill="currentColor"/><circle cx="16" cy="37" r="2.8" fill="none" stroke="currentColor" stroke-width="1.9"/></svg>
       <span>Ying Lab</span>
     </a>
     <nav aria-label="Sections">
       <a href="#research">Research</a>
       <a href="#brain">Brain</a>
+      <a href="#agents">Agents</a>
       <a href="#work">Work</a>
       <a href="#publications">Publications</a>
       <a href="#people">People</a>
@@ -49,7 +50,7 @@
     <a class="btn" href="#join">Join the lab <span aria-hidden="true">&rarr;</span></a>
   </div>
   <div class="hero-art">
-    <img src="assets/img/p-lineup.webp" width="1225" height="333" alt="Woodblock-style painting of a mouse, a naked mole-rat, a bat, a person seen from behind and a bowhead whale breaching, with a Greenland shark swimming below the waves.">
+    <img src="assets/img/p-lineup.webp" width="1225" height="333" alt="Woodblock-style painting of a mouse, a naked mole-rat, a bat, a human seen from behind and a bowhead whale breaching, with a Greenland shark swimming below the waves.">
     <i class="star star-l" aria-hidden="true"></i><i class="star star-r" aria-hidden="true"></i>
   </div>
   <div class="wrap hero-foot">
@@ -86,14 +87,14 @@
     <h2>AI for biology, across scales</h2>
     <div class="prose">
       <p>Biology can be modeled at every scale, from a single molecule to a whole species. Most of the attention in AI for biology goes to the smallest scales: protein structure and virtual cells.</p>
-      <p>Aging shows itself at the level of the whole organism: in disease, in death and in the lifespan of a species. Few AI models are built at the scale of the person or the species. We think this is the open opportunity for AI in aging research, and much of our modeling starts there.</p>
+      <p>Aging shows itself at the level of the whole organism: in disease, in death and in the lifespan of a species. Few AI models are built at the scale of the whole human or the species. We think this is the open opportunity for AI in aging research, and much of our modeling starts there.</p>
     </div>
   </div>
   <div class="wrap">
     <figure class="scales-fig">
       <ol class="scales-labels scales-row">
-        <li><img src="assets/img/uk-species.webp" width="520" height="520" loading="lazy" alt="Woodblock-style painting of a bowhead whale, a Greenland shark, an elephant, a person, a bat and a mouse."><b>Species</b><span>Pan-species models</span></li>
-        <li><img src="assets/img/uk-person.webp" width="520" height="520" loading="lazy" alt="Woodblock-style painting of a person seen from behind."><b>Person</b><span>Human health models</span></li>
+        <li><img src="assets/img/uk-species.webp" width="520" height="520" loading="lazy" alt="Woodblock-style painting of a bowhead whale, a Greenland shark, an elephant, a human, a bat and a mouse."><b>Species</b><span>Pan-species models</span></li>
+        <li><img src="assets/img/uk-human.webp" width="520" height="520" loading="lazy" alt="Woodblock-style painting of a human seen from behind."><b>Human</b><span>Human health models</span></li>
         <li><img src="assets/img/uk-tissue.webp" width="520" height="520" loading="lazy" alt="Woodblock-style painting of a section of tissue."><b>Tissue</b><span>Virtual tissues</span></li>
         <li><img src="assets/img/uk-cell.webp" width="520" height="520" loading="lazy" alt="Woodblock-style painting of a cell with its nucleus and organelles."><b>Cell</b><span>Virtual cells</span></li>
         <li><img src="assets/img/uk-molecule.webp" width="520" height="520" loading="lazy" alt="Woodblock-style painting of a protein structure."><b>Molecule</b><span>Protein models and design</span></li>
@@ -109,9 +110,24 @@
       <h2>Brain resilience</h2>
       <div class="prose">
         <p>Aging is the largest risk factor for Alzheimer's and Parkinson's disease. Yet some people keep their memory and thinking into old age even when their brains carry the pathology of these diseases or a high-risk genetic variant. We want to know what protects them.</p>
+        <p>We expect the species that live longest to have the most resilient brains. A bowhead whale can live more than two centuries and a Greenland shark an estimated four, and a naked mole-rat lives decades longer than a rodent of its size. We compare their brains with human brains to find the protective molecules and cell states that human brains could borrow.</p>
         <p>We model how each person's brain ages from molecular profiles of brain tissue, blood and cerebrospinal fluid. Resilience is then a measurable quantity: how far a person's course departs from the one expected from their age, pathology and genetic risk. The molecules and cell states that account for that difference become targets for the interventions the lab designs.</p>
       </div>
     </div>
+  </div>
+</section>
+
+<section class="agents" id="agents">
+  <div class="wrap agents-grid">
+    <div>
+      <h2>AI agents that read data and papers</h2>
+      <div class="prose">
+        <p>Public repositories hold millions of molecular profiles, and the literature holds millions of papers. Most datasets were analyzed only for the question of the study that produced them. Our agents read the data and the papers together, run the analyses and propose what to test, assembling the story that thousands of separate studies tell about aging.</p>
+        <p>Each claim keeps a record of the dataset, code and paper behind it. In ClockBase Agent, agents reanalyzed public molecular profiles with aging clocks and nominated interventions predicted to lower biological age; one of them, ouabain, reduced frailty when tested in aged mice.</p>
+      </div>
+      <p class="links"><a href="https://www.biorxiv.org/content/10.1101/2023.02.28.530532v4" rel="noopener">ClockBase Agent preprint</a><a href="https://www.clockbase.org/" rel="noopener">ClockBase</a><a href="https://github.com/albert-ying/autonomous-lab" rel="noopener">Autonomous Lab</a></p>
+    </div>
+    <figure class="agents-art"><img src="assets/img/uk-agents.webp" width="520" height="520" loading="lazy" alt="Woodblock-style painting of a robotic arm, a microscope and an open notebook at a laboratory bench."></figure>
   </div>
 </section>
 
@@ -136,7 +152,7 @@
         </div>
       </article>
       <article data-steps="measure">
-        <span class="roundel"><img src="assets/img/uk-person.webp" width="520" height="520" loading="lazy" alt="Woodblock-style painting of a person seen from behind."></span>
+        <span class="roundel"><img src="assets/img/uk-human.webp" width="520" height="520" loading="lazy" alt="Woodblock-style painting of a human seen from behind."></span>
         <div class="dir-body">
         <h3>Measuring and modeling aging</h3>
         <ul>
@@ -267,9 +283,9 @@
   </div>
 </footer>
 
-<script src="assets/species.js?v=20261014e"></script>
-<script src="data.js?v=20261014e"></script>
-<script src="main.js?v=20261014e"></script>
-<script src="film.js?v=20261014e"></script>
+<script src="assets/species.js?v=20261014g"></script>
+<script src="data.js?v=20261014g"></script>
+<script src="main.js?v=20261014g"></script>
+<script src="film.js?v=20261014g"></script>
 </body>
 </html>

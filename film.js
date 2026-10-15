@@ -106,13 +106,19 @@
   var N = window.innerWidth > 1500 ? 170000 : 130000;
 
   // Six drawings, each given to the same points. The first is the lifespan line; the rest are the scales.
+  var ART = document.documentElement.getAttribute('data-art') === 'tang' ? 'p-tang-' : 'p-';
+  // Where each figure sits in the procession image (fraction of its width), where the baseline is
+  // (offset from the image centre as a fraction of its height) and where the drawn line ends.
+  var LAY = ART === 'p-tang-'
+    ? { mouse: TANG_MOUSE, mole: TANG_MOLE, human: TANG_HUMAN, whale: TANG_WHALE, shark: TANG_SHARK, base: TANG_BASE, right: TANG_RIGHT }
+    : { mouse: 0.078, mole: 0.220, human: 0.509, whale: 0.745, shark: 0.819, base: 0.0075, right: 0.481 };
   var SOURCES = [
-    { src: 'assets/img/p-lineup.webp?v=uk1', boostTo: 0.42, boost: 3.0 },   // the small animals get more points than their area would earn
-    { src: 'assets/img/p-species.webp?v=uk1' },
-    { src: 'assets/img/p-person.webp?v=uk1' },
-    { src: 'assets/img/p-tissue.webp?v=uk1' },
-    { src: 'assets/img/p-cell.webp?v=uk1' },
-    { src: 'assets/img/p-molecule.webp?v=uk1' }
+    { src: 'assets/img/' + ART + 'lineup.webp?v=uk1', boostTo: 0.42, boost: 3.0 },   // the small animals get more points than their area would earn
+    { src: 'assets/img/' + ART + 'species.webp?v=uk1' },
+    { src: 'assets/img/' + ART + 'human.webp?v=uk1' },
+    { src: 'assets/img/' + ART + 'tissue.webp?v=uk1' },
+    { src: 'assets/img/' + ART + 'cell.webp?v=uk1' },
+    { src: 'assets/img/' + ART + 'molecule.webp?v=uk1' }
   ];
 
   /* The road. p is scroll progress through the hero, 0..1.
@@ -120,11 +126,11 @@
   var STOPS = [
     { p: 0.000, x: 0.50, z: 1.00 },
     { p: 0.030, x: 0.50, z: 1.00 },
-    { p: 0.095, x: 0.078, z: 2.6 },
-    { p: 0.160, x: 0.220, z: 2.6 },
-    { p: 0.225, x: 0.509, z: 1.9 },
-    { p: 0.290, x: 0.745, z: 1.35 },
-    { p: 0.350, x: 0.819, z: 1.35 },
+    { p: 0.095, x: LAY.mouse, z: 2.6 },
+    { p: 0.160, x: LAY.mole, z: 2.6 },
+    { p: 0.225, x: LAY.human, z: 1.9 },
+    { p: 0.290, x: LAY.whale, z: 1.35 },
+    { p: 0.350, x: LAY.shark, z: 1.35 },
     { p: 0.415, x: 1.300, z: 1.18 },
     { p: 1.000, x: 1.300, z: 1.18 }
   ];
@@ -138,7 +144,7 @@
     { p: 0.350, name: 'Greenland shark', sub: 'Maximum lifespan &nbsp;/&nbsp; 392 years, estimated' },
     { p: 0.420, name: '<i>One order of magnitude</i>', sub: 'Ten times the human record', w: 0.05 },
     { p: 0.520, name: 'Species', sub: 'Across scales &nbsp;/&nbsp; Pan-species models' },
-    { p: 0.605, name: 'Person', sub: 'Across scales &nbsp;/&nbsp; Human health models' },
+    { p: 0.605, name: 'Human', sub: 'Across scales &nbsp;/&nbsp; Human health models' },
     { p: 0.695, name: 'Tissue', sub: 'Across scales &nbsp;/&nbsp; Virtual tissues' },
     { p: 0.785, name: 'Cell', sub: 'Across scales &nbsp;/&nbsp; Virtual cells' },
     { p: 0.875, name: 'Molecule', sub: 'Across scales &nbsp;/&nbsp; Protein models and design', w: 0.045, last: true }
@@ -189,6 +195,7 @@
   ].join('\n');
 
   // The sheet: painted blue that drifts, the open dotted rule, and the turn to paper.
+  var GROUND = ART === 'p-tang-' ? 'vec3(TANG_R, TANG_G, TANG_B)' : 'vec3(0.0, 0.235, 0.55)';
   var ground = program(
     'attribute vec2 a; varying vec2 vUv; void main(){ vUv = a*0.5+0.5; gl_Position = vec4(a,0.,1.); }',
     ['precision highp float;', 'varying vec2 vUv;',
@@ -196,7 +203,7 @@
       'void main(){',
       '  vec2 px = vec2(vUv.x, 1.0-vUv.y)*uRes;',
       '  float asp = uRes.x/uRes.y;',
-      '  vec3 blue = vec3(0.0, 0.235, 0.55);',
+      '  vec3 blue = ' + GROUND + ';',
       '  float drift = fbm(vec2(vUv.x*asp, vUv.y)*1.6 + vec2(uTime*0.012, -uTime*0.008));',
       '  float brush = fbm(vec2(vUv.x*asp*9.0, vUv.y*3.0) + 7.0);',
       '  vec3 col = blue*(0.84 + 0.25*drift + 0.07*(brush-0.5));',
@@ -381,7 +388,7 @@
     var sc0 = cam.z * W * 0.92 / aspect0;
     var off0x = W * 0.5 - (cam.x - 0.5) * aspect0 * sc0;
     var baseY = H * 0.72;
-    var off0y = baseY - 0.0075 * sc0;
+    var off0y = baseY - LAY.base * sc0;
     // scale drawings: a disc on the right, beside the caption
     var wide = W / dpr > 1100;
     var scC = H * (wide ? 0.70 : 0.52);
@@ -393,7 +400,7 @@
     gl.enableVertexAttribArray(gA); gl.vertexAttribPointer(gA, 2, gl.FLOAT, false, 0, 0);
     gl.uniform2f(GU.uRes, W, H); gl.uniform2f(GU.uMouse, mouse.x, mouse.y);
     gl.uniform1f(GU.uTime, now / 1000); gl.uniform1f(GU.uSoak, soak);
-    gl.uniform1f(GU.uLineY, baseY); gl.uniform1f(GU.uLineX, off0x + aspect0 * sc0 * 0.481);
+    gl.uniform1f(GU.uLineY, baseY); gl.uniform1f(GU.uLineX, off0x + aspect0 * sc0 * LAY.right);
     gl.uniform1f(GU.uBeyond, smooth(0.36, 0.40, p) * (1 - smooth(0.445, 0.48, p)));
     gl.uniform1f(GU.uGrain, 0.035);
     gl.drawArrays(gl.TRIANGLES, 0, 3);
