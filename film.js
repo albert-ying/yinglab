@@ -203,18 +203,18 @@
   ].join('\n');
 
   // The sheet: painted blue that drifts, the open dotted rule, and the turn to paper.
-  var GROUND = ART === 'p-tang-' ? 'vec3(0.66, 0.47, 0.27)' : 'vec3(0.0, 0.247, 0.54)';
+  var GROUND = ART === 'p-tang-' ? 'vec3(0.66, 0.47, 0.27)' : 'vec3(1.0, 0.996, 0.988)';
   var ground = program(
     'attribute vec2 a; varying vec2 vUv; void main(){ vUv = a*0.5+0.5; gl_Position = vec4(a,0.,1.); }',
     ['precision highp float;', 'varying vec2 vUv;',
-      'uniform vec2 uRes, uMouse; uniform float uTime, uSoak, uLineY, uLineX, uBeyond, uGrain;', NOISE,
+      'uniform vec2 uRes, uMouse; uniform float uTime, uSoak, uLineY, uLineX, uBeyond, uGrain, uTex;', NOISE,
       'void main(){',
       '  vec2 px = vec2(vUv.x, 1.0-vUv.y)*uRes;',
       '  float asp = uRes.x/uRes.y;',
       '  vec3 blue = ' + GROUND + ';',
       '  float drift = fbm(vec2(vUv.x*asp, vUv.y)*1.6 + vec2(uTime*0.012, -uTime*0.008));',
       '  float brush = fbm(vec2(vUv.x*asp*9.0, vUv.y*3.0) + 7.0);',
-      '  vec3 col = blue*(0.84 + 0.25*drift + 0.07*(brush-0.5));',
+      '  vec3 col = blue*(1.0 + uTex*(0.25*(drift-0.5) + 0.07*(brush-0.5)));',
       // a soft pool of light follows the pointer
       '  float md = length((px - uMouse)/uRes.y);',
       '  col += vec3(0.04, 0.06, 0.10)*exp(-md*md*9.0);',
@@ -222,7 +222,7 @@
       '  if (px.x > uLineX) {',
       '    float onLine = 1.0 - smoothstep(0.6, 1.7, abs(px.y - uLineY));',
       '    float dash = step(0.5, fract((px.x - uLineX)/14.0));',
-      '    col = mix(col, vec3(1.0), onLine*(1.0-dash)*uBeyond*0.9);',
+      '    col = mix(col, vec3(0.11), onLine*(1.0-dash)*uBeyond*0.9);',
       '  }',
       '  vec3 paper = vec3(0.949, 0.945, 0.929);',
       '  vec2 rr = (vUv - vec2(0.5, 0.5))*vec2(asp, 1.0);',
@@ -285,7 +285,7 @@
       'void main(){ float d = length(gl_PointCoord - 0.5); float a = smoothstep(0.5, 0.18, d) * vAlpha; gl_FragColor = vec4(vCol, a); }'].join('\n'));
   if (!ground || !points) return;
 
-  var GU = uniforms(ground, ['uRes', 'uMouse', 'uTime', 'uSoak', 'uLineY', 'uLineX', 'uBeyond', 'uGrain']);
+  var GU = uniforms(ground, ['uTex', 'uRes', 'uMouse', 'uTime', 'uSoak', 'uLineY', 'uLineX', 'uBeyond', 'uGrain']);
   var PU = uniforms(points, ['uFlight', 'uRes', 'uOff0', 'uOffC', 'uMouse', 'uSc0', 'uScC', 'uS', 'uTime', 'uIntro', 'uPix', 'uFade', 'uSize', 'uBurst']);
 
   var quad = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, quad);
@@ -410,7 +410,8 @@
     gl.uniform1f(GU.uTime, now / 1000); gl.uniform1f(GU.uSoak, soak);
     gl.uniform1f(GU.uLineY, baseY); gl.uniform1f(GU.uLineX, off0x + aspect0 * sc0 * LAY.right);
     gl.uniform1f(GU.uBeyond, smooth(PEND - 0.03, PEND + 0.01, p) * (1 - smooth(PEND + 0.05, PEND + 0.08, p)));
-    gl.uniform1f(GU.uGrain, 0.035);
+    gl.uniform1f(GU.uGrain, TANG ? 0.035 : 0.006);
+    gl.uniform1f(GU.uTex, TANG ? 1.0 : 0.12);
     gl.drawArrays(gl.TRIANGLES, 0, 3);
 
     gl.enable(gl.BLEND); gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
@@ -421,7 +422,7 @@
     for (var c6 = 0; c6 < 6; c6++) { if (cA[c6] < 0) continue; gl.enableVertexAttribArray(cA[c6]); gl.vertexAttribPointer(cA[c6], 4, gl.UNSIGNED_BYTE, true, 24, c6 * 4); }
     gl.uniform2f(PU.uRes, W, H); gl.uniform2f(PU.uOff0, off0x, off0y); gl.uniform2f(PU.uOffC, offCx, offCy);
     gl.uniform2f(PU.uMouse, mouse.x, mouse.y);
-    gl.uniform3f(PU.uFlight, TANG ? 0.11 : 0.95, TANG ? 0.11 : 0.94, TANG ? 0.10 : 0.90);
+    gl.uniform3f(PU.uFlight, 0.11, 0.11, 0.10);
     gl.uniform1f(PU.uSc0, sc0); gl.uniform1f(PU.uScC, scC); gl.uniform1f(PU.uS, s);
     gl.uniform1f(PU.uTime, now / 1000); gl.uniform1f(PU.uIntro, intro); gl.uniform1f(PU.uPix, dpr);
     var disc = clamp(s, 0, 1);                       // 0 on the lifespan strip, 1 on the discs

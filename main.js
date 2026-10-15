@@ -226,27 +226,40 @@
   });
 
   var pubList = document.getElementById('pub-list');
-  (window.LAB_PUBS || []).forEach(function (p) {
+  // Each paper is a full-width band of its painting with the title on a plate in the middle; it opens a detail view.
+  var dlg = document.getElementById('pub-dialog');
+  (window.LAB_PUBS || []).forEach(function (p, k) {
     var li = h('li', 'pub');
     li.setAttribute('data-tag', p.tag);
-    if (p.img) {
-      var fig = h('span', 'pub-art');
-      var im = document.createElement('img'); im.src = p.img; im.alt = ''; im.loading = 'lazy'; im.width = 240; im.height = 240;
-      im.onerror = function () { fig.remove(); li.classList.add('no-art'); };
-      fig.appendChild(im); li.appendChild(fig);
-    }
-    li.appendChild(h('span', 'pub-year', String(p.year)));
-    li.appendChild(link(p.title, p.url, 'pub-title'));
-    var v = h('span', 'pub-venue', p.venue);
-    if (p.preprint) v.appendChild(h('small', null, 'Preprint'));
-    li.appendChild(v);
+    var band = h('button', 'pub-band'); band.type = 'button';
+    if (p.img) band.style.backgroundImage = 'url(' + p.img.replace('.webp', '-wide.webp') + '), url(' + p.img + ')';
+    var plate = h('span', 'pub-plate');
+    plate.appendChild(h('span', 'pub-meta', p.venue + ' · ' + p.year + (p.preprint ? ' · Preprint' : '')));
+    plate.appendChild(h('span', 'pub-title', p.title));
     var a = h('span', 'pub-authors');
-    p.authors.split(/(Ying, K\.)/).forEach(function (part) {
-      a.appendChild(part === 'Ying, K.' ? h('b', null, part) : document.createTextNode(part));
-    });
-    li.appendChild(a);
+    p.authors.split(/(Ying, K\.)/).forEach(function (part) { a.appendChild(part === 'Ying, K.' ? h('b', null, part) : document.createTextNode(part)); });
+    plate.appendChild(a);
+    band.appendChild(plate);
+    band.setAttribute('aria-label', p.title + ', ' + p.venue + ' ' + p.year + '. Open details.');
+    band.addEventListener('click', function () { openPub(p); });
+    li.appendChild(band);
     pubList.appendChild(li);
   });
+  function openPub(p) {
+    if (!dlg) { window.open(p.url, '_blank', 'noopener'); return; }
+    dlg.querySelector('.pd-img').src = p.img || '';
+    dlg.querySelector('.pd-meta').textContent = p.venue + ' · ' + p.year + (p.preprint ? ' · Preprint' : '');
+    dlg.querySelector('.pd-title').textContent = p.title;
+    var au = dlg.querySelector('.pd-authors'); au.textContent = '';
+    p.authors.split(/(Ying, K\.)/).forEach(function (part) { au.appendChild(part === 'Ying, K.' ? h('b', null, part) : document.createTextNode(part)); });
+    dlg.querySelector('.pd-finding').textContent = p.finding || '';
+    dlg.querySelector('.pd-link').href = p.url;
+    if (dlg.showModal) dlg.showModal(); else dlg.setAttribute('open', '');
+  }
+  if (dlg) {
+    dlg.querySelector('.pd-close').addEventListener('click', function () { dlg.close(); });
+    dlg.addEventListener('click', function (e) { if (e.target === dlg) dlg.close(); });
+  }
 
   var filters = Array.prototype.slice.call(document.querySelectorAll('.filter button'));
   filters.forEach(function (b) {

@@ -12,7 +12,8 @@
 
 :root {
   --blue: #003d86;
-  --paper: #f2f1ed;
+  --paper: #faf9f6;
+  --white: #ffffff;
   --paper-2: #e9e7e1;
   --press: #0b0a09;
 
@@ -31,7 +32,7 @@
   --edge: clamp(20px, 4.75vw, 76px);
   --section: clamp(88px, 11vw, 168px);
 }
-.blue { --bg: var(--blue); --ink: #ffffff; --ink-2: rgba(255, 255, 255, 0.86); --muted: rgba(255, 255, 255, 0.78); --rule: rgba(255, 255, 255, 0.3); --accent: #ffffff; }
+.blue { --bg: var(--white); --ink: #1d1c19; --ink-2: #45433d; --muted: #6a675f; --rule: rgba(29, 28, 25, 0.16); --accent: #1d1c19; }
 .dark { --bg: var(--press); --ink: #f2f1ed; --ink-2: rgba(242, 241, 237, 0.74); --muted: rgba(242, 241, 237, 0.58); --rule: rgba(242, 241, 237, 0.18); --accent: #f2f1ed; }
 
 * { box-sizing: border-box; }
@@ -55,10 +56,7 @@ main > section::after { right: var(--edge); }
 .skip:focus { left: 8px; }
 
 /* Painted ground for the blue sheets: slow tonal drift plus fine grain. */
-.blue { background-color: var(--blue); background-image:
-    radial-gradient(70% 60% at 10% 90%, rgba(0, 20, 60, 0.20), transparent 65%),
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='320' height='320'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.012 .02' numOctaves='3' seed='7'/%3E%3CfeColorMatrix values='0 0 0 0 0  0 0 0 0 .08  0 0 0 0 .25  0 0 0 .5 -.12'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' seed='3'/%3E%3CfeColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 .05 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E"); }
+.blue { background-color: var(--white); }
 
 /* Type */
 h1, h2, .statement, .pi-name { font-family: var(--title); font-weight: 400; letter-spacing: -0.018em; text-wrap: balance; }
@@ -91,7 +89,7 @@ h3 { font-family: var(--title); font-weight: 400; font-size: 1.5rem; line-height
 .nav.scrolled { background: #f2f1ed; color: var(--ink); border-bottom-color: rgba(29, 28, 25, 0.16); }
 .nav-row { display: flex; align-items: center; justify-content: space-between; height: 60px; padding-inline: calc(var(--edge) + clamp(16px, 2.2vw, 36px)); max-width: none; }
 .mark { display: inline-flex; align-items: center; gap: 10px; font-family: var(--text); font-weight: 700; font-size: 1.125rem; letter-spacing: -0.01em; text-decoration: none; }
-.mark svg { width: 28px; height: 28px; }
+.mark svg { width: 26px; height: 26px; }
 .nav .mark { color: #f2f1ed; --mark-in: #003d86; }
 .nav.scrolled .mark { color: var(--blue); --mark-in: #f2f1ed; }
 html[data-art="tang"] .nav .mark { color: #1d1c19; --mark-in: #a8784a; }
@@ -438,3 +436,44 @@ html[data-art="tang"] .hero-foot .chip { background: rgba(29, 28, 25, 0.12); col
 .research .roundel { background: var(--bg); }
 .hero h1 { max-width: 13ch; }
 @media (max-width: 760px) { .nav .mark, .nav.scrolled .mark { color: var(--blue); --mark-in: #f2f1ed; } }
+
+/* White page: the hero and former blue sheets read in ink. */
+.nav:not(.scrolled) { color: #1d1c19; border-bottom-color: rgba(29, 28, 25, 0.16); }
+.hero .label, .hero-sub, .hero-lede, .hero.is-film .film-cap, .hero.is-film .film-cap span, .brain .prose, .hero.is-film .scroll-cue { color: #1d1c19; }
+.hero-sub { color: #45433d; }
+.hero.is-film .scroll-cue::after, .film-meter i { background: #1d1c19; }
+.hero-foot .chip { background: rgba(29, 28, 25, 0.08); color: #1d1c19; }
+.hero-art { color: #1d1c19; }
+.nav .mark, .nav.scrolled .mark { color: #1d1c19; }
+
+/* Publications: each paper is a full-width band of its painting, title on a plate in the middle. */
+.pub-list { display: grid; gap: 14px; border: 0; }
+.pub { display: block; padding: 0; margin: 0; border: 0; }
+.pub::before { display: none; }
+.pub:last-child { border: 0; }
+.pub-band { position: relative; display: grid; place-items: center; width: 100%; min-height: clamp(220px, 26vw, 360px); padding: clamp(18px, 3vw, 40px); border: 0; border-radius: 6px; cursor: pointer; font: inherit; color: inherit; text-align: center;
+  background-color: var(--blue); background-size: cover; background-position: center; overflow: hidden; transition: transform 0.6s var(--ease); }
+.pub-band::after { content: ""; position: absolute; inset: 0; background: rgba(250, 249, 246, 0); transition: background 0.4s; }
+.pub-band:hover { transform: translateY(-2px); }
+.pub-band:hover::after { background: rgba(250, 249, 246, 0.06); }
+.pub-band:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
+.pub-plate { position: relative; z-index: 1; display: grid; gap: 8px; max-width: min(720px, 92%); padding: clamp(14px, 2vw, 24px) clamp(18px, 3vw, 36px); background: rgba(250, 249, 246, 0.94); border-radius: 4px; box-shadow: 0 1px 0 rgba(29, 28, 25, 0.08); }
+.pub-meta { font-family: var(--code); font-size: 0.6875rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted); }
+.pub-plate .pub-title { font-family: var(--title); font-size: clamp(1.25rem, 2vw, 1.75rem); line-height: 1.15; letter-spacing: -0.01em; color: var(--ink); }
+.pub-plate .pub-authors { font-size: 0.8125rem; color: var(--muted); line-height: 1.45; }
+.pub-plate .pub-authors b { color: var(--ink); }
+
+/* Detail view */
+.pub-dialog { width: min(1040px, 94vw); max-height: 90vh; padding: 0; border: 0; border-radius: 8px; background: var(--paper); color: var(--ink); overflow: auto; }
+.pub-dialog::backdrop { background: rgba(29, 28, 25, 0.55); backdrop-filter: blur(3px); }
+.pd-grid { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); }
+.pd-img { width: 100%; height: 100%; object-fit: cover; aspect-ratio: 1; }
+.pd-text { padding: clamp(24px, 4vw, 48px); display: grid; align-content: center; gap: 12px; }
+.pd-title { font-family: var(--title); font-weight: 400; font-size: clamp(1.6rem, 2.8vw, 2.4rem); line-height: 1.08; }
+.pd-authors { font-size: 0.875rem; color: var(--muted); }
+.pd-authors b { color: var(--ink); }
+.pd-text .label { margin-top: 10px; }
+.pd-finding { font-size: 1.0313rem; line-height: 1.6; color: var(--ink-2); }
+.pd-link { justify-self: start; margin-top: 10px; }
+.pd-close { position: absolute; top: 12px; right: 12px; width: 38px; height: 38px; border: 0; border-radius: 50%; background: rgba(250, 249, 246, 0.92); font-size: 1.5rem; line-height: 1; cursor: pointer; color: var(--ink); }
+@media (max-width: 760px) { .pd-grid { grid-template-columns: 1fr; } .pd-img { aspect-ratio: 16 / 10; } .pub-plate .pub-authors { display: none; } }
