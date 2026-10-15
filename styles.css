@@ -570,8 +570,4 @@ html[data-art="tang"] .pub-band { min-height: 0; }
 html[data-art="tang"] .pub-title { font-size: clamp(1.25rem, 1.7vw, 1.625rem); }
 @media (max-width: 760px) { html[data-art="tang"] .pub-list { grid-template-columns: 1fr; } }
 
-/* Ink: one brushed stroke under each section title */
-main section:not(.hero) > .wrap > h2::after, main section:not(.hero) > .wrap.two > h2::after, .pubs-head h2::after {
-  content: ""; display: block; width: clamp(120px, 14vw, 200px); height: 14px; margin-top: 14px;
-  background: url("assets/ink-stroke.svg") left center / 100% 100% no-repeat; opacity: 0.85;
-}
+
