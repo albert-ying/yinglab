@@ -107,7 +107,7 @@
   if (!hero || !canvas || reduced || window.innerWidth < 761) return;
   var gl = canvas.getContext('webgl', { antialias: false, alpha: false, powerPreference: 'high-performance' });
   if (!gl) return;
-  if (gl.getParameter(gl.MAX_VERTEX_ATTRIBS) < 13) return;
+  if (gl.getParameter(gl.MAX_VERTEX_ATTRIBS) < 13) return;   // the points use 13 attributes: four of position, one of random numbers and eight of colour
 
   var N = window.innerWidth > 1500 ? 170000 : 130000;
 
@@ -119,20 +119,21 @@
   // baseline offset from the painting's centre (fraction of its height) and where the drawn line ends
   var LAY = TANG ? { base: 0.1586, right: 0.49 } : { base: 0.4576, right: 0.487 };
   var SOURCES = [
-    { src: 'assets/img/' + ART + 'lineup.webp?v=t13', boostTo: 0.22, boost: 2.6, figures: true },   // the small animals get more points than their area would earn
-    { src: 'assets/img/' + ART + (TANG ? 'population' : 'species') + '.webp?v=t13' },
-    { src: 'assets/img/' + ART + 'human.webp?v=t13' },
-    { src: 'assets/img/' + ART + 'tissue.webp?v=t13' },
-    { src: 'assets/img/' + ART + 'cell.webp?v=t13' },
-    { src: 'assets/img/' + ART + 'molecule.webp?v=t13' },
-    { src: 'assets/img/' + ART + (TANG ? 'brain' : 'species') + '.webp?v=t13' }   // the brain among the longest-lived species
+    { src: 'assets/img/' + ART + 'lineup.webp?v=t14', boostTo: 0.22, boost: 2.6, figures: true },   // the small animals get more points than their area would earn
+    { src: 'assets/img/' + ART + (TANG ? 'population' : 'species') + '.webp?v=t14' },
+    { src: 'assets/img/' + ART + 'human.webp?v=t14' },
+    { src: 'assets/img/' + ART + 'tissue.webp?v=t14' },
+    { src: 'assets/img/' + ART + 'cell.webp?v=t14' },
+    { src: 'assets/img/' + ART + 'molecule.webp?v=t14' },
+    { src: 'assets/img/' + ART + (TANG ? 'brain' : 'species') + '.webp?v=t14' },  // the brain among the longest-lived species
+    { src: 'assets/img/' + (TANG ? 'p-tang-agents' : 'p-human') + '.webp?v=t14' }   // the agents at work; the other series has no agents painting
   ];
-  var NP = SOURCES.length;   // paintings; the network is stage NP
+  var NP = SOURCES.length - 1;   // the agents painting is the last stage, NP
   var FIGS = 12;             // most figures the procession may hold
 
   /* The road. p is scroll progress through the hero, 0..1. Three perspectives, each passed through quickly:
      species (one sweep along the procession), scales (the points re-form from species to molecule) and the model
-     (the points gather into a network). x is the place along the procession (0 left, 1 right); z is the push-in. */
+     (the points gather into the agents at work). x is the place along the procession (0 left, 1 right); z is the push-in. */
   var STOPS = [
     { p: 0.00, x: 0.50, z: 1.00 },
     { p: 0.04, x: 0.50, z: 1.00 },
@@ -141,7 +142,7 @@
     { p: 0.29, x: 0.50, z: 1.00 },
     { p: 1.00, x: 0.50, z: 1.00 }
   ];
-  // Which drawing the points hold: [p, stage]. 0 procession, 1-5 species to molecule, 6 the network.
+  // Which drawing the points hold: [p, stage]. 0 procession, 1-5 species to molecule, 6 the brain, 7 the agents.
   var STAGE = [[0, 0], [0.29, 0], [0.315, 1], [0.35, 1], [0.375, 2], [0.41, 2], [0.435, 3], [0.47, 3], [0.495, 4], [0.53, 4], [0.555, 5], [0.59, 5], [0.62, 6], [0.71, 6], [0.75, 7], [1, 7]];
   // Each caption fades in over `into` and out over `out`, so one caption hands over to the next with no empty frame.
   var BEATS = [
@@ -244,17 +245,17 @@
       '  gl_FragColor = vec4(col, 1.0);',
       '}'].join('\n'));
 
-  // The points. Each carries its place in all six drawings and moves between them.
+  // The points. Each carries its place in all eight drawings and moves between them.
   var points = program(
     ['precision highp float;',
-      'attribute vec4 aA, aB, aC, aR, aK0, aK1, aK2, aK3, aK4, aK5, aK6; attribute vec2 aD, aN;',
+      'attribute vec4 aA, aB, aC, aD, aR, aK0, aK1, aK2, aK3, aK4, aK5, aK6, aK7;',
       'uniform vec2 uRes, uOff0, uOffC, uMouse;',
-      'uniform float uSc0, uScC, uS, uTime, uIntro, uPix, uFade, uSize, uBurst; uniform vec3 uFlight, uNetCol; uniform vec2 uOffN; uniform float uScN;',
+      'uniform float uSc0, uScC, uS, uTime, uIntro, uPix, uFade, uSize, uBurst; uniform vec3 uFlight;',
       'uniform vec4 uCap; uniform float uCapO, uTop; uniform vec2 uEdge; uniform vec4 uFig; uniform float uAsp0; uniform vec2 uSpan[' + FIGS + '];',
       'varying float vAlpha; varying vec3 vCol;',
       'void main(){',
       '  vec2 p0 = aA.xy*uSc0 + uOff0;',
-      '  vec2 p1 = aA.zw*uScC + uOffC, p2 = aB.xy*uScC + uOffC, p3 = aB.zw*uScC + uOffC, p4 = aC.xy*uScC + uOffC, p5 = aC.zw*uScC + uOffC, p6 = aD*uScC + uOffC, p7 = aN*uScN + uOffN;',
+      '  vec2 p1 = aA.zw*uScC + uOffC, p2 = aB.xy*uScC + uOffC, p3 = aB.zw*uScC + uOffC, p4 = aC.xy*uScC + uOffC, p5 = aC.zw*uScC + uOffC, p6 = aD.xy*uScC + uOffC, p7 = aD.zw*uScC + uOffC;',
       // each point leaves and arrives on its own clock, so a drawing dissolves and gathers rather than slides
       '  float i = floor(uS); float t = uS - i;',
       '  float tt = smoothstep(aR.x*0.5, 0.5 + aR.x*0.5, t);',
@@ -264,7 +265,7 @@
       '           + p3*max(0.0, 1.0-abs(s-3.0)) + p4*max(0.0, 1.0-abs(s-4.0)) + p5*max(0.0, 1.0-abs(s-5.0)) + p6*max(0.0, 1.0-abs(s-6.0)) + p7*max(0.0, 1.0-abs(s-7.0));',
       '  float mid = sin(3.14159*tt);',
       '  vCol = aK0.rgb*max(0.0, 1.0-abs(s)) + aK1.rgb*max(0.0, 1.0-abs(s-1.0)) + aK2.rgb*max(0.0, 1.0-abs(s-2.0))',
-      '       + aK3.rgb*max(0.0, 1.0-abs(s-3.0)) + aK4.rgb*max(0.0, 1.0-abs(s-4.0)) + aK5.rgb*max(0.0, 1.0-abs(s-5.0)) + aK6.rgb*max(0.0, 1.0-abs(s-6.0)) + uNetCol*max(0.0, 1.0-abs(s-7.0));',
+      '       + aK3.rgb*max(0.0, 1.0-abs(s-3.0)) + aK4.rgb*max(0.0, 1.0-abs(s-4.0)) + aK5.rgb*max(0.0, 1.0-abs(s-5.0)) + aK6.rgb*max(0.0, 1.0-abs(s-6.0)) + aK7.rgb*max(0.0, 1.0-abs(s-7.0));',
       // in flight a point lightens toward the colour of paper, so a dissolve reads as light, then settles into paint
       '  vCol = mix(vCol, uFlight, mid*0.55);',
       // in flight the points ride a slow turning current
@@ -313,16 +314,15 @@
   if (!ground || !points) return;
 
   var GU = uniforms(ground, ['uFrame', 'uTex', 'uRes', 'uMouse', 'uTime', 'uSoak', 'uLineY', 'uLineX', 'uBeyond', 'uGrain']);
-  var PU = uniforms(points, ['uSpan[0]', 'uFig', 'uAsp0', 'uCap', 'uCapO', 'uTop', 'uEdge', 'uNetCol', 'uOffN', 'uScN', 'uFlight', 'uRes', 'uOff0', 'uOffC', 'uMouse', 'uSc0', 'uScC', 'uS', 'uTime', 'uIntro', 'uPix', 'uFade', 'uSize', 'uBurst']);
+  var PU = uniforms(points, ['uSpan[0]', 'uFig', 'uAsp0', 'uCap', 'uCapO', 'uTop', 'uEdge', 'uFlight', 'uRes', 'uOff0', 'uOffC', 'uMouse', 'uSc0', 'uScC', 'uS', 'uTime', 'uIntro', 'uPix', 'uFade', 'uSize', 'uBurst']);
 
   var quad = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, quad);
   gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
-  var pbuf = gl.createBuffer(), cbuf = gl.createBuffer(), nbuf = gl.createBuffer();
+  var pbuf = gl.createBuffer(), cbuf = gl.createBuffer();
   var gA = gl.getAttribLocation(ground, 'a');
-  // per point: seven painting positions (14 floats) and four random numbers, 18 floats in all
-  var pA = [['aA', 4, 0], ['aB', 4, 16], ['aC', 4, 32], ['aD', 2, 48], ['aR', 4, 56]].map(function (d) { return { loc: gl.getAttribLocation(points, d[0]), size: d[1], off: d[2] }; });
-  var nA = gl.getAttribLocation(points, 'aN');
-  var cA = ['aK0', 'aK1', 'aK2', 'aK3', 'aK4', 'aK5', 'aK6'].map(function (n) { return gl.getAttribLocation(points, n); });
+  // per point: eight painting positions (16 floats) and four random numbers, 20 floats in all
+  var pA = [['aA', 4, 0], ['aB', 4, 16], ['aC', 4, 32], ['aD', 4, 48], ['aR', 4, 64]].map(function (d) { return { loc: gl.getAttribLocation(points, d[0]), size: d[1], off: d[2] }; });
+  var cA = ['aK0', 'aK1', 'aK2', 'aK3', 'aK4', 'aK5', 'aK6', 'aK7'].map(function (n) { return gl.getAttribLocation(points, n); });
 
   /* ---- sample the drawings into point positions ---- */
 
@@ -415,33 +415,20 @@
       fl0.forEach(function (b, i) { spans[i * 2] = b.x0; spans[i * 2 + 1] = b.x1; });
     }
     // Points are paired at random between drawings, so each change is a dissolve and not a slide.
-    var data = new Float32Array(N * 18);
+    var data = new Float32Array(N * 20);
     for (var n = 0; n < N; n++) {
-      var o = n * 18;
-      for (var k = 0; k < NP; k++) { data[o + k * 2] = sets[k].pos[n * 2]; data[o + k * 2 + 1] = sets[k].pos[n * 2 + 1]; }
-      data[o + 14] = rnd(); data[o + 15] = rnd(); data[o + 16] = rnd(); data[o + 17] = rnd();
+      var o = n * 20;
+      for (var k = 0; k <= NP; k++) { data[o + k * 2] = sets[k].pos[n * 2]; data[o + k * 2 + 1] = sets[k].pos[n * 2 + 1]; }
+      data[o + 16] = rnd(); data[o + 17] = rnd(); data[o + 18] = rnd(); data[o + 19] = rnd();
     }
     gl.bindBuffer(gl.ARRAY_BUFFER, pbuf); gl.bufferData(gl.ARRAY_BUFFER, data, gl.STATIC_DRAW);
-    // Each point also carries its colour in all seven paintings.
-    var cols = new Uint8Array(N * 28);
-    for (var n2 = 0; n2 < N; n2++) for (var k2 = 0; k2 < NP; k2++) cols.set(sets[k2].col.subarray(n2 * 4, n2 * 4 + 4), n2 * 28 + k2 * 4);
+    // Each point also carries its colour in all eight paintings.
+    var cols = new Uint8Array(N * 32);
+    for (var n2 = 0; n2 < N; n2++) for (var k2 = 0; k2 <= NP; k2++) cols.set(sets[k2].col.subarray(n2 * 4, n2 * 4 + 4), n2 * 32 + k2 * 4);
     // the spare alpha byte of the first colour carries the point's figure in the procession
     var sp = sets[0].span;
-    for (var n4 = 0; n4 < N; n4++) cols[n4 * 28 + 3] = sp ? sp[n4] : 0;
+    for (var n4 = 0; n4 < N; n4++) cols[n4 * 32 + 3] = sp ? sp[n4] : 0;
     gl.bindBuffer(gl.ARRAY_BUFFER, cbuf); gl.bufferData(gl.ARRAY_BUFFER, cols, gl.STATIC_DRAW);
-    // The last drawing is the model itself: a layered network. Points sit on its nodes and along its edges.
-    var LAYERS = [6, 9, 9, 6, 1], nodes = [];
-    LAYERS.forEach(function (cnt, li) { for (var q = 0; q < cnt; q++) nodes.push({ x: (li / (LAYERS.length - 1) - 0.5) * 1.6, y: (cnt === 1 ? 0 : (q / (cnt - 1) - 0.5)) * 0.9, l: li }); });
-    var edges = [];
-    nodes.forEach(function (a) { nodes.forEach(function (b) { if (b.l === a.l + 1) edges.push([a, b]); }); });
-    var net = new Float32Array(N * 2);
-    for (var n3 = 0; n3 < N; n3++) {
-      var x, y;
-      if (rnd() < 0.42) { var nd = nodes[Math.floor(rnd() * nodes.length)], ang = rnd() * 6.2832, rr = Math.sqrt(rnd()) * (nd.l === 4 ? 0.055 : 0.032); x = nd.x + Math.cos(ang) * rr; y = nd.y + Math.sin(ang) * rr; }
-      else { var e = edges[Math.floor(rnd() * edges.length)], u = rnd(); x = e[0].x + (e[1].x - e[0].x) * u; y = e[0].y + (e[1].y - e[0].y) * u + (rnd() - 0.5) * 0.004; }
-      net[n3 * 2] = x; net[n3 * 2 + 1] = y;
-    }
-    gl.bindBuffer(gl.ARRAY_BUFFER, nbuf); gl.bufferData(gl.ARRAY_BUFFER, net, gl.STATIC_DRAW);
     ready = true; introStart = performance.now() + 200;
     hero.classList.add('is-film');
     if (!reduced) splitAll();
@@ -524,7 +511,7 @@
     var zEff = sc0 / sc1;
     var off0x = W * 0.5 - (cam.x - 0.5 + (figL + figR) / 2 - 0.5) * aspect0 * sc0;
     var off0y = baseY - LAY.base * sc0;
-    // scale drawings: a disc on the right, beside the caption column, at every width
+    // scale drawings, the brain and the agents: a disc on the right, beside the caption column, at every width
     var colL = W * 0.44, room = W - colL - W * 0.05;
     var scC = Math.min(H * 0.70, room * 0.95);
     var offCx = colL + room / 2, offCy = H * 0.54;
@@ -545,12 +532,9 @@
     gl.enable(gl.BLEND); gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
     gl.useProgram(points);
     gl.bindBuffer(gl.ARRAY_BUFFER, pbuf);
-    pA.forEach(function (d) { if (d.loc < 0) return; gl.enableVertexAttribArray(d.loc); gl.vertexAttribPointer(d.loc, d.size, gl.FLOAT, false, 72, d.off); });
+    pA.forEach(function (d) { if (d.loc < 0) return; gl.enableVertexAttribArray(d.loc); gl.vertexAttribPointer(d.loc, d.size, gl.FLOAT, false, 80, d.off); });
     gl.bindBuffer(gl.ARRAY_BUFFER, cbuf);
-    for (var c6 = 0; c6 < NP; c6++) { if (cA[c6] < 0) continue; gl.enableVertexAttribArray(cA[c6]); gl.vertexAttribPointer(cA[c6], 4, gl.UNSIGNED_BYTE, true, 28, c6 * 4); }
-    gl.bindBuffer(gl.ARRAY_BUFFER, nbuf); if (nA >= 0) { gl.enableVertexAttribArray(nA); gl.vertexAttribPointer(nA, 2, gl.FLOAT, false, 8, 0); }
-    gl.uniform3f(PU.uNetCol, TANG ? 0.18 : 0.11, TANG ? 0.12 : 0.11, TANG ? 0.06 : 0.10);
-    gl.uniform2f(PU.uOffN, colL + room / 2, H * 0.54); gl.uniform1f(PU.uScN, Math.min(H * 0.5, room * 0.78 / 1.6));
+    for (var c6 = 0; c6 <= NP; c6++) { if (cA[c6] < 0) continue; gl.enableVertexAttribArray(cA[c6]); gl.vertexAttribPointer(cA[c6], 4, gl.UNSIGNED_BYTE, true, 32, c6 * 4); }
     gl.uniform2f(PU.uRes, W, H); gl.uniform2f(PU.uOff0, off0x, off0y); gl.uniform2f(PU.uOffC, offCx, offCy);
     gl.uniform2f(PU.uMouse, mouse.x, mouse.y);
     gl.uniform3f(PU.uFlight, 0.11, 0.11, 0.10);
@@ -576,7 +560,7 @@
     gl.uniform4f(PU.uFig, gone - 0.5, padL + band * kL, W - padL - band * kR, W - gone + 0.5);
     gl.uniform1f(PU.uAsp0, aspect0);
     gl.uniform2fv(PU['uSpan[0]'], spans);
-    var disc = clamp(s, 0, 1);                       // 0 on the lifespan strip, 1 on the discs and the network
+    var disc = clamp(s, 0, 1);                       // 0 on the lifespan strip, 1 on the discs
     gl.uniform1f(PU.uSize, (1.7 + 0.6 * (zEff - 1)) * (1 - disc) + 2.7 * disc);
     gl.uniform1f(PU.uFade, (0.9 * (1 - disc) + 0.85 * disc) * (1 - smooth(SOAK_FROM, SOAK_FROM + 0.03, p)));
     gl.uniform1f(PU.uBurst, smooth(SOAK_FROM - 0.012, SOAK_FROM + 0.05, p));
