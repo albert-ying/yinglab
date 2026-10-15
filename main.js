@@ -232,7 +232,7 @@
     var li = h('li', 'pub');
     li.setAttribute('data-tag', p.tag);
     var band = h('button', 'pub-band'); band.type = 'button';
-    if (p.img) band.style.backgroundImage = 'url(' + p.img.replace('.webp', '-wide.webp') + '), url(' + p.img + ')';
+    if (p.img) band.style.backgroundImage = 'url(' + p.img.replace('.webp', '-wide.webp') + '?v=m1), url(' + p.img + '?v=m1)';
     var plate = h('span', 'pub-plate');
     plate.appendChild(h('span', 'pub-meta', p.venue + ' · ' + p.year + (p.preprint ? ' · Preprint' : '')));
     plate.appendChild(h('span', 'pub-title', p.title));
@@ -247,7 +247,7 @@
   });
   function openPub(p) {
     if (!dlg) { window.open(p.url, '_blank', 'noopener'); return; }
-    dlg.querySelector('.pd-img').src = p.img || '';
+    dlg.querySelector('.pd-img').src = p.img ? p.img + '?v=m1' : '';
     dlg.querySelector('.pd-meta').textContent = p.venue + ' · ' + p.year + (p.preprint ? ' · Preprint' : '');
     dlg.querySelector('.pd-title').textContent = p.title;
     var au = dlg.querySelector('.pd-authors'); au.textContent = '';
