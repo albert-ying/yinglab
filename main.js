@@ -23,6 +23,7 @@
   var loopHost = document.getElementById('loop');
   var stepNodes = {};
   (function buildLoop() {
+    if (!loopHost) return;
     var cx = 230, cy = 210, r = 128;
     var svg = el('svg', { viewBox: '0 0 460 420' }, loopHost);
     el('circle', { cx: cx, cy: cy, r: r, class: 'lp-ring' }, svg);
@@ -55,13 +56,13 @@
   function activate(card) {
     cards.forEach(function (c) { c.classList.toggle('on', c === card); });
     var on = card ? card.getAttribute('data-steps').split(' ') : [];
-    STEPS.forEach(function (s) { stepNodes[s].classList.toggle('on', on.indexOf(s) !== -1); });
+    STEPS.forEach(function (s) { if (stepNodes[s]) stepNodes[s].classList.toggle('on', on.indexOf(s) !== -1); });
   }
   cards.forEach(function (c) {
     c.addEventListener('mouseenter', function () { activate(c); });
     c.addEventListener('click', function () { activate(c); });
   });
-  activate(cards[0]);
+  if (cards.length) activate(cards[0]);
 
   /* ---------- Publications ---------- */
 
@@ -165,7 +166,7 @@
   /* ---------- Scroll reveal ---------- */
 
   (function reveal() {
-    var sel = 'main section:not(.hero) h2, main section:not(.hero) .label, .section-lede, .prose, .theme figure, .theme h3, .directions article, .loop, .pub, .portrait, .pi-name, .pi-role, .links, .founding, .values li, .join-lede, .join-note, .filter';
+    var sel = 'main section:not(.hero) h2, main section:not(.hero) .label, .section-lede, .prose, .theme figure, .theme h3, .track figure, .track h3, .brain-block figure, .brain-block h3, .directions article, .loop, .pub, .portrait, .pi-name, .pi-role, .links, .founding, .values li, .join-lede, .join-note, .filter';
     var nodes = Array.prototype.slice.call(document.querySelectorAll(sel));
     var extra = Array.prototype.slice.call(document.querySelectorAll('.scales-fig'));
     if (!('IntersectionObserver' in window)) {

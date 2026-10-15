@@ -223,7 +223,9 @@
       '  float front = uSoak*(0.62*asp + 0.75) - length(rr) + (fbm(vUv*vec2(asp,1.0)*3.5 + 3.0)-0.5)*0.55 + (fbm(vUv*vec2(asp,1.0)*15.0)-0.5)*0.12;',
       '  float k = smoothstep(0.0, 0.035, front) * step(0.0001, uSoak);',
       '  float rim = (1.0 - smoothstep(0.0, 0.11, front)) * k;',
-      '  col = mix(col, mix(paper, blue*0.9, rim*0.55), k);',
+      '  float bleed = fbm(vUv*vec2(asp,1.0)*24.0 + 11.0);',
+      '  vec3 inkc = vec3(0.12, 0.11, 0.10);',
+      '  col = mix(col, mix(paper, inkc, rim*(0.35 + 0.45*bleed)), k);',
       '  gl_FragColor = vec4(col, 1.0);',
       '}'].join('\n'));
 

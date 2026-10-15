@@ -554,3 +554,24 @@ html[data-art="tang"] .foot { --bg: #efe3cb; --ink: #1d1c19; --muted: #5e5141; p
   .links { gap: 0 22px; margin-top: 18px; }
   .links a { display: inline-block; padding-block: 10px; }
 }
+
+/* Research tracks (after the ARDD "two tracks" slide) and the brain block */
+.tracks { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(40px, 6vw, 104px); align-items: start; }
+.track figure { width: min(100%, 340px); margin: 0 0 26px; }
+.track figure img, .brain-block figure img { width: 100%; height: auto; display: block; }
+.track h3, .brain-block h3 { font-family: var(--title); font-weight: 400; font-size: clamp(2rem, 3.2vw, 2.75rem); line-height: 1.06; letter-spacing: -0.014em; margin-bottom: 18px; text-wrap: balance; }
+.brain-block { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: clamp(32px, 5vw, 88px); align-items: center; margin-top: clamp(56px, 7vw, 112px); padding-top: clamp(40px, 5vw, 72px); border-top: 1px solid var(--rule); }
+.brain-block figure { margin: 0; }
+@media (max-width: 900px) { .tracks, .brain-block { grid-template-columns: 1fr; } .track figure { width: min(100%, 300px); } .brain-block figure { max-width: 380px; } }
+
+/* Publications in two columns */
+html[data-art="tang"] .pub-list { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(36px, 4vw, 56px) clamp(24px, 3vw, 44px); }
+html[data-art="tang"] .pub-band { min-height: 0; }
+html[data-art="tang"] .pub-title { font-size: clamp(1.25rem, 1.7vw, 1.625rem); }
+@media (max-width: 760px) { html[data-art="tang"] .pub-list { grid-template-columns: 1fr; } }
+
+/* Ink: one brushed stroke under each section title */
+main section:not(.hero) > .wrap > h2::after, main section:not(.hero) > .wrap.two > h2::after, .pubs-head h2::after {
+  content: ""; display: block; width: clamp(120px, 14vw, 200px); height: 14px; margin-top: 14px;
+  background: url("assets/ink-stroke.svg") left center / 100% 100% no-repeat; opacity: 0.85;
+}
