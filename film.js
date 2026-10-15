@@ -111,7 +111,7 @@
   // (offset from the image centre as a fraction of its height) and where the drawn line ends.
   var TANG = ART === 'p-tang-';
   // baseline offset from the painting's centre (fraction of its height) and where the drawn line ends
-  var LAY = TANG ? { base: 0.1923, right: 0.49 } : { base: 0.4576, right: 0.487 };
+  var LAY = TANG ? { base: 0.2382, right: 0.49 } : { base: 0.4576, right: 0.487 };
   var SOURCES = [
     { src: 'assets/img/' + ART + 'lineup.webp?v=t3', boostTo: 0.22, boost: 2.6 },   // the small animals get more points than their area would earn
     { src: 'assets/img/' + ART + (TANG ? 'brain' : 'species') + '.webp?v=t3' },   // Tang: the brain among the longest-lived species
