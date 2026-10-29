@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Formalizing biology</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Oxygen:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root { --ink: #181114; --muted: #6e6e6e; --line: #d9d9d4; --accent: #557565; --bg: #ffffff; --err: #a33a2a; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--bg); color: var(--ink); }
+  body { font-family: Oxygen, system-ui, sans-serif; min-height: 100vh; display: grid; place-items: center; padding: 16px; }
+  main { width: 100%; max-width: 420px; }
+  h1 { font-size: 34px; line-height: 1.15; margin: 0 0 6px; font-weight: 700; }
+  h1 span { color: var(--accent); }
+  p { color: var(--muted); font-size: 15px; line-height: 1.5; margin: 0 0 28px; }
+  form { display: flex; gap: 8px; }
+  input { flex: 1; min-width: 0; font: inherit; font-size: 16px; padding: 11px 12px; border: 1px solid var(--line); border-radius: 4px; color: var(--ink); background: #fff; }
+  input:focus { outline: 2px solid var(--accent); outline-offset: 1px; border-color: var(--accent); }
+  button { font: inherit; font-size: 15px; font-weight: 700; padding: 11px 18px; border: 0; border-radius: 4px; background: var(--ink); color: #fff; cursor: pointer; }
+  button[disabled] { opacity: 0.5; cursor: progress; }
+  #msg { min-height: 22px; margin-top: 12px; font-size: 14px; color: var(--muted); }
+  #msg.err { color: var(--err); }
+</style>
+</head>
+<body>
+<main>
+  <h1><span>Formalizing</span> biology</h1>
+  <p>A private preview for the formalbio study group. Enter the password you were given.</p>
+  <form id="f" autocomplete="off">
+    <input id="pw" type="password" placeholder="Password" aria-label="Password" required autofocus>
+    <button id="go" type="submit">Enter</button>
+  </form>
+  <div id="msg" role="status" aria-live="polite"></div>
+</main>
+<script>
+(function () {
+  var VERSION = "330e48d0f1a2", ITER = 600000;
+  var BASE = location.pathname.replace(/[^/]*$/, "");
+  var CACHE = "formalbio-" + VERSION;
+  var msg = document.getElementById("msg"), go = document.getElementById("go");
+  var params = new URLSearchParams(location.search);
+  var next = params.get("next") || "index.html";
+  if (!/^[A-Za-z0-9_\-./]+$/.test(next) || next.indexOf("..") >= 0 || next.charAt(0) === "/") next = "index.html";
+  var target = BASE + "app/" + next + location.hash;
+
+  function say(t, err) { msg.textContent = t; msg.className = err ? "err" : ""; }
+  if (!("serviceWorker" in navigator) || !window.crypto || !crypto.subtle || typeof DecompressionStream === "undefined") {
+    say("This browser cannot open the preview. Please use a current Chrome, Safari, Edge or Firefox.", true);
+    go.disabled = true; return;
+  }
+  var swReady = navigator.serviceWorker.register(BASE + "sw.js?v=" + VERSION, { scope: BASE })
+    .then(function () { return navigator.serviceWorker.ready; });
+
+  function dropOld(keep) {
+    return caches.keys().then(function (ks) {
+      return Promise.all(ks.filter(function (k) { return k.indexOf("formalbio-") === 0 && k !== keep; })
+        .map(function (k) { return caches.delete(k); }));
+    });
+  }
+  if (params.has("lock")) { dropOld(null).then(function () { say("Locked."); }); }
+  else {
+    caches.has(CACHE).then(function (has) {
+      if (has) swReady.then(function () { location.replace(target); });
+      else dropOld(CACHE);
+    });
+  }
+
+  async function unlock(password) {
+    var buf = await (await fetch(BASE + "site-" + VERSION + ".enc", { cache: "no-store" })).arrayBuffer();
+    var b = new Uint8Array(buf);
+    if (String.fromCharCode(b[0], b[1], b[2], b[3]) !== "FBG1") throw new Error("format");
+    var salt = b.slice(4, 20), iv = b.slice(20, 32), ct = b.slice(32);
+    var base = await crypto.subtle.importKey("raw", new TextEncoder().encode(password), "PBKDF2", false, ["deriveKey"]);
+    var key = await crypto.subtle.deriveKey({ name: "PBKDF2", salt: salt, iterations: ITER, hash: "SHA-256" },
+      base, { name: "AES-GCM", length: 256 }, false, ["decrypt"]);
+    var plain;
+    try { plain = await crypto.subtle.decrypt({ name: "AES-GCM", iv: iv }, key, ct); }
+    catch (e) { throw new Error("password"); }
+    say("Opening…");
+    var raw = await new Response(new Blob([plain]).stream().pipeThrough(new DecompressionStream("gzip"))).arrayBuffer();
+    var hl = new DataView(raw).getUint32(0, false);
+    var header = JSON.parse(new TextDecoder().decode(new Uint8Array(raw, 4, hl)));
+    var start = 4 + hl, cache = await caches.open(CACHE);
+    await Promise.all(header.files.map(function (f) {
+      var body = raw.slice(start + f.offset, start + f.offset + f.length);
+      return cache.put(new Request(location.origin + BASE + "app/" + f.path),
+        new Response(body, { headers: { "Content-Type": f.type } }));
+    }));
+    await dropOld(CACHE);
+  }
+
+  document.getElementById("f").addEventListener("submit", function (ev) {
+    ev.preventDefault();
+    var pw = document.getElementById("pw").value;
+    go.disabled = true; say("Checking…");
+    unlock(pw).then(function () { return swReady; })
+      .then(function () { location.replace(target); })
+      .catch(function (e) {
+        go.disabled = false;
+        say(e && e.message === "password" ? "Wrong password." : "Could not open the preview. Please reload and try again.", true);
+      });
+  });
+})();
+</script>
+</body>
+</html>
