@@ -20,12 +20,12 @@ window.LAB_PUBS = [
     venue: 'Nature Aging', url: 'https://doi.org/10.1038/s43587-026-01139-6' },
   { year: 2026, tag: 'aging', img: 'assets/img/paper-06.webp', finding: "The study combines age-related DNA methylation changes with age-related gene expression changes in blood to identify multi-omic aging genes. These genes are enriched for adaptive immune functions. Compared with genes found from either data type alone, they replicate better across populations and are more strongly associated with aging-related outcomes.",
     title: 'Integrative epigenetics and transcriptomics identify aging genes in human blood',
-    authors: 'Moqri, M., Ying, K., Poganik, J., Herzog, C., …, Snyder, M. P., Gladyshev, V. N.',
+    authors: 'Moqri, M., Ying, K., Poganik, J. R., Herzog, C., …, Snyder, M. P., Gladyshev, V. N.',
     venue: 'Nature Communications', url: 'https://doi.org/10.1038/s41467-025-67369-1' },
   { year: 2026, tag: 'ai', img: 'assets/img/paper-07.webp', finding: "Proteo-R1 splits protein design into two steps. A multimodal language model reads sequence, structure and text and names the few residues that govern binding. A diffusion model then generates the rest of the sequence and structure with those residues held fixed.",
     title: 'Proteo-R1: reasoning foundation models for de novo protein design',
     authors: 'Wu, F., Xuan, W., Qi, H., …, Ying, K., …, Choi, Y.',
-    venue: 'ICML', url: 'https://arxiv.org/abs/2605.02937' },
+    venue: 'ICML 2026 Workshop on Generative and Agentic AI for Biology', url: 'https://arxiv.org/abs/2605.02937' },
   { home: 4, year: 2025, tag: 'aging', img: 'assets/img/paper-08.webp', finding: "Biolearn is an open-source framework that evaluates 39 aging biomarkers on standardized data from more than 20,000 people. A clock's accuracy for chronological age does not correlate with its accuracy for mortality, and the best biomarker depends on the outcome being predicted.",
     title: 'A unified framework for systematic curation and evaluation of aging biomarkers',
     authors: 'Ying, K., Paulson, S., Eames, A., Tyshkovskiy, A., …, Gladyshev, V. N.',
@@ -62,7 +62,7 @@ window.LAB_PUBS = [
 
 // News, newest first. `link` is the words in `text` that carry the link.
 window.LAB_NEWS = [
-  { date: 'January 2027', iso: '2027-01', text: 'The lab opens.' },
+  { date: 'January 2027', iso: '2027-01', text: 'The Ying Lab opens.' },
   { date: 'October 3, 2026', iso: '2026-10-03', text: 'Albert gave an invited talk, "AI for Aging Across Biological Scales", at ARDD 2026.',
     link: 'ARDD 2026', url: 'https://agingpharma.org/' },
   { date: 'September 21, 2026', iso: '2026-09-21', text: 'We posted HealthFlux on medRxiv. It is a world model of human health trained on 502,166 UK Biobank participants.',
@@ -72,7 +72,7 @@ window.LAB_NEWS = [
     link: 'An open competition for biomarkers of aging', url: 'https://doi.org/10.1038/s43587-026-01139-6' },
   { date: 'May 27, 2026', iso: '2026-05-27', text: '"Universal transcriptomic hallmarks of mammalian ageing and mortality" is out in Nature.',
     link: 'Universal transcriptomic hallmarks of mammalian ageing and mortality', url: 'https://doi.org/10.1038/s41586-026-10542-3' },
-  { date: 'May 2026', iso: '2026-05', text: 'Proteo-R1, a reasoning model for de novo protein design, appears at ICML 2026.',
+  { date: 'May 2026', iso: '2026-05', text: 'We posted Proteo-R1, a reasoning model for de novo protein design, on arXiv. It was accepted at the ICML 2026 Workshop on Generative and Agentic AI for Biology.',
     link: 'Proteo-R1', url: 'https://arxiv.org/abs/2605.02937' },
   { date: 'February 13, 2026', iso: '2026-02-13', text: 'We released Autonomous Lab as open source. AI agents run the research loop and people make the decisions.',
     link: 'Autonomous Lab', url: 'https://github.com/albert-ying/autonomous-lab' },
